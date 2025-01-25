@@ -16,6 +16,8 @@ const Root: React.FC = () => {
 	const location = useLocation();
 	const selectedKey = location.pathname;
 
+	console.log(configs.server_api);
+
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Sider trigger={null} collapsible={true} collapsed={isCollapsed}>
