@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { Icon } from '@iconify/react';
-import { Button, Flex, Layout, Menu, theme, Typography } from 'antd';
+import { Button, Layout, Menu, theme } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { routes } from '../configs/route_list';
 import { formatRoutes } from '../utils/routeUtils';
@@ -20,7 +20,7 @@ const Root: React.FC = () => {
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
-			<Sider trigger={null} collapsible={true} collapsed={isCollapsed}>
+			<Sider width={240} trigger={null} collapsible={true} collapsed={isCollapsed}>
 				<Title
 					style={{
 						color: 'white',
@@ -32,11 +32,7 @@ const Root: React.FC = () => {
 					title={configs.site_title}
 				>
 					{isCollapsed ? (
-						<Icon
-							icon="noto-v1:graduation-cap"
-							width="40"
-							height="40"
-						/>
+						<Icon icon="streamline-emojis:bicycle" width="40" height="40" />
 					) : (
 						configs.site_title
 					)}
@@ -44,14 +40,13 @@ const Root: React.FC = () => {
 				<Menu
 					theme="dark"
 					mode="inline"
+					// onClick={() => setIsCollapsed(true)}
 					defaultSelectedKeys={[selectedKey]}
 					items={formatRoutes(routes, 'menu')}
 				/>
 			</Sider>
 			<Layout>
-				<Header
-					style={{ padding: 0, background: token.colorBgContainer }}
-				>
+				<Header style={{ padding: '0', background: token.colorBgContainer }}>
 					<Button
 						type="text"
 						icon={
@@ -79,17 +74,11 @@ const Root: React.FC = () => {
 				</Header>
 				<Content
 					style={{
-						padding: '0 20px',
+						padding: '0 16px',
 						background: token.colorBgContainer,
 						borderRadius: token.borderRadiusLG,
 					}}
 				>
-					<Flex gap={6} justify="space-between">
-						<Typography.Text code>
-							My name is Nazmul Hassan
-						</Typography.Text>
-						<h2>Babul</h2>
-					</Flex>
 					<Outlet />
 				</Content>
 				<Footer style={{ textAlign: 'center' }}>

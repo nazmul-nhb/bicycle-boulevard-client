@@ -5,7 +5,7 @@ import type { ItemType, MenuItemType } from "antd/es/menu/interface";
 import type { ReactNode } from "react";
 
 /**
- * Function to format routes for Ant-Design `menuItems`.
+ * * Function to format routes for Ant-Design `menuItems`.
  * @param routes Routes to format.
  * @param output Expected output: `menu`.
  * @param parentPath Optional parent path for internal use.
@@ -17,7 +17,7 @@ export function formatRoutes(
 ): ItemType<MenuItemType>[];
 
 /**
- * Function to format routes for React Router `routes`.
+ * * Function to format routes for React Router `routes`.
  * @param routes Routes to format.
  * @param output Expected output: `routes`.
  * @param parentPath Optional parent path for internal use.
@@ -29,7 +29,7 @@ export function formatRoutes(
 ): ReactNode[];
 
 /**
- * Function to format routes for React Router `routes` or Ant-Design `menuItems`.
+ * * Function to format routes for React Router `routes` or Ant-Design `menuItems`.
  * @param routes Routes to format.
  * @param output Expected output: `routes` or `menu`.
  * @param parentPath Optional parent path for internal use.

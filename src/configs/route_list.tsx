@@ -1,66 +1,66 @@
-import type { IRoute } from "../types/routes";
-import Home from "../pages/Home";
-import Contact from "../pages/Contact";
-import About from "../pages/About";
-import AdminDashboard from "../pages/admin/Dashboard";
-import CreateUser from "../pages/admin/CreateUser";
-import StudentDashboard from "../pages/student/Dashboard";
-import ViewResult from "../pages/student/ViewResult";
+import type { IRoute } from '../types/routes';
+import Home from '../pages/Home';
+import Contact from '../pages/Contact';
+import About from '../pages/About';
+import AdminDashboard from '../pages/admin/Dashboard';
+import CreateProduct from '../pages/admin/CreateProduct';
+import CustomerDashboard from '../pages/customer/Dashboard';
+import ViewOrder from '../pages/customer/ViewOrder';
 
 export const routes: IRoute[] = [
 	{
-		label: "Home",
-		path: "/",
-		icon: "fluent-color:home-48",
+		label: 'Home',
+		path: '/',
+		icon: 'line-md:home-twotone',
 		element: <Home />,
 	},
 	{
-		label: "About",
-		path: "about",
-		icon: "fluent-color:question-circle-16",
+		label: 'About',
+		path: 'about',
+		icon: 'heroicons-outline:information-circle',
 		element: <About />,
 	},
 	{
-		label: "Contact",
-		path: "contact",
-		icon: "fluent-mdl2:connect-contacts",
+		label: 'Contact',
+		path: 'contact',
+		icon: 'material-symbols:contact-support-outline',
 		element: <Contact />,
 	},
 	{
-		label: "Admin Panel",
-		path: "admin",
-		icon: "ic:outline-admin-panel-settings",
+		label: 'Admin Panel',
+		path: 'admin',
+		icon: 'ic:outline-admin-panel-settings',
 		children: [
 			{
-				label: "Dashboard",
-				path: "",
-				icon: "ic:outline-admin-panel-settings",
+				label: 'Dashboard',
+				path: '',
+				icon: 'ic:outline-admin-panel-settings',
 				element: <AdminDashboard />,
 			},
 			{
-				label: "Create User",
-				path: "create-user",
-				icon: "mdi:user-add-outline",
-				element: <CreateUser />,
+				label: 'Manage Products',
+				path: 'manage-products',
+				icon: 'fluent-mdl2:product-list',
+				element: <CreateProduct />,
 			},
 		],
 	},
 	{
-		label: "Student Panel",
-		path: "student",
-		icon: "ph:student",
+		label: 'Customer Panel',
+		path: 'customer',
+		icon: 'garden:customer-lists-fill-26',
 		children: [
 			{
-				label: "Dashboard",
-				path: "",
-				icon: "ph:student",
-				element: <StudentDashboard />,
+				label: 'Dashboard',
+				path: '',
+				icon: 'garden:customer-lists-fill-26',
+				element: <CustomerDashboard />,
 			},
 			{
-				label: "View Result",
-				path: "view-result",
-				icon: "carbon:result-draft",
-				element: <ViewResult />,
+				label: 'View Order',
+				path: 'view-order',
+				icon: 'lsicon:order-edit-outline',
+				element: <ViewOrder />,
 			},
 		],
 	},
