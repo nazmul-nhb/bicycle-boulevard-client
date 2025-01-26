@@ -1,7 +1,7 @@
 {
 	"name": "bicycle-boulevard-client",
 	"private": true,
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -11,12 +11,14 @@
 	},
 	"dependencies": {
 		"@iconify/react": "^5.2.0",
+		"@lottiefiles/react-lottie-player": "^3.6.0",
 		"@reduxjs/toolkit": "^2.5.0",
 		"antd": "^5.23.2",
 		"dayjs": "^1.11.13",
 		"nhb-toolbox": "^1.1.5",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-form-sanitization": "^6.0.6",
 		"react-redux": "^9.2.0",
 		"react-router": "^7.1.3"
 	},

@@ -16,7 +16,7 @@ const Root: React.FC = () => {
 	const location = useLocation();
 	const selectedKey = location.pathname;
 
-	console.log(configs.server_api);
+	// console.log(configs.server_api);
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>

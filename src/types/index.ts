@@ -1,6 +1,6 @@
-import type { HookAPI } from "antd/es/modal/useModal";
-import type { MessageInstance } from "antd/es/message/interface";
-import type { NotificationInstance } from "antd/es/notification/interface";
+import type { HookAPI } from 'antd/es/modal/useModal';
+import type { MessageInstance } from 'antd/es/message/interface';
+import type { NotificationInstance } from 'antd/es/notification/interface';
 
 export type TNotifications = {
 	/** Antd `message` as `toastify` */
@@ -11,7 +11,14 @@ export type TNotifications = {
 	modal: HookAPI;
 };
 
-export interface ISelectOptions {
-	value: string | number;
-	label: string;
+export interface IDecodedUser {
+	email: string;
+	role: 'admin' | 'customer';
+	iss?: string;
+	sub?: string;
+	aud?: string | string[];
+	exp?: number;
+	nbf?: number;
+	iat?: number;
+	jti?: string;
 }
