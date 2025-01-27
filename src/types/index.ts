@@ -11,14 +11,4 @@ export type TNotifications = {
 	modal: HookAPI;
 };
 
-export interface IDecodedUser {
-	email: string;
-	role: 'admin' | 'customer';
-	iss?: string;
-	sub?: string;
-	aud?: string | string[];
-	exp?: number;
-	nbf?: number;
-	iat?: number;
-	jti?: string;
-}
+

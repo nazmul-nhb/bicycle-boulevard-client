@@ -1,3 +1,5 @@
+import type { IServerResponse, IToken } from '../../types/server';
+import type { ICredentials } from '../../types/user';
 import { baseApi } from './baseApi';
 
 export const authApi = baseApi.injectEndpoints({
@@ -6,15 +8,15 @@ export const authApi = baseApi.injectEndpoints({
 			query: (formData: FormData) => ({
 				url: 'auth/register',
 				method: 'POST',
-				body: formData, 
+				body: formData,
 			}),
-        }),
-        
-		loginUser: builder.mutation({
-			query: (credentials: { email: string; password: string }) => ({
+		}),
+
+		loginUser: builder.mutation<IServerResponse<IToken>, ICredentials>({
+			query: (credentials) => ({
 				url: 'auth/login',
 				method: 'POST',
-				body: credentials, 
+				body: credentials,
 			}),
 		}),
 	}),

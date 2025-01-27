@@ -1,10 +1,10 @@
 import React from 'react';
-import RegisterForm from './components/RegisterForm';
 import { Col, Layout, Row } from 'antd';
 import { Content } from 'antd/es/layout/layout';
+import LoginForm from './components/LoginForm';
 import LottiePlayer from '../../components/LottiePlayer';
 
-const Register: React.FC = () => {
+const Login: React.FC = () => {
 	return (
 		<Layout>
 			<Content style={{ padding: '50px' }}>
@@ -13,7 +13,7 @@ const Register: React.FC = () => {
 						<LottiePlayer lottie="./assets/bicycle.json" />
 					</Col>
 					<Col xs={24} lg={10}>
-						<RegisterForm />
+						<LoginForm />
 					</Col>
 				</Row>
 			</Content>
@@ -21,4 +21,4 @@ const Register: React.FC = () => {
 	);
 };
 
-export default Register;
+export default Login;

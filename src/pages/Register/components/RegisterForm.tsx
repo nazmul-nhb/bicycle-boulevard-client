@@ -5,9 +5,11 @@ import { useRegisterUserMutation } from '../../../app/api/authApi';
 import AntNotifications from '../../../main';
 import type { IRegisterUser } from '../../../types/user';
 import { sanitizeFormData } from 'react-form-sanitization';
+import { useNavigate } from 'react-router';
 
 const RegisterForm: React.FC = () => {
 	const [form] = Form.useForm();
+	const navigate = useNavigate();
 	const [registerUser, { isLoading, isSuccess, isError, error }] =
 		useRegisterUserMutation();
 	const { toastify } = AntNotifications(true);
@@ -21,6 +23,17 @@ const RegisterForm: React.FC = () => {
 			});
 
 			await registerUser(formattedData).unwrap();
+
+			// if (isSuccess) {
+			// 	toastify.success('User registered successfully!');
+			// 	form.resetFields();
+			// 	navigate('/login');
+			// } else if (isError) {
+			// 	const errorMessage =
+			// 		(error as { data: { message: string } })?.data?.message ||
+			// 		'Something went wrong!';
+			// 	toastify.error(errorMessage);
+			// }
 		} catch (err) {
 			console.error('Error during registration:', err);
 		}
@@ -30,13 +43,14 @@ const RegisterForm: React.FC = () => {
 		if (isSuccess) {
 			toastify.success('User registered successfully!');
 			form.resetFields();
+			navigate('/login');
 		} else if (isError) {
 			const errorMessage =
 				(error as { data: { message: string } })?.data?.message ||
 				'Something went wrong!';
 			toastify.error(errorMessage);
 		}
-	}, [form, isSuccess, isError, error, toastify]);
+	}, [form, isSuccess, isError, error, toastify, navigate]);
 
 	return (
 		<Form form={form} onFinish={handleRegister} layout="vertical">
