@@ -18,8 +18,9 @@ const Root: React.FC = () => {
 	const location = useLocation();
 	const selectedKey = location.pathname;
 
-	const isDarkTheme = appTheme.theme === theme.darkAlgorithm;
+	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
 
+	const isDarkTheme = appTheme === 'dark';
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
@@ -108,9 +109,9 @@ const Root: React.FC = () => {
 							defaultSelectedKeys={[selectedKey]}
 							items={formatRoutes(routes, 'nav-menu')}
 						/>
-						{appTheme.theme === theme.defaultAlgorithm ? (
+						{algorithm === theme.defaultAlgorithm ? (
 							<Button
-								onClick={() => dispatch(setTheme(theme.darkAlgorithm))}
+								onClick={() => dispatch(setTheme('dark'))}
 								icon={
 									<Icon
 										icon="mdi:moon-and-stars"
@@ -125,7 +126,7 @@ const Root: React.FC = () => {
 							/>
 						) : (
 							<Button
-								onClick={() => dispatch(setTheme(theme.defaultAlgorithm))}
+								onClick={() => dispatch(setTheme('light'))}
 								icon={
 									<Icon
 										icon="ant-design:sun-outlined"
@@ -143,7 +144,7 @@ const Root: React.FC = () => {
 				</Header>
 				<Content
 					style={{
-						padding: '0 16px',
+						padding: '8px 12px',
 						// background: token.colorBgContainer,
 						// borderRadius: token.borderRadiusLG,
 					}}

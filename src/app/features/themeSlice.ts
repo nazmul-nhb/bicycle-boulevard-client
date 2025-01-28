@@ -1,41 +1,36 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type MappingAlgorithm, theme } from 'antd';
 import type { TRootState } from '../store';
-import { saveToLocalStorage } from '../../utils/localStorage';
 import { configs } from '../../configs/site_configs';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { getFromLocalStorage, saveToLocalStorage } from '../../utils/localStorage';
 
 interface IState {
-	theme: MappingAlgorithm | MappingAlgorithm[] | undefined;
+	theme: 'light' | 'dark';
 }
 
 const initialState: IState = {
 	theme:
-		localStorage.getItem(configs.theme_name) === 'lightTheme'
-			? theme.defaultAlgorithm
-			: theme.darkAlgorithm,
+		getFromLocalStorage<IState['theme']>(configs.theme_name) === 'light'
+			? 'light'
+			: 'dark',
 };
 
 const themeSlice = createSlice({
 	name: 'theme',
 	initialState,
 	reducers: {
-		setTheme(
-			state,
-			action: PayloadAction<MappingAlgorithm | MappingAlgorithm[] | undefined>
-		) {
-            state.theme = action.payload;
-            
-			if (state.theme === theme.darkAlgorithm) {
-				saveToLocalStorage(configs.theme_name, 'darkTheme');
-			} else {
-				saveToLocalStorage(configs.theme_name, 'lightTheme');
-			}
+		setTheme(state, action: PayloadAction<'light' | 'dark'>) {
+			state.theme = action.payload;
+
+			saveToLocalStorage(
+				configs.theme_name,
+				action.payload === 'dark' ? 'dark' : 'light'
+			);
 		},
 	},
 });
 
 export const { setTheme } = themeSlice.actions;
 
-export const selectTheme = (state: TRootState) => state.theme;
+export const selectTheme = (state: TRootState) => state.theme.theme;
 
 export const themeReducer = themeSlice.reducer;

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import AntNotifications from '../../main';
 import { selectUser, selectToken } from '../../app/features/authSlice';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { setCommonDrawer } from '../../app/features/modalSlice';
+import { useAppSelector } from '../../app/hooks';
+import CommonDrawer from '../../components/CommonDrawer';
+import CommonModal from '../../components/CommonModal';
 
 const Home: React.FC = () => {
 	const { notify, toastify, modal } = AntNotifications(true);
@@ -13,8 +14,8 @@ const Home: React.FC = () => {
 
 	console.log({ user, token });
 
-	const dispatch = useAppDispatch();
-
+	const [isDrawerVisible, setDrawerVisible] = useState(false);
+	const [isModalVisible, setModalVisible] = useState(false);
 	return (
 		<section>
 			<Button onClick={() => toastify.error('Hello Toast!')} type="default">
@@ -39,20 +40,27 @@ const Home: React.FC = () => {
 			>
 				Show Modal
 			</Button>
-			<Button
-				onClick={() =>
-					dispatch(
-						setCommonDrawer({
-							title: 'Hello World',
-							content: 'Hello Drawer',
-							show: true,
-						})
-					)
-				}
-				type="primary"
-			>
+			<Button onClick={() => setDrawerVisible(true)} type="primary">
 				Open Drawer
 			</Button>
+			<Button onClick={() => setModalVisible(true)} danger>
+				Open Modal
+			</Button>
+			<CommonDrawer
+				title="My Drawer"
+				visible={isDrawerVisible}
+				onClose={() => setDrawerVisible(false)}
+			>
+				<p>This is the drawer content.</p>
+			</CommonDrawer>
+
+			<CommonModal
+				title="My Modal"
+				visible={isModalVisible}
+				onClose={() => setModalVisible(false)}
+			>
+				<p>This is the modal content.</p>
+			</CommonModal>
 		</section>
 	);
 };

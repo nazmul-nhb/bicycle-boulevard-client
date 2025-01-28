@@ -1,31 +1,24 @@
 import { Drawer } from 'antd';
-import { useEffect } from 'react';
-import type { TRootState } from '../app/store';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setCommonDrawer } from '../app/features/modalSlice';
+import { type FC, type ReactNode } from 'react';
 
-const CommonDrawer = () => {
-	const { title, show, width, content } = useAppSelector(
-		(state: TRootState) => state.modal
-	);
+interface Props {
+	title: string;
+	children: ReactNode;
+	visible: boolean;
+	width?: number | string;
+	onClose: () => void;
+}
 
-	const dispatch = useAppDispatch();
-
-	useEffect(() => {
-		return () => {
-			dispatch(setCommonDrawer());
-		};
-	}, [dispatch]);
-
+const CommonDrawer: FC<Props> = ({ title, children, visible, width = 640, onClose }) => {
 	return (
 		<Drawer
 			title={title}
-			styles={{ body: { paddingBottom: 80 } }}
-			open={show}
-			onClose={() => dispatch(setCommonDrawer())}
+			open={visible}
+			onClose={onClose}
 			width={window.innerWidth > 1200 ? width : 'auto'}
+			styles={{ body: { paddingBottom: 80 } }}
 		>
-			{content}
+			{children}
 		</Drawer>
 	);
 };

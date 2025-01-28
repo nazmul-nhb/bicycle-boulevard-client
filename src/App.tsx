@@ -3,22 +3,37 @@ import { useAppSelector } from './app/hooks';
 import { selectTheme } from './app/features/themeSlice';
 import { BrowserRouter } from 'react-router';
 import { BicycleRoutes } from './routes';
-import CommonDrawer from './components/CommonDrawer';
+import { useRef } from 'react';
 
 const BicycleApp = () => {
 	const appTheme = useAppSelector(selectTheme);
+	const modalContainerRef = useRef<HTMLDivElement>(null);
 
-	const isDarkTheme = appTheme.theme === theme.darkAlgorithm;
+	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
+
+	const isDarkTheme = appTheme === 'dark';
 
 	return (
 		<ConfigProvider
-			modal={{
-				styles: {
-					mask: { background: '#f6ffed' },
-				},
-			}}
+			getPopupContainer={() => modalContainerRef.current as HTMLElement}
+			// modal={{
+			// 	styles: {
+			// 		mask: {
+			// 			background: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+			// 			backdropFilter: 'blur(8px)',
+			// 		},
+			// 	},
+			// }}
+			// drawer={{
+			// 	styles: {
+			// 		mask: {
+			// 			background: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+			// 			backdropFilter: 'blur(8px)',
+			// 		},
+			// 	},
+			// }}
 			theme={{
-				algorithm: appTheme.theme,
+				algorithm,
 				token: {
 					borderRadius: 2,
 					colorPrimary: '#006ca2',
@@ -63,10 +78,11 @@ const BicycleApp = () => {
 				}}
 				message={{ duration: 2 }}
 			>
-				<BrowserRouter>
-                    <BicycleRoutes />
-                    <CommonDrawer/>
-				</BrowserRouter>
+				<div ref={modalContainerRef}>
+					<BrowserRouter>
+						<BicycleRoutes />
+					</BrowserRouter>
+				</div>
 			</App>
 		</ConfigProvider>
 	);

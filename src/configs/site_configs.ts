@@ -4,5 +4,5 @@ export const configs = {
 	image_base_url: import.meta.env.VITE_IMAGE_BASE_URL as string,
 	token_key: 'bicycle-token',
 	user_key: 'bicycle-user',
-	theme_name: "bicycle-theme"
+	theme_name: 'bicycle-theme',
 };
