@@ -5,7 +5,7 @@ import { routes } from '../configs/route_list';
 import Register from '../pages/Register/Register';
 import Login from '../pages/Login/Login';
 
-export const BanguRoutes = () => {
+export const BicycleRoutes = () => {
 	return (
 		<Routes>
 			<Route path="/" element={<Root />}>

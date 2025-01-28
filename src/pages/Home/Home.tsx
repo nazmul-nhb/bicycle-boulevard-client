@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button } from 'antd';
 import AntNotifications from '../../main';
-import { currentUser, currentUserToken } from '../../app/features/authSlice';
+import { selectUser, selectToken } from '../../app/features/authSlice';
 import { useAppSelector } from '../../app/hooks';
 
 const Home: React.FC = () => {
 	const { notify, toastify, modal } = AntNotifications(true);
 
-	const user = useAppSelector(currentUser);
-	const token = useAppSelector(currentUserToken);
+	const user = useAppSelector(selectUser);
+	const token = useAppSelector(selectToken);
 
 	console.log({ user, token });
 
@@ -28,6 +28,8 @@ const Home: React.FC = () => {
 					modal.error({
 						title: 'Modal',
 						content: 'This is Modal!',
+						cancelText: 'Cancel',
+						closable: true,
 					})
 				}
 				type="default"

@@ -38,5 +38,5 @@ export const { logIn, logOut } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
 
-export const currentUser = (state: TRootState) => state.auth.user;
-export const currentUserToken = (state: TRootState) => state.auth.token;
+export const selectUser = (state: TRootState) => state.auth.user;
+export const selectToken = (state: TRootState) => state.auth.token;
