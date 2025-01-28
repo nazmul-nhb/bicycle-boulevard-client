@@ -3,6 +3,7 @@ import { useAppSelector } from './app/hooks';
 import { selectTheme } from './app/features/themeSlice';
 import { BrowserRouter } from 'react-router';
 import { BicycleRoutes } from './routes';
+import CommonDrawer from './components/CommonDrawer';
 
 const BicycleApp = () => {
 	const appTheme = useAppSelector(selectTheme);
@@ -63,7 +64,8 @@ const BicycleApp = () => {
 				message={{ duration: 2 }}
 			>
 				<BrowserRouter>
-					<BicycleRoutes />
+                    <BicycleRoutes />
+                    <CommonDrawer/>
 				</BrowserRouter>
 			</App>
 		</ConfigProvider>

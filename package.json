@@ -19,6 +19,7 @@
 		"nhb-toolbox": "^1.2.3",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-draggable": "^4.4.6",
 		"react-form-sanitization": "^6.0.6",
 		"react-redux": "^9.2.0",
 		"react-router": "^7.1.3"

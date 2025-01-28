@@ -2,7 +2,8 @@ import React from 'react';
 import { Button } from 'antd';
 import AntNotifications from '../../main';
 import { selectUser, selectToken } from '../../app/features/authSlice';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { setCommonDrawer } from '../../app/features/modalSlice';
 
 const Home: React.FC = () => {
 	const { notify, toastify, modal } = AntNotifications(true);
@@ -11,6 +12,8 @@ const Home: React.FC = () => {
 	const token = useAppSelector(selectToken);
 
 	console.log({ user, token });
+
+	const dispatch = useAppDispatch();
 
 	return (
 		<section>
@@ -35,6 +38,20 @@ const Home: React.FC = () => {
 				type="default"
 			>
 				Show Modal
+			</Button>
+			<Button
+				onClick={() =>
+					dispatch(
+						setCommonDrawer({
+							title: 'Hello World',
+							content: 'Hello Drawer',
+							show: true,
+						})
+					)
+				}
+				type="primary"
+			>
+				Open Drawer
 			</Button>
 		</section>
 	);
