@@ -26,8 +26,7 @@ export const authApi = baseApi.injectEndpoints({
 
 					if (data?.data?.token) {
 						dispatch(setToken(data.data.token));
-						const getMePromise = dispatch(authApi.endpoints.getMe.initiate());
-						getMePromise.unwrap().catch(console.error);
+						dispatch(authApi.endpoints.getMe.initiate());
 					}
 				} catch (error) {
 					console.error(error);

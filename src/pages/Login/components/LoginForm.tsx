@@ -15,10 +15,13 @@ const LoginForm: React.FC = () => {
 	const [loginUser, { isLoading, isSuccess, isError, error, data }] =
 		useLoginUserMutation();
 
+	// const { refetch } = useGetMeQuery();
+
 	/** Handles form submission */
 	const handleLogin = async (values: ICredentials) => {
 		try {
 			await loginUser(values).unwrap();
+			// refetch();
 		} catch (err) {
 			console.error('Login error:', err);
 		}

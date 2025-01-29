@@ -7,6 +7,8 @@ import CommonModal from '../../components/CommonModal';
 import { AntNotifications } from '../../App';
 
 const Home: React.FC = () => {
+	const [isDrawerVisible, setDrawerVisible] = useState(false);
+	const [isModalVisible, setModalVisible] = useState(false);
 	const { notify, toastify, modal } = AntNotifications(true);
 
 	const user = useAppSelector(selectUser);
@@ -14,8 +16,6 @@ const Home: React.FC = () => {
 
 	console.log({ user, token });
 
-	const [isDrawerVisible, setDrawerVisible] = useState(false);
-	const [isModalVisible, setModalVisible] = useState(false);
 	return (
 		<section>
 			<Button onClick={() => toastify.error('Hello Toast!')} type="default">
