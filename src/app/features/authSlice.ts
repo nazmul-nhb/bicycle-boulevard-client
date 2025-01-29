@@ -7,9 +7,10 @@ import {
 } from '../../utils/localStorage';
 import type { ILoggedInState } from '../../types/user';
 import { configs } from '../../configs/site_configs';
+import { baseApi } from '../api/baseApi';
 
 const initialState: ILoggedInState = {
-	user: getFromLocalStorage(configs.user_key),
+	user: null,
 	token: getFromLocalStorage(configs.token_key),
 };
 
@@ -17,24 +18,27 @@ const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		logIn: (state, action: PayloadAction<ILoggedInState>) => {
-			const { user, token } = action.payload;
-			state.user = user;
-			state.token = token;
-			saveToLocalStorage(configs.user_key, user);
-			saveToLocalStorage(configs.token_key, token);
+		setToken: (state, action: PayloadAction<ILoggedInState['token']>) => {
+			state.token = action.payload;
+
+			saveToLocalStorage(configs.token_key, action.payload);
+		},
+
+		setCurrentUser: (state, action: PayloadAction<ILoggedInState['user']>) => {
+			state.user = action.payload;
 		},
 
 		logOut: (state) => {
 			state.user = null;
 			state.token = null;
-			removeFromLocalStorage(configs.user_key);
+
 			removeFromLocalStorage(configs.token_key);
+			baseApi.util.resetApiState();
 		},
 	},
 });
 
-export const { logIn, logOut } = authSlice.actions;
+export const { setToken, setCurrentUser, logOut } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
 

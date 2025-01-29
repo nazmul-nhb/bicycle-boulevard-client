@@ -3,3 +3,23 @@
 	margin: 0;
 	box-sizing: border-box;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	background-color: transparent !important;
+	color: inherit !important;
+	transition: background-color 0s 600000s, color 0s 600000s;
+}
+
+/* In case flex col is needed */
+.flex-col {
+	flex-direction: column !important;
+}
+
+@media (max-width: 768px) {
+	.md-flex-col {
+		flex-direction: column !important;
+	}
+}

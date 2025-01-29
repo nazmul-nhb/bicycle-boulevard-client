@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
 import { Button } from 'antd';
-import AntNotifications from '../../main';
+import React, { useState } from 'react';
 import { selectUser, selectToken } from '../../app/features/authSlice';
 import { useAppSelector } from '../../app/hooks';
 import CommonDrawer from '../../components/CommonDrawer';
 import CommonModal from '../../components/CommonModal';
+import { AntNotifications } from '../../App';
 
 const Home: React.FC = () => {
 	const { notify, toastify, modal } = AntNotifications(true);

@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { Form, Input, Button, Upload, Row, Col, type FormProps } from 'antd';
 import { useRegisterUserMutation } from '../../../app/api/authApi';
-import AntNotifications from '../../../main';
 import type { IRegisterUser } from '../../../types/user';
 import { sanitizeFormData } from 'react-form-sanitization';
 import { useNavigate } from 'react-router';
+import { AntNotifications } from '../../../App';
 
 const RegisterForm: React.FC = () => {
 	const [form] = Form.useForm();
@@ -23,17 +23,6 @@ const RegisterForm: React.FC = () => {
 			});
 
 			await registerUser(formattedData).unwrap();
-
-			// if (isSuccess) {
-			// 	toastify.success('User registered successfully!');
-			// 	form.resetFields();
-			// 	navigate('/login');
-			// } else if (isError) {
-			// 	const errorMessage =
-			// 		(error as { data: { message: string } })?.data?.message ||
-			// 		'Something went wrong!';
-			// 	toastify.error(errorMessage);
-			// }
 		} catch (err) {
 			console.error('Error during registration:', err);
 		}

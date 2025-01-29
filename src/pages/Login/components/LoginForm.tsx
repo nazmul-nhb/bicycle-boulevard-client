@@ -1,54 +1,31 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Row, Col, message } from 'antd';
+import { Form, Input, Button, Col, Flex } from 'antd';
 import { useLoginUserMutation } from '../../../app/api/authApi';
 import { Icon } from '@iconify/react';
-import AntNotifications from '../../../main';
 import { useNavigate } from 'react-router';
-import { useAppDispatch } from '../../../app/hooks';
-import { logIn } from '../../../app/features/authSlice';
-import { getDecodedUser } from '../../../utils/helpers';
+import type { ICredentials } from '../../../types/user';
+import { AntNotifications } from '../../../App';
 
 const LoginForm: React.FC = () => {
 	const navigate = useNavigate();
-	const [form] = Form.useForm();
+	const [form] = Form.useForm<ICredentials>();
+
+	const { toastify, notify } = AntNotifications(true);
+
 	const [loginUser, { isLoading, isSuccess, isError, error, data }] =
 		useLoginUserMutation();
-	const { toastify } = AntNotifications(true);
-	const dispatch = useAppDispatch();
 
 	/** Handles form submission */
-	const handleLogin = async (values: { email: string; password: string }) => {
+	const handleLogin = async (values: ICredentials) => {
 		try {
 			await loginUser(values).unwrap();
-
-			// res.
-
-			// if (isSuccess) {
-			// 	toastify.success('Successfully logged in!');
-			// 	form.resetFields();
-			// 	navigate('/');
-			// } else if (isError) {
-			// 	const errorMessage =
-			// 		(error as { data: { message: string } })?.data?.message ||
-			// 		'Something went wrong!';
-			// 	toastify.error(errorMessage);
-			// }
-
-			// 	message.success('Login successful!');
 		} catch (err) {
 			console.error('Login error:', err);
-			// message.error('Failed to login');
 		}
 	};
 
 	useEffect(() => {
 		if (isSuccess) {
-			dispatch(
-				logIn({
-					token: data.data ? data.data.token : null,
-					user: data.data ? getDecodedUser(data.data.token) : null,
-				})
-			);
 			toastify.success('Successfully logged in!');
 			form.resetFields();
 			navigate('/');
@@ -56,69 +33,87 @@ const LoginForm: React.FC = () => {
 			const errorMessage =
 				(error as { data: { message: string } })?.data?.message ||
 				'Something went wrong!';
-			toastify.error(errorMessage);
+			notify.error({ message: errorMessage });
 		}
-	}, [form, isSuccess, isError, error, toastify, navigate, dispatch, data]);
+	}, [form, isSuccess, isError, error, toastify, navigate, data, notify]);
 
 	/** Handles Google login */
 	const handleGoogleLogin = () => {
-		message.success('Google login clicked!');
+		toastify.success('Google login clicked!');
 	};
 
 	return (
-		<Form form={form} onFinish={handleLogin} layout="vertical">
-			<Row gutter={16}>
+		<Form size="large" form={form} onFinish={handleLogin} layout="horizontal">
+			<Flex align="center" style={{ flexDirection: 'column' }}>
 				{/* Email Field */}
-				<Col xs={24} sm={12}>
+				<Col xs={24} md={12}>
 					<Form.Item
-						label="Email"
+						// label="Email"
 						name="email"
 						rules={[
 							{ required: true, message: 'Please input your email!' },
 							{ type: 'email', message: 'Please enter a valid email!' },
 						]}
 					>
-						<Input allowClear placeholder="Your email" />
+						<Input
+							allowClear
+							placeholder="Your email"
+							prefix={<Icon icon="ic:round-email" width="20" height="20" />}
+						/>
 					</Form.Item>
 				</Col>
 
 				{/* Password Field */}
-				<Col xs={24} sm={12}>
+				<Col xs={24} md={12}>
 					<Form.Item
-						label="Password"
+						// label="Password"
 						name="password"
 						rules={[{ required: true, message: 'Please input your password!' }]}
 					>
-						<Input.Password allowClear placeholder="Your password" />
+						<Input.Password
+							allowClear
+							placeholder="Your password"
+							prefix={<Icon icon="mdi:password" width="20" height="20" />}
+						/>
 					</Form.Item>
 				</Col>
-			</Row>
 
-			{/* Submit Button */}
-			<Row>
-				<Col xs={24}>
+				{/* Submit Button */}
+				<Col xs={24} md={24}>
 					<Form.Item>
-						<Button type="primary" htmlType="submit" loading={isLoading}>
+						<Button
+							iconPosition="end"
+							block
+							icon={
+								<Icon
+									icon="solar:login-3-bold-duotone"
+									width="24"
+									height="24"
+								/>
+							}
+							type="primary"
+							htmlType="submit"
+							loading={isLoading}
+							style={{ width: '100%' }}
+						>
 							Login
 						</Button>
 					</Form.Item>
 				</Col>
-			</Row>
 
-			{/* Google Login Button */}
-			<Row>
-				<Col xs={24}>
+				{/* Google Login Button */}
+				<Col xs={24} md={12}>
 					<Form.Item>
 						<Button
 							type="default"
 							icon={<Icon icon="devicon:google" width="24" height="24" />}
 							onClick={handleGoogleLogin}
 						>
-							Login with Google
+							Login
 						</Button>
 					</Form.Item>
 				</Col>
-			</Row>
+			</Flex>
 		</Form>
 	);
 };

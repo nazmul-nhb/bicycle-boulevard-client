@@ -8,6 +8,7 @@ import { formatRoutes } from '../utils/routeUtils';
 import { configs } from '../configs/site_configs';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectTheme, setTheme } from '../app/features/themeSlice';
+import { selectUser } from '../app/features/authSlice';
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -17,6 +18,10 @@ const Root: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const selectedKey = location.pathname;
+
+	const user = useAppSelector(selectUser);
+
+	console.log(user);
 
 	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
 

@@ -1,3 +1,7 @@
+import type { USER_ROLES } from '../configs/constants';
+
+export type TUserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
+
 export interface ICredentials {
 	email: string;
 	password: string;
@@ -11,7 +15,7 @@ export interface IRegisterUser extends ICredentials {
 
 export interface IDecodedUser {
 	email: string;
-	role: 'admin' | 'customer';
+	role: TUserRole;
 	iss?: string;
 	sub?: string;
 	aud?: string[] | string;
@@ -21,7 +25,19 @@ export interface IDecodedUser {
 	jti?: string;
 }
 
+export interface ISingleUser extends IDecodedUser {
+	_id: string;
+	name: string;
+	email: string;
+	image: string;
+	role: TUserRole;
+	isActive?: boolean;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export interface ILoggedInState {
-	user: IDecodedUser | null;
+	user: ISingleUser | null;
+	// isUserLoading: boolean;
 	token: string | null;
 }

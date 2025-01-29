@@ -4,14 +4,15 @@ import type { TRootState } from '../store';
 
 export const baseApi = createApi({
 	reducerPath: 'baseApi',
+	tagTypes: ['User', 'Users', 'Product', 'Products', 'Order', 'Orders'],
 	baseQuery: fetchBaseQuery({
 		baseUrl: configs.server_api,
 		credentials: 'include',
 		prepareHeaders: (headers, { getState }) => {
 			const token = (getState() as TRootState).auth.token;
-			
+
 			if (token) {
-				headers.set('authorization', `${token}`);
+				headers.set('Authorization', `Bearer ${token}`);
 			}
 			return headers;
 		},
