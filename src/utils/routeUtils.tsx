@@ -84,7 +84,7 @@ export function formatRoutes(
 						route.label
 					),
 					children: hasChildren(route)
-						? formatRoutes(route.children!,output, fullPath)
+						? formatRoutes(route.children!, output, fullPath)
 						: undefined,
 				};
 			});
