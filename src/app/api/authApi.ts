@@ -1,4 +1,4 @@
-import type { IServerResponse, IToken } from '../../types/server';
+import type { IServerResponse, ILoginResponse } from '../../types/server';
 import type { ICredentials, ISingleUser } from '../../types/user';
 import { setCurrentUser, setToken } from '../features/authSlice';
 import { baseApi } from './baseApi';
@@ -13,7 +13,7 @@ export const authApi = baseApi.injectEndpoints({
 			}),
 		}),
 
-		loginUser: builder.mutation<IServerResponse<IToken>, ICredentials>({
+		loginUser: builder.mutation<IServerResponse<ILoginResponse>, ICredentials>({
 			query: (credentials) => ({
 				url: 'auth/login',
 				method: 'POST',
@@ -24,9 +24,10 @@ export const authApi = baseApi.injectEndpoints({
 				try {
 					const { data } = await queryFulfilled;
 
-					if (data?.data?.token) {
+					if (data?.data) {
 						dispatch(setToken(data.data.token));
-						dispatch(authApi.endpoints.getMe.initiate());
+						dispatch(setCurrentUser(data.data.user));
+						// dispatch(authApi.endpoints.getMe.initiate());
 					}
 				} catch (error) {
 					console.error(error);
@@ -59,4 +60,4 @@ export const authApi = baseApi.injectEndpoints({
 	overrideExisting: false,
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation, useGetMeQuery } = authApi;
+export const { useRegisterUserMutation, useLoginUserMutation, useGetMeQuery, useLazyGetMeQuery } = authApi;

@@ -52,6 +52,7 @@ const LoginForm: React.FC = () => {
 				<Col xs={24} md={12}>
 					<Form.Item
 						// label="Email"
+						style={{ width: '100%' }}
 						name="email"
 						rules={[
 							{ required: true, message: 'Please input your email!' },
@@ -70,6 +71,7 @@ const LoginForm: React.FC = () => {
 				<Col xs={24} md={12}>
 					<Form.Item
 						// label="Password"
+						style={{ width: '100%' }}
 						name="password"
 						rules={[{ required: true, message: 'Please input your password!' }]}
 					>

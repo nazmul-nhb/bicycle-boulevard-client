@@ -4,10 +4,11 @@ import { selectTheme } from './app/features/themeSlice';
 import { BrowserRouter } from 'react-router';
 import { BicycleRoutes } from './routes';
 import { useEffect, useRef } from 'react';
-import { useGetMeQuery } from './app/api/authApi';
+import { useLazyGetMeQuery } from './app/api/authApi';
 
 import type { TNotifications } from './types';
 import { processNotifications } from './lib/notifications';
+import { selectToken } from './app/features/authSlice';
 
 /**
  * Use modified `antd` notification methods as `toast`, `notify` and `showModal`.
@@ -23,18 +24,17 @@ export function AntNotifications(sound?: boolean): TNotifications {
 }
 
 const BicycleApp = () => {
-	const { refetch, isUninitialized, isLoading } = useGetMeQuery(undefined, {
-		skip: false,
-	});
-
+	const token = useAppSelector(selectToken);
 	const appTheme = useAppSelector(selectTheme);
+
 	const modalContainerRef = useRef<HTMLDivElement>(null);
 
+	const [getMe, { isLoading }] = useLazyGetMeQuery();
+
 	useEffect(() => {
-		if (isUninitialized) {
-			refetch();
-		}
-	}, [isUninitialized, refetch]);
+		if (!token) return;
+		getMe();
+	}, [getMe, token]);
 
 	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
 
@@ -81,18 +81,20 @@ const BicycleApp = () => {
 
 				components: {
 					Layout: {
-						siderBg: isDarkTheme ? '#141414' : '#ffffff',
-						headerBg: isDarkTheme ? '#141414' : '#ffffff',
-						footerBg: isDarkTheme ? '#141414' : '',
+						siderBg: isDarkTheme ? '#141414' : '#727272',
+						headerBg: isDarkTheme ? '#141414' : '#727272',
+						footerBg: isDarkTheme ? '#141414' : '#727272',
 						algorithm: true,
 					},
 
 					Menu: {
-						itemBg: isDarkTheme ? '#141414' : '#ffffff',
+						itemBg: isDarkTheme ? '#141414' : '#727272',
 						itemHoverBg: isDarkTheme ? '#141414' : '#e6f7ff',
-						subMenuItemSelectedColor: isDarkTheme ? '#e6f7ff' : '# 141414',
-						subMenuItemBg: '#fafafa',
-						darkSubMenuItemBg: '#141414',
+						subMenuItemSelectedColor: isDarkTheme ? '#e6f7ff' : '#141414',
+						subMenuItemBg: isDarkTheme ? '#fafafa' : '#bebebe',
+						darkSubMenuItemBg: '#262626',
+						// colorLinkActive: '#1d1d1d',
+						// itemActiveBg: isDarkTheme ? '#000000' : '#141414',
 						algorithm: true,
 					},
 					Table: {
@@ -105,7 +107,7 @@ const BicycleApp = () => {
 						paddingContentVertical: 12,
 						paddingContentHorizontal: 8,
 						activeBg: isDarkTheme ? '#141414' : '#ffffff',
-						
+
 						// colorBgContainerDisabled: isDarkTheme ? '#1d1d1d' : '#f5f5f5', // Disabled input
 						// colorBorder: isDarkTheme ? '#333' : '#d9d9d9', // Default border
 						// colorPrimaryBorderHover: isDarkTheme ? '#40a9ff' : '#1890ff', // Border on hover

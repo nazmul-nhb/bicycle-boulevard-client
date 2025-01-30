@@ -1,3 +1,5 @@
+import type { ISingleUser } from "./user";
+
 export interface IServerResponse<T> {
 	success: boolean;
 	message: string;
@@ -5,6 +7,7 @@ export interface IServerResponse<T> {
 	data?: T;
 }
 
-export interface IToken {
+export interface ILoginResponse {
+	user: ISingleUser;
 	token: string;
 }

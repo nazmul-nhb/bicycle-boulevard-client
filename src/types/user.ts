@@ -25,7 +25,7 @@ export interface IDecodedUser {
 	jti?: string;
 }
 
-export interface ISingleUser extends IDecodedUser {
+export interface ISingleUser {
 	_id: string;
 	name: string;
 	email: string;
@@ -38,6 +38,5 @@ export interface ISingleUser extends IDecodedUser {
 
 export interface ILoggedInState {
 	user: ISingleUser | null;
-	// isUserLoading: boolean;
 	token: string | null;
 }

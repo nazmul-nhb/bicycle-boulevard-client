@@ -7,7 +7,7 @@ import {
 } from '../../utils/localStorage';
 import type { ILoggedInState } from '../../types/user';
 import { configs } from '../../configs/site_configs';
-import { baseApi } from '../api/baseApi';
+// import { baseApi } from '../api/baseApi';
 
 const initialState: ILoggedInState = {
 	user: null,
@@ -33,7 +33,7 @@ const authSlice = createSlice({
 			state.token = null;
 
 			removeFromLocalStorage(configs.token_key);
-			baseApi.util.resetApiState();
+			// baseApi.util.resetApiState();
 		},
 	},
 });
