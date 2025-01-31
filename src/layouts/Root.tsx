@@ -8,15 +8,18 @@ import { selectUser } from '../app/features/authSlice';
 import Navbar from './components/Navbar';
 import { useGetSelectedPath } from '../hooks/useSelectedPath';
 import Sidebar from './components/Sidebar';
+import { isDashboard } from '../utils/helpers';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const { Content, Footer } = Layout;
 
 const Root: React.FC = () => {
-	const selectedKey = useGetSelectedPath();
+	const {selectedPath} = useGetSelectedPath();
 	const user = useAppSelector(selectUser);
 	const appTheme = useAppSelector(selectTheme);
+		const isMobile = useIsMobile();
 
-	console.log(user);
+	console.log(selectedPath);
 
 	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
 
@@ -24,14 +27,10 @@ const Root: React.FC = () => {
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
-			<Sidebar isDarkTheme={isDarkTheme} selectedKey={selectedKey} />
+			{isMobile ||
+				(user && isDashboard(selectedPath) ? <Sidebar user={user} isDarkTheme={isDarkTheme} /> : null)}
 			<Layout>
-				<Navbar
-					user={user}
-					algorithm={algorithm}
-					isDarkTheme={isDarkTheme}
-					selectedKey={selectedKey}
-				/>
+				<Navbar user={user} algorithm={algorithm} isDarkTheme={isDarkTheme} />
 				<Content style={{ padding: '8px 12px' }}>
 					<Outlet />
 				</Content>

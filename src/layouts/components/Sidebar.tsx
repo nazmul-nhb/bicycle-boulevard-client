@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
+import { Icon } from '@iconify/react';
 import { Button, Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import Title from 'antd/es/typography/Title';
@@ -6,15 +6,19 @@ import React, { useState } from 'react';
 import { configs } from '../../configs/site_configs';
 import { formatRoutes } from '../../utils/routeUtils';
 import { routes } from '../../configs/route_list';
+import { useGetSelectedPath } from '../../hooks/useSelectedPath';
+import { isDashboard } from '../../utils/helpers';
+import type { ISingleUser } from '../../types/user';
 
 interface Props {
+	user: ISingleUser;
 	isDarkTheme: boolean;
-	selectedKey: string;
 }
 
-const Sidebar: React.FC<Props> = ({ isDarkTheme, selectedKey }) => {
-        const [isCollapsed, setIsCollapsed] = useState(false);
-    
+const Sidebar: React.FC<Props> = ({ user, isDarkTheme }) => {
+	const [isCollapsed, setIsCollapsed] = useState(false);
+	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
+
 	return (
 		<Sider
 			width={240}
@@ -66,9 +70,14 @@ const Sidebar: React.FC<Props> = ({ isDarkTheme, selectedKey }) => {
 				}}
 				theme={isDarkTheme ? 'dark' : 'light'}
 				mode="inline"
-				// onClick={() => setIsCollapsed(true)}
-				defaultSelectedKeys={[selectedKey]}
-				items={formatRoutes(routes, 'menu')}
+				onClick={selectCurrentPath}
+				defaultSelectedKeys={[selectedPath]}
+				// openKeys={[selectedPath]}
+				items={formatRoutes(routes, 'menu').filter(
+					(route) =>
+						isDashboard(route?.key as string) &&
+						(route?.key as string).includes(user.role)
+				)}
 			/>
 		</Sider>
 	);

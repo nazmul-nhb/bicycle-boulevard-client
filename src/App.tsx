@@ -70,7 +70,7 @@ const BicycleApp = () => {
 				algorithm,
 				token: {
 					borderRadius: 2,
-					colorPrimary: '#006ca2',
+					colorPrimary: isDarkTheme ? '#0d7f1b' : '#060e00',
 					colorBgLayout: isDarkTheme ? '#111a2c' : '#f0f2f5',
 					colorBgContainer: isDarkTheme ? '#141414' : '#ffffff',
 					colorText: isDarkTheme ? '#d9d9d9' : '#000000',
@@ -91,16 +91,18 @@ const BicycleApp = () => {
 						itemBg: isDarkTheme ? '#141414' : '#727272',
 						itemHoverBg: isDarkTheme ? '#141414' : '#e6f7ff',
 						subMenuItemSelectedColor: isDarkTheme ? '#e6f7ff' : '#141414',
-						subMenuItemBg: isDarkTheme ? '#fafafa' : '#bebebe',
-						darkSubMenuItemBg: '#262626',
+						subMenuItemBg: '#c2c2c2',
+						darkSubMenuItemBg: '#141414',
 						// colorLinkActive: '#1d1d1d',
 						// itemActiveBg: isDarkTheme ? '#000000' : '#141414',
 						algorithm: true,
+						itemSelectedColor: isDarkTheme ? '#727272' : '#141414',
 					},
 					Table: {
 						algorithm: true,
 					},
 					Button: {
+						colorBgBase: isDarkTheme ? '#141414' : '#727272',
 						algorithm: true,
 					},
 					Input: {

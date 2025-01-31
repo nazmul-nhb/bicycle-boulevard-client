@@ -27,7 +27,19 @@ export const getDecodedUser = (token: string): IDecodedUser => {
  * @param baseUrl Base url for image link if it's not cloudinary image.
  * @returns Full image url.
  */
-export const getImageLink = (src: string, baseUrl?: string):string => {
+export const getImageLink = (src: string, baseUrl?: string): string => {
 	if (baseUrl) return baseUrl.concat(src);
 	return configs.image_base_url.concat(src);
 };
+
+/**
+ * * Utility to check if a route path is dashboard or not based on `admin/customer`.
+ * @param path Path to check if it's a dashboard or not
+ * @returns Boolean.
+ */
+export const isDashboard = (path: string): boolean => {
+	return path.startsWith('/admin') || path.startsWith('/customer');
+};
+
+/** * Determine if it's a mobile device. */
+export const isMobile =() => window.innerWidth < 840;
