@@ -15,7 +15,7 @@ const CommonDrawer: FC<Props> = ({ title, children, visible, width = 640, onClos
 			title={title}
 			open={visible}
 			onClose={onClose}
-			width={window.innerWidth > 1200 ? width : 'auto'}
+			width={window.innerWidth > 1024 ? width : '75%'}
 			styles={{ body: { paddingBottom: 80 } }}
 		>
 			{children}

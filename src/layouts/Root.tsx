@@ -19,7 +19,7 @@ const Root: React.FC = () => {
 	const appTheme = useAppSelector(selectTheme);
 		const isMobile = useIsMobile();
 
-	console.log(selectedPath);
+	// console.log(selectedPath);
 
 	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
 

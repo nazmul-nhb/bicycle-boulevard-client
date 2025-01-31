@@ -38,8 +38,5 @@ export const getImageLink = (src: string, baseUrl?: string): string => {
  * @returns Boolean.
  */
 export const isDashboard = (path: string): boolean => {
-	return path.startsWith('/admin') || path.startsWith('/customer');
+	return path.startsWith('/dashboard/admin') || path.startsWith('/dashboard/customer');
 };
-
-/** * Determine if it's a mobile device. */
-export const isMobile =() => window.innerWidth < 840;

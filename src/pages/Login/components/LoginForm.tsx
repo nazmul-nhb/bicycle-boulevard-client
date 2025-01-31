@@ -2,13 +2,17 @@ import React, { useEffect } from 'react';
 import { Form, Input, Button, Col, Flex } from 'antd';
 import { useLoginUserMutation } from '../../../app/api/authApi';
 import { Icon } from '@iconify/react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import type { ICredentials } from '../../../types/user';
 import { AntNotifications } from '../../../App';
 
 const LoginForm: React.FC = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
+
 	const [form] = Form.useForm<ICredentials>();
+
+	const redirectUrl = location.state?.from?.pathname || '/';
 
 	const { toastify, notify } = AntNotifications(true);
 
@@ -31,14 +35,14 @@ const LoginForm: React.FC = () => {
 		if (isSuccess) {
 			toastify.success('Successfully logged in!');
 			form.resetFields();
-			navigate('/');
+			navigate(redirectUrl, { replace: true });
 		} else if (isError) {
 			const errorMessage =
 				(error as { data: { message: string } })?.data?.message ||
 				'Something went wrong!';
 			notify.error({ message: errorMessage });
 		}
-	}, [form, isSuccess, isError, error, toastify, navigate, data, notify]);
+	}, [form, isSuccess, isError, error, toastify, navigate, data, notify, redirectUrl]);
 
 	/** Handles Google login */
 	const handleGoogleLogin = () => {

@@ -27,7 +27,6 @@ export const authApi = baseApi.injectEndpoints({
 					if (data?.data) {
 						dispatch(setToken(data.data.token));
 						dispatch(setCurrentUser(data.data.user));
-						// dispatch(authApi.endpoints.getMe.initiate());
 					}
 				} catch (error) {
 					console.error(error);

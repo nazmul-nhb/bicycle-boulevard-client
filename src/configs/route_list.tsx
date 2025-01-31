@@ -6,6 +6,7 @@ import AdminDashboard from '../pages/admin/Dashboard';
 import CreateProduct from '../pages/admin/CreateProduct';
 import CustomerDashboard from '../pages/customer/Dashboard';
 import ViewOrder from '../pages/customer/ViewOrder';
+import Private from '../routes/Private';
 
 export const routes: IRoute[] = [
 	{
@@ -28,39 +29,55 @@ export const routes: IRoute[] = [
 	},
 	{
 		label: 'Admin Panel',
-		path: 'admin',
+		path: 'dashboard/admin',
 		icon: 'ic:outline-admin-panel-settings',
 		children: [
 			{
 				label: 'Dashboard',
 				path: '',
 				icon: 'ic:outline-admin-panel-settings',
-				element: <AdminDashboard />,
+				element: (
+					<Private roles={['admin']}>
+						<AdminDashboard />
+					</Private>
+				),
 			},
 			{
 				label: 'Manage Products',
 				path: 'manage-products',
 				icon: 'fluent-mdl2:product-list',
-				element: <CreateProduct />,
+				element: (
+					<Private roles={['admin']}>
+						<CreateProduct />
+					</Private>
+				),
 			},
 		],
 	},
 	{
 		label: 'Customer Panel',
-		path: 'customer',
+		path: 'dashboard/customer',
 		icon: 'garden:customer-lists-fill-26',
 		children: [
 			{
 				label: 'Dashboard',
 				path: '',
 				icon: 'garden:customer-lists-fill-26',
-				element: <CustomerDashboard />,
+				element: (
+					<Private roles={['customer']}>
+						<CustomerDashboard />
+					</Private>
+				),
 			},
 			{
 				label: 'View Order',
 				path: 'view-order',
 				icon: 'lsicon:order-edit-outline',
-				element: <ViewOrder />,
+				element: (
+					<Private roles={['customer']}>
+						<ViewOrder />
+					</Private>
+				),
 			},
 		],
 	},

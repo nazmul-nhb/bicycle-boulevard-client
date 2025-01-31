@@ -1,13 +1,12 @@
-import { App, ConfigProvider, Flex, Spin, theme } from 'antd';
+import { useEffect, useRef } from 'react';
+import { App, ConfigProvider, theme } from 'antd';
 import { useAppSelector } from './app/hooks';
 import { selectTheme } from './app/features/themeSlice';
 import { BrowserRouter } from 'react-router';
 import { BicycleRoutes } from './routes';
-import { useEffect, useRef } from 'react';
-import { useLazyGetMeQuery } from './app/api/authApi';
-
 import type { TNotifications } from './types';
 import { processNotifications } from './lib/notifications';
+import { useLazyGetMeQuery } from './app/api/authApi';
 import { selectToken } from './app/features/authSlice';
 
 /**
@@ -26,26 +25,19 @@ export function AntNotifications(sound?: boolean): TNotifications {
 const BicycleApp = () => {
 	const token = useAppSelector(selectToken);
 	const appTheme = useAppSelector(selectTheme);
+	const [getCurrentUser] = useLazyGetMeQuery();
 
 	const modalContainerRef = useRef<HTMLDivElement>(null);
-
-	const [getMe, { isLoading }] = useLazyGetMeQuery();
-
-	useEffect(() => {
-		if (!token) return;
-		getMe();
-	}, [getMe, token]);
 
 	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
 
 	const isDarkTheme = appTheme === 'dark';
 
-	if (isLoading)
-		return (
-			<Flex align="center" justify="center" gap="middle">
-				<Spin percent="auto" size="large" fullscreen />
-			</Flex>
-		);
+	useEffect(() => {
+		if (!token) return;
+
+		getCurrentUser();
+	}, [getCurrentUser, token]);
 
 	return (
 		<ConfigProvider
@@ -91,7 +83,7 @@ const BicycleApp = () => {
 						itemBg: isDarkTheme ? '#141414' : '#727272',
 						itemHoverBg: isDarkTheme ? '#141414' : '#e6f7ff',
 						subMenuItemSelectedColor: isDarkTheme ? '#e6f7ff' : '#141414',
-						subMenuItemBg: '#c2c2c2',
+						subMenuItemBg: '#727272',
 						darkSubMenuItemBg: '#141414',
 						// colorLinkActive: '#1d1d1d',
 						// itemActiveBg: isDarkTheme ? '#000000' : '#141414',
@@ -99,6 +91,10 @@ const BicycleApp = () => {
 						itemSelectedColor: isDarkTheme ? '#727272' : '#141414',
 					},
 					Table: {
+						algorithm: true,
+					},
+					Result: {
+						colorBgLayout: isDarkTheme ? '#141414' : '#727272',
 						algorithm: true,
 					},
 					Button: {
