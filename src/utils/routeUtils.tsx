@@ -1,8 +1,8 @@
-import { NavLink, Route } from 'react-router';
 import { Icon } from '@iconify/react';
-import type { IRoute } from '../types/routes';
 import type { ItemType, MenuItemType } from 'antd/es/menu/interface';
 import type { ReactNode } from 'react';
+import { NavLink, Route } from 'react-router';
+import type { IRoute } from '../types/routes';
 
 /**
  * * Function to format routes for Ant-Design `menuItems`.

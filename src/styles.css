@@ -5,6 +5,7 @@
 	/* color: #060e00; */
 }
 
+/* Change bg of input autocomplete */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -22,5 +23,40 @@ input:-webkit-autofill:active {
 @media (max-width: 768px) {
 	.md-flex-col {
 		flex-direction: column !important;
+	}
+}
+
+/* Custom Scrollbar */
+*,
+.bicycle-scrollbar {
+	--sb-track-color: #b3dad47c;
+	--sb-thumb-color: #011d09;
+	--sb-size: 8px;
+}
+
+*::-webkit-scrollbar,
+.bicycle-scrollbar::-webkit-scrollbar {
+	width: var(--sb-size);
+}
+
+*::-webkit-scrollbar-track,
+.bicycle-scrollbar::-webkit-scrollbar-track {
+	background: var(--sb-track-color);
+	border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb,
+.bicycle-scrollbar::-webkit-scrollbar-thumb {
+	background: var(--sb-thumb-color);
+	border-radius: 4px;
+	border: 1.5px solid #e8f3f0;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+	* {
+		scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+	}
+	.bicycle-scrollbar {
+		scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
 	}
 }

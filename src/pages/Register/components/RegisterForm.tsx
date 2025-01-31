@@ -19,6 +19,7 @@ const RegisterForm: React.FC = () => {
 
 	const [registerUser, { isLoading, isSuccess, isError, error }] =
 		useRegisterUserMutation();
+	
 	const { toastify } = AntNotifications(true);
 
 	/** * Handles form submission */

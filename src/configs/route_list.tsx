@@ -3,7 +3,7 @@ import Home from '../pages/Home/Home';
 import Contact from '../pages/Contact';
 import About from '../pages/About';
 import AdminDashboard from '../pages/admin/Dashboard';
-import CreateProduct from '../pages/admin/CreateProduct';
+import ManageProducts from '../pages/admin/ManageProducts';
 import CustomerDashboard from '../pages/customer/Dashboard';
 import ViewOrder from '../pages/customer/ViewOrder';
 import Private from '../routes/Private';
@@ -48,7 +48,7 @@ export const routes: IRoute[] = [
 				icon: 'fluent-mdl2:product-list',
 				element: (
 					<Private roles={['admin']}>
-						<CreateProduct />
+						<ManageProducts />
 					</Private>
 				),
 			},

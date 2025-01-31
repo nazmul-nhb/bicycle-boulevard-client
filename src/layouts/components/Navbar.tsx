@@ -73,9 +73,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						open={open}
 						setOpen={setOpen}
 					/>
-					{/* {!isDashboard(selectedPath) ? (
-						<Icon icon="streamline-emojis:bicycle" width="40" height="40" />
-					) : null} */}
+					{/* Site Title */}
 					<Title
 						style={{
 							textAlign: 'center',

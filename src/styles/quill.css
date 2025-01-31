@@ -1,0 +1,23 @@
+/* Modify quill theme */
+.custom-quill .ql-editor {
+	min-height: 160px;
+}
+
+.custom-quill .ql-editor::before {
+	color: rgba(0, 0, 0, 0.5);
+}
+
+/* Makes sure that the text color inside the editor follows the theme */
+.custom-quill .ql-editor {
+	color: inherit; /* Inherit the text color from antd theme */
+}
+
+/* Makes sure that the background matches the theme */
+.custom-quill .ql-container, .ql-picker-item{
+	background-color: var(--ant-background);
+}
+
+/* Style to change placeholder text color */
+.custom-quill .ql-editor.ql-blank::before {
+	color: var(--ant-text-color-secondary);
+}

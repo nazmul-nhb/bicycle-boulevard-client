@@ -8,6 +8,7 @@ interface AntdFormInputProps extends FormItemProps {
 	colSpan?: { xs: number; sm: number };
 	numberProps?: InputNumberProps;
 	options?: SelectProps['options'];
+	selectProps?: SelectProps;
 	uploadProps?: UploadProps;
 	prefix?: ReactNode;
 	maxCount?: number;
@@ -26,6 +27,7 @@ const AntdFormInput: FC<AntdFormInputProps> = ({
 	maxCount = 1,
 	numberProps,
 	uploadProps,
+	selectProps,
 	...formItemProps
 }) => {
 	const renderInput = () => {
@@ -35,10 +37,10 @@ const AntdFormInput: FC<AntdFormInputProps> = ({
 			case 'password':
 				return <Input.Password prefix={prefix} allowClear placeholder={label} />;
 			case 'select':
-				return <Select prefix={prefix} allowClear options={options} placeholder={label} />;
+				return <Select {...selectProps} prefix={prefix} allowClear options={options} placeholder={label} />;
 			case 'multiselect':
 				return (
-					<Select prefix={prefix}
+					<Select {...selectProps} prefix={prefix}
 						mode="multiple"
 						allowClear
 						options={options}

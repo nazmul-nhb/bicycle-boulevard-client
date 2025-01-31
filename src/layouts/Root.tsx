@@ -1,29 +1,22 @@
 import React from 'react';
 import { Outlet } from 'react-router';
-import { Layout, theme } from 'antd';
+import { Layout } from 'antd';
 import { configs } from '../configs/site_configs';
-import { useAppSelector } from '../app/hooks';
-import { selectTheme } from '../app/features/themeSlice';
 import Navbar from './components/Navbar';
 import { useGetSelectedPath } from '../hooks/useSelectedPath';
 import Sidebar from './components/Sidebar';
 import { isDashboard } from '../utils/helpers';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useAuth } from '../hooks/useAuth';
+import { useTheme } from '../hooks/useTheme';
 
 const { Content, Footer } = Layout;
 
 const Root: React.FC = () => {
-	const { selectedPath } = useGetSelectedPath();
 	const { user } = useAuth();
-	const appTheme = useAppSelector(selectTheme);
+	const { algorithm, isDarkTheme } = useTheme();
+	const { selectedPath } = useGetSelectedPath();
 	const isMobile = useIsMobile();
-
-	// console.log(selectedPath);
-
-	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
-
-	const isDarkTheme = appTheme === 'dark';
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>

@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { App, ConfigProvider, theme } from 'antd';
-import { useAppSelector } from './app/hooks';
-import { selectTheme } from './app/features/themeSlice';
+import { App, ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router';
 import { BicycleRoutes } from './routes';
 import type { TNotifications } from './types';
 import { processNotifications } from './lib/notifications';
 import { useLazyGetMeQuery } from './app/api/authApi';
 import { useAuth } from './hooks/useAuth';
+import { useTheme } from './hooks/useTheme';
 
 /**
  * Use modified `antd` notification methods as `toast`, `notify` and `showModal`.
@@ -24,14 +23,10 @@ export function AntNotifications(sound?: boolean): TNotifications {
 
 const BicycleApp = () => {
 	const { token } = useAuth();
-	const appTheme = useAppSelector(selectTheme);
+	const { algorithm, isDarkTheme } = useTheme();
 	const [getCurrentUser] = useLazyGetMeQuery();
 
 	const modalContainerRef = useRef<HTMLDivElement>(null);
-
-	const algorithm = appTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm;
-
-	const isDarkTheme = appTheme === 'dark';
 
 	useEffect(() => {
 		if (!token) return;

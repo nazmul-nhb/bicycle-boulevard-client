@@ -23,6 +23,35 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      "no-unused-vars": ["error", {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "all",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": false
+      }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "args": "all",
+          "argsIgnorePattern": "^_",
+          "caughtErrors": "all",
+          "caughtErrorsIgnorePattern": "^_",
+          "destructuredArrayIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "ignoreRestSiblings": false
+        }
+      ]
     },
   },
+  {
+    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
+    rules: { "@typescript-eslint/no-unused-vars": "off" }
+  },
+  {
+    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
+    rules: { "no-unused-vars": "off" }
+  }
 )
