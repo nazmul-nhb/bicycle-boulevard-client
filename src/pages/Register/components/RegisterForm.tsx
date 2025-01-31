@@ -1,15 +1,22 @@
 import React, { useEffect } from 'react';
-import { Icon } from '@iconify/react';
-import { Form, Input, Button, Upload, Row, Col, type FormProps } from 'antd';
+import { Form, Button, Row, Col, type FormProps } from 'antd';
 import { useRegisterUserMutation } from '../../../app/api/authApi';
 import type { IRegisterUser } from '../../../types/user';
 import { sanitizeFormData } from 'react-form-sanitization';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { AntNotifications } from '../../../App';
+import { useAuth } from '../../../hooks/useAuth';
+import AntdFormInput from '../../../components/AntdFormInput';
+import { Icon } from '@iconify/react';
 
 const RegisterForm: React.FC = () => {
+	const { user } = useAuth();
 	const [form] = Form.useForm();
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	const redirectUrl = location.state?.from?.pathname || '/';
+
 	const [registerUser, { isLoading, isSuccess, isError, error }] =
 		useRegisterUserMutation();
 	const { toastify } = AntNotifications(true);
@@ -41,104 +48,68 @@ const RegisterForm: React.FC = () => {
 		}
 	}, [form, isSuccess, isError, error, toastify, navigate]);
 
+	useEffect(() => {
+		if (user) {
+			navigate(redirectUrl, { replace: true });
+		}
+	}, [navigate, redirectUrl, user]);
+
 	return (
 		<Form form={form} onFinish={handleRegister} layout="vertical">
 			<Row gutter={16}>
-				{/* Name Field */}
-				<Col xs={24} sm={12}>
-					<Form.Item
-						label="Name"
-						name="name"
-						rules={[{ required: true, message: 'Please input your name!' }]}
-					>
-						<Input allowClear placeholder="Your name." />
-					</Form.Item>
-				</Col>
-
-				{/* Email Field */}
-				<Col xs={24} sm={12}>
-					<Form.Item
-						label="Email"
-						name="email"
-						rules={[
-							{ required: true, message: 'Please input your email!' },
-							{ type: 'email', message: 'Please enter a valid email!' },
-						]}
-					>
-						<Input allowClear placeholder="Your email." />
-					</Form.Item>
-				</Col>
+				<AntdFormInput
+					label="Name"
+					name="name"
+					prefix={<Icon icon="majesticons:user" width="20" height="20" />}
+					rules={[{ required: true, message: 'Please input your name!' }]}
+				/>
+				<AntdFormInput
+					label="Email"
+					name="email"
+					type="text"
+					prefix={<Icon icon="ic:round-email" width="20" height="20" />}
+					rules={[
+						{ required: true, type: 'email', message: 'Enter a valid email!' },
+					]}
+				/>
 			</Row>
 
 			<Row gutter={16}>
-				{/* Password Field */}
-				<Col xs={24} sm={12}>
-					<Form.Item
-						label="Password"
-						name="password"
-						rules={[
-							{ required: true, message: 'Please input your password!' },
-							{
-								min: 6,
-								message: 'Password must be at least 6 characters.',
-							},
-						]}
-					>
-						<Input.Password allowClear placeholder="Choose your password." />
-					</Form.Item>
-				</Col>
-
-				{/* Confirm Password Field */}
-				<Col xs={24} sm={12}>
-					<Form.Item
-						label="Confirm Password"
-						name="confirm_password"
-						dependencies={['password']}
-						rules={[
-							{ required: true, message: 'Please confirm your password!' },
-							({ getFieldValue }) => ({
-								validator(_, value) {
-									if (!value || getFieldValue('password') === value) {
-										return Promise.resolve();
-									}
-									return Promise.reject(
-										new Error('Passwords do not match!')
-									);
-								},
-							}),
-						]}
-					>
-						<Input.Password allowClear placeholder="Confirm your password." />
-					</Form.Item>
-				</Col>
-				{/* Image Upload */}
-				<Col xs={24} sm={12}>
-					<Form.Item
-						label="Upload Image"
-						name="image"
-						valuePropName="fileList"
-						getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-						rules={[{ required: true, message: 'Please upload an image!' }]}
-					>
-						<Upload
-							accept="image/*"
-							listType="picture"
-							maxCount={1}
-							beforeUpload={() => false} // Prevent automatic upload
-						>
-							<Button
-								icon={
-									<Icon icon="uil:image-upload" width="24" height="24" />
+				<AntdFormInput
+					label="Password"
+					name="password"
+					type="password"
+					prefix={<Icon icon="mdi:password" width="20" height="20" />}
+					rules={[{ required: true, min: 6, message: 'At least 6 characters' }]}
+				/>
+				<AntdFormInput
+					label="Confirm Password"
+					name="confirm_password"
+					type="password"
+					prefix={<Icon icon="mdi:password" width="20" height="20" />}
+					rules={[
+						{ required: true, message: 'Please confirm your password!' },
+						({ getFieldValue }) => ({
+							validator(_, value) {
+								if (!value || getFieldValue('password') === value) {
+									return Promise.resolve();
 								}
-							>
-								Upload an Image
-							</Button>
-						</Upload>
-					</Form.Item>
-				</Col>
+								return Promise.reject(new Error('Passwords do not match!'));
+							},
+						}),
+					]}
+				/>
 			</Row>
 
-			{/* Submit Button */}
+			<Row gutter={16}>
+				<AntdFormInput
+					label="Select an Image"
+					name="image"
+					type="upload"
+					rules={[{ required: true, message: 'Please upload an image!' }]}
+				/>
+			</Row>
+
 			<Row>
 				<Col xs={24}>
 					<Form.Item>

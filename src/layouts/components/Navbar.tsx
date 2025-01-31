@@ -48,24 +48,24 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 		<Header
 			style={{
 				backgroundColor: isDarkTheme ? '#141414' : '#727272',
-				padding: '0',
 			}}
 		>
-			<Flex align="center" gap={12} style={{ margin: '0 12px' }}>
-				<Flex
-					style={{
-						marginLeft: 16,
-					}}
-					align="center"
-				>
-					{isMobile && (
+			<Flex
+				align="center"
+				justify={isMobile ? 'space-between' : 'flex-start'}
+				gap={12}
+				style={{ paddingTop: isMobile ? 8 : 0 }}
+			>
+				<Flex style={{}} align="center">
+					{isMobile ? (
 						<Button
 							onClick={() => setOpen(true)}
 							type="text"
-							ghost
 							size="large"
 							icon={<Icon icon="gg:menu-round" width="40" height="40" />}
 						/>
+					) : (
+						<Icon icon="streamline-emojis:bicycle" width="40" height="40" />
 					)}
 					<ResponsiveSidebar
 						isDarkTheme={isDarkTheme}
@@ -73,9 +73,9 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						open={open}
 						setOpen={setOpen}
 					/>
-					{!isDashboard(selectedPath) ? (
+					{/* {!isDashboard(selectedPath) ? (
 						<Icon icon="streamline-emojis:bicycle" width="40" height="40" />
-					) : null}
+					) : null} */}
 					<Title
 						style={{
 							textAlign: 'center',
@@ -89,7 +89,11 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						{configs.site_title}
 					</Title>
 				</Flex>
-				<Flex justify="space-between" align="center" style={{ width: '100%' }}>
+				<Flex
+					justify={isMobile ? 'flex-end' : 'space-between'}
+					align="center"
+					style={{ width: '100%' }}
+				>
 					{!isMobile ? (
 						<Menu
 							style={{
@@ -98,7 +102,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 							theme={isDarkTheme ? 'dark' : 'light'}
 							mode="horizontal"
 							onClick={selectCurrentPath}
-							disabledOverflow
+							// disabledOverflow
 							overflowedIndicator={<Icon icon="mdi:menu" />}
 							defaultSelectedKeys={[selectedPath]}
 							// openKeys={[selectedPath]}

@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Col, Flex } from 'antd';
+import { Form, Button, Col, Row } from 'antd';
 import { useLoginUserMutation } from '../../../app/api/authApi';
 import { Icon } from '@iconify/react';
 import { useLocation, useNavigate } from 'react-router';
 import type { ICredentials } from '../../../types/user';
 import { AntNotifications } from '../../../App';
 import { useAuth } from '../../../hooks/useAuth';
+import AntdFormInput from '../../../components/AntdFormInput';
 
 const LoginForm: React.FC = () => {
 	const navigate = useNavigate();
@@ -56,48 +57,39 @@ const LoginForm: React.FC = () => {
 	};
 
 	return (
-		<Form size="large" form={form} onFinish={handleLogin} layout="horizontal">
-			<Flex align="center" style={{ flexDirection: 'column' }}>
-				{/* Email Field */}
-				<Col xs={24} md={12}>
-					<Form.Item
-						// label="Email"
-						style={{ width: '100%' }}
-						name="email"
-						rules={[
-							{ required: true, message: 'Please input your email!' },
-							{ type: 'email', message: 'Please enter a valid email!' },
-						]}
-					>
-						<Input
-							allowClear
-							placeholder="Your email"
-							prefix={<Icon icon="ic:round-email" width="20" height="20" />}
-						/>
-					</Form.Item>
-				</Col>
+		<Form size="large" form={form} onFinish={handleLogin} layout="vertical">
+			{/* Email Field */}
+			<Row gutter={16}>
+				<AntdFormInput
+					colSpan={{ sm: 20, xs: 24 }}
+					label="Your Email"
+					name="email"
+					type="text"
+					prefix={<Icon icon="ic:round-email" width="20" height="20" />}
+					rules={[
+						{ required: true, message: 'Please input your email!' },
+						{ type: 'email', message: 'Please enter a valid email!' },
+					]}
+				/>
+			</Row>
 
-				{/* Password Field */}
-				<Col xs={24} md={12}>
-					<Form.Item
-						// label="Password"
-						style={{ width: '100%' }}
-						name="password"
-						rules={[{ required: true, message: 'Please input your password!' }]}
-					>
-						<Input.Password
-							allowClear
-							placeholder="Your password"
-							prefix={<Icon icon="mdi:password" width="20" height="20" />}
-						/>
-					</Form.Item>
-				</Col>
+			{/* Password Field */}
+			<Row gutter={16}>
+				<AntdFormInput
+					colSpan={{ sm: 20, xs: 24 }}
+					label="Your Password"
+					name="password"
+					type="password"
+					prefix={<Icon icon="mdi:password" width="20" height="20" />}
+					rules={[{ required: true, message: 'Please input your password!' }]}
+				/>
+			</Row>
 
-				{/* Submit Button */}
-				<Col xs={24} md={24}>
+			{/* Submit Button */}
+			<Row>
+				<Col xs={12}>
 					<Form.Item>
 						<Button
-							iconPosition="end"
 							block
 							icon={
 								<Icon
@@ -115,11 +107,14 @@ const LoginForm: React.FC = () => {
 						</Button>
 					</Form.Item>
 				</Col>
+			</Row>
 
-				{/* Google Login Button */}
-				<Col xs={24} md={12}>
+			{/* Google Login Button */}
+			<Row>
+				<Col xs={12}>
 					<Form.Item>
 						<Button
+							block
 							type="default"
 							icon={<Icon icon="devicon:google" width="24" height="24" />}
 							onClick={handleGoogleLogin}
@@ -128,7 +123,7 @@ const LoginForm: React.FC = () => {
 						</Button>
 					</Form.Item>
 				</Col>
-			</Flex>
+			</Row>
 		</Form>
 	);
 };
