@@ -1,10 +1,9 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router';
-import { useAppSelector } from '../app/hooks';
-import { selectUser } from '../app/features/authSlice';
 import type { ISingleUser } from '../types/user';
 import { useGetMeQuery } from '../app/api/authApi';
 import { Flex, Spin } from 'antd';
+import { useAuth } from '../hooks/useAuth';
 
 interface Props {
 	roles: ISingleUser['role'][];
@@ -13,7 +12,8 @@ interface Props {
 
 const Private: React.FC<Props> = ({ roles, children }) => {
 	const location = useLocation();
-	const user = useAppSelector(selectUser);
+
+	const { token, user } = useAuth();
 
 	const { isLoading } = useGetMeQuery();
 
@@ -25,9 +25,7 @@ const Private: React.FC<Props> = ({ roles, children }) => {
 		);
 	}
 
-	console.log({ user });
-
-	if (!user) {
+	if (!user || !token) {
 		return <Navigate to="/login" state={{ from: location }} replace />;
 	}
 

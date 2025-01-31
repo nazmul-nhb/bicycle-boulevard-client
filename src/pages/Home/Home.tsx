@@ -1,20 +1,13 @@
 import { Button } from 'antd';
 import React, { useState } from 'react';
-import { selectUser, selectToken } from '../../app/features/authSlice';
-import { useAppSelector } from '../../app/hooks';
+import { AntNotifications } from '../../App';
 import CommonDrawer from '../../components/CommonDrawer';
 import CommonModal from '../../components/CommonModal';
-import { AntNotifications } from '../../App';
 
 const Home: React.FC = () => {
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
 	const [isModalVisible, setModalVisible] = useState(false);
 	const { notify, toastify, modal } = AntNotifications(true);
-
-	const user = useAppSelector(selectUser);
-	const token = useAppSelector(selectToken);
-
-	console.log({ user, token });
 
 	return (
 		<section>

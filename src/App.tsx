@@ -7,7 +7,7 @@ import { BicycleRoutes } from './routes';
 import type { TNotifications } from './types';
 import { processNotifications } from './lib/notifications';
 import { useLazyGetMeQuery } from './app/api/authApi';
-import { selectToken } from './app/features/authSlice';
+import { useAuth } from './hooks/useAuth';
 
 /**
  * Use modified `antd` notification methods as `toast`, `notify` and `showModal`.
@@ -23,7 +23,7 @@ export function AntNotifications(sound?: boolean): TNotifications {
 }
 
 const BicycleApp = () => {
-	const token = useAppSelector(selectToken);
+	const { token } = useAuth();
 	const appTheme = useAppSelector(selectTheme);
 	const [getCurrentUser] = useLazyGetMeQuery();
 

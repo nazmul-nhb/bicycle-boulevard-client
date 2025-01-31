@@ -18,8 +18,6 @@ import { useGetSelectedPath } from '../../hooks/useSelectedPath';
 import ResponsiveSidebar from './ResponsiveSidebar';
 import { useIsMobile } from '../../hooks/useIsMobile';
 
-// type Derivative = import('antd').MappingAlgorithm;
-
 interface Props {
 	user: TRootState['auth']['user'];
 	isDarkTheme: boolean;
@@ -39,14 +37,12 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 			content: 'Do you really want to log out?',
 			onOk: () => dispatch(logOut()),
 			okText: 'Log out',
-			okType: 'danger',
+			okType: 'primary',
 			closable: true,
 			type: 'confirm',
 			maskClosable: true,
 		});
 	};
-
-	console.log(isMobile);
 
 	return (
 		<Header
@@ -55,7 +51,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 				padding: '0',
 			}}
 		>
-			<Flex justify="space-between" align="center" style={{ marginRight: 12 }}>
+			<Flex align="center" gap={12} style={{ margin: '0 12px' }}>
 				<Flex
 					style={{
 						marginLeft: 16,
@@ -93,96 +89,111 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						{configs.site_title}
 					</Title>
 				</Flex>
-				{!isMobile ? (
-					<Menu
-						style={{
-							backgroundColor: isDarkTheme ? '#141414' : '#727272',
-						}}
-						theme={isDarkTheme ? 'dark' : 'light'}
-						mode="horizontal"
-						onClick={selectCurrentPath}
-						overflowedIndicator={<Icon icon="mdi:menu" />}
-						defaultSelectedKeys={[selectedPath]}
-						// openKeys={[selectedPath]}
-						items={formatRoutes(routes, 'nav-menu').filter((route) =>
-							!isDashboard(selectedPath)
-								? !isDashboard(route?.key as string) ||
-								  (user &&
-										isDashboard(route?.key as string) &&
-										(route?.key as string).includes(user.role))
-								: !isDashboard(route?.key as string)
-						)}
-					/>
-				) : null}
+				<Flex justify="space-between" align="center" style={{ width: '100%' }}>
+					{!isMobile ? (
+						<Menu
+							style={{
+								backgroundColor: isDarkTheme ? '#141414' : '#727272',
+							}}
+							theme={isDarkTheme ? 'dark' : 'light'}
+							mode="horizontal"
+							onClick={selectCurrentPath}
+							disabledOverflow
+							overflowedIndicator={<Icon icon="mdi:menu" />}
+							defaultSelectedKeys={[selectedPath]}
+							// openKeys={[selectedPath]}
+							items={formatRoutes(routes, 'nav-menu').filter((route) =>
+								!isDashboard(selectedPath)
+									? !isDashboard(route?.key as string) ||
+									  (user &&
+											isDashboard(route?.key as string) &&
+											(route?.key as string).includes(user.role))
+									: !isDashboard(route?.key as string)
+							)}
+						/>
+					) : null}
 
-				<Flex gap={8} align="center">
-					{algorithm === theme.defaultAlgorithm ? (
-						<Button
-							onClick={() => dispatch(setTheme('dark'))}
-							icon={<Icon icon="mdi:moon-and-stars" width="24" height="24" />}
-							style={{ borderWidth: 0 }}
-							type="default"
-							shape="circle"
-						/>
-					) : (
-						<Button
-							onClick={() => dispatch(setTheme('light'))}
-							icon={
-								<Icon
-									icon="ant-design:sun-outlined"
-									width="24"
-									height="24"
-								/>
-							}
-							style={{ borderWidth: 0 }}
-							type="default"
-							shape="circle"
-						/>
-					)}
-					{user ? (
-						<Popover
-							trigger="click"
-							placement="bottomRight"
-							content={
-								<Button
-									type="primary"
-									color="red"
-									danger
-									icon={<Icon icon="mdi:logout" width="24" height="24" />}
-									onClick={handleLogOut}
-									style={{
-										font: '18px bold',
-									}}
-								>
-									Logout
-								</Button>
-							}
-						>
+					<Flex gap={8} align="center">
+						{algorithm === theme.defaultAlgorithm ? (
 							<Button
-								type="link"
-								size="large"
-								shape="circle"
+								onClick={() => dispatch(setTheme('dark'))}
 								icon={
-									<Avatar
-										alt={user.name}
-										src={getImageLink(user.image)}
+									<Icon
+										icon="mdi:moon-and-stars"
+										width="24"
+										height="24"
 									/>
 								}
+								style={{ borderWidth: 0 }}
+								type="default"
+								shape="circle"
 							/>
-						</Popover>
-					) : (
-						<Link to="login">
+						) : (
 							<Button
-								type="primary"
-								color="green"
-								shape="default"
-								icon={<Icon icon="mdi:lock" width="18" height="18" />}
-								style={{ font: '18px bold' }}
+								onClick={() => dispatch(setTheme('light'))}
+								icon={
+									<Icon
+										icon="ant-design:sun-outlined"
+										width="24"
+										height="24"
+									/>
+								}
+								style={{ borderWidth: 0 }}
+								type="default"
+								shape="circle"
+							/>
+						)}
+						{user ? (
+							<Popover
+								trigger="click"
+								placement="bottomRight"
+								content={
+									<Button
+										type="primary"
+										color="red"
+										danger
+										icon={
+											<Icon
+												icon="mdi:logout"
+												width="24"
+												height="24"
+											/>
+										}
+										onClick={handleLogOut}
+										style={{
+											font: '18px bold',
+										}}
+									>
+										Logout
+									</Button>
+								}
 							>
-								Login
-							</Button>
-						</Link>
-					)}
+								<Button
+									type="link"
+									size="large"
+									shape="circle"
+									icon={
+										<Avatar
+											alt={user.name}
+											src={getImageLink(user.image)}
+										/>
+									}
+								/>
+							</Popover>
+						) : (
+							<Link to="login">
+								<Button
+									type="primary"
+									color="green"
+									shape="default"
+									icon={<Icon icon="mdi:lock" width="18" height="18" />}
+									style={{ font: '18px bold' }}
+								>
+									Login
+								</Button>
+							</Link>
+						)}
+					</Flex>
 				</Flex>
 			</Flex>
 		</Header>

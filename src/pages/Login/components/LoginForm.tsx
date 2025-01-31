@@ -5,10 +5,12 @@ import { Icon } from '@iconify/react';
 import { useLocation, useNavigate } from 'react-router';
 import type { ICredentials } from '../../../types/user';
 import { AntNotifications } from '../../../App';
+import { useAuth } from '../../../hooks/useAuth';
 
 const LoginForm: React.FC = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { user } = useAuth();
 
 	const [form] = Form.useForm<ICredentials>();
 
@@ -19,7 +21,11 @@ const LoginForm: React.FC = () => {
 	const [loginUser, { isLoading, isSuccess, isError, error, data }] =
 		useLoginUserMutation();
 
-	// const { refetch } = useGetMeQuery();
+	useEffect(() => {
+		if (user) {
+			navigate(redirectUrl, { replace: true });
+		}
+	}, [navigate, redirectUrl, user]);
 
 	/** Handles form submission */
 	const handleLogin = async (values: ICredentials) => {

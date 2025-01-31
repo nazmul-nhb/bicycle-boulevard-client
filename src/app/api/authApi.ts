@@ -59,4 +59,9 @@ export const authApi = baseApi.injectEndpoints({
 	overrideExisting: false,
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation, useGetMeQuery, useLazyGetMeQuery } = authApi;
+export const {
+	useRegisterUserMutation,
+	useLoginUserMutation,
+	useGetMeQuery,
+	useLazyGetMeQuery,
+} = authApi;
