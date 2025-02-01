@@ -1,25 +1,20 @@
-import { Button, Col, Form, Row } from 'antd';
 import { Icon } from '@iconify/react';
+import { Button, Col, Form, Row } from 'antd';
 import { useForm, type FormProps } from 'antd/es/form/Form';
-import ReactQuill from 'react-quill';
-import AntdFormInput from '../../../components/AntdFormInput';
-import type { ICreateProduct } from '../../../types/product';
-
-import { useEffect } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
-import 'react-quill/dist/quill.snow.css';
-import { AntNotifications } from '../../../App';
+import ReactQuill from 'react-quill';
 import { useCreateProductMutation } from '../../../app/api/productApi';
+import AntdFormInput from '../../../components/AntdFormInput';
 import { PRODUCT_CATEGORIES } from '../../../configs/constants';
-import '../../../styles/quill.css';
+import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
+import type { ICreateProduct } from '../../../types/product';
 
 const AddProduct = () => {
 	const [productForm] = useForm();
 
-	const [createProduct, { isSuccess, isLoading, isError, error }] =
-		useCreateProductMutation();
+	const [createProduct, { isLoading }] = useCreateProductMutation();
 
-	const { toastify, notify } = AntNotifications(true);
+	const { handleSuccess, handleError } = useNotifyResponse();
 
 	const categoryOptions = Object.entries(PRODUCT_CATEGORIES).map(([_key, value]) => ({
 		value: value,
@@ -28,29 +23,22 @@ const AddProduct = () => {
 
 	/** - Handle form submission */
 	const handleCreateProduct: FormProps<ICreateProduct>['onFinish'] = async (values) => {
-		const data = { ...values, inStock: values.inStock > 0 };
 		try {
+			const data = { ...values, inStock: values.inStock > 0 };
 			const productData = sanitizeFormData(data);
 
 			console.log({ data, formData: Object.fromEntries(productData.entries()) });
 
-			await createProduct(productData).unwrap();
+			const res = await createProduct(productData).unwrap();
+
+			if (res.success) {
+				handleSuccess(res);
+				productForm.resetFields();
+			}
 		} catch (err) {
-			console.error('Error during product creation:', err);
+			handleError(err);
 		}
 	};
-
-	useEffect(() => {
-		if (isSuccess) {
-			toastify.success('Bicycle created successfully!');
-			productForm.resetFields();
-		} else if (isError) {
-			const errorMessage =
-				(error as { data: { message: string } })?.data?.message ||
-				'Something went wrong!';
-			notify.error({ message: errorMessage });
-		}
-	}, [productForm, isSuccess, isError, error, toastify, notify]);
 
 	return (
 		<Form

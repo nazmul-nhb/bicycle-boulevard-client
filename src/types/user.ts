@@ -25,11 +25,14 @@ export interface IDecodedUser {
 	jti?: string;
 }
 
-export interface ISingleUser {
+export interface INewUser {
 	_id: string;
 	name: string;
 	email: string;
 	image: string;
+}
+
+export interface ISingleUser extends INewUser {
 	role: TUserRole;
 	isActive?: boolean;
 	createdAt: string;

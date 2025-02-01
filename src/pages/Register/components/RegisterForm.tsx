@@ -1,26 +1,31 @@
+import { Icon } from '@iconify/react';
+import { Button, Col, Form, Row, type FormProps } from 'antd';
 import React, { useEffect } from 'react';
-import { Form, Button, Row, Col, type FormProps } from 'antd';
-import { useRegisterUserMutation } from '../../../app/api/authApi';
-import type { IRegisterUser } from '../../../types/user';
 import { sanitizeFormData } from 'react-form-sanitization';
 import { useLocation, useNavigate } from 'react-router';
-import { AntNotifications } from '../../../App';
-import { useAuth } from '../../../hooks/useAuth';
+import { useRegisterUserMutation } from '../../../app/api/authApi';
 import AntdFormInput from '../../../components/AntdFormInput';
-import { Icon } from '@iconify/react';
+import { useAuth } from '../../../hooks/useAuth';
+import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
+import type { IRegisterUser } from '../../../types/user';
 
 const RegisterForm: React.FC = () => {
 	const { user } = useAuth();
-	const [form] = Form.useForm();
+	const [registrationForm] = Form.useForm();
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const redirectUrl = location.state?.from?.pathname || '/';
 
-	const [registerUser, { isLoading, isSuccess, isError, error }] =
-		useRegisterUserMutation();
-	
-	const { toastify } = AntNotifications(true);
+	const [registerUser, { isLoading }] = useRegisterUserMutation();
+
+	const { handleSuccess, handleError } = useNotifyResponse();
+
+	useEffect(() => {
+		if (user) {
+			navigate(redirectUrl, { replace: true });
+		}
+	}, [navigate, redirectUrl, user]);
 
 	/** * Handles form submission */
 	const handleRegister: FormProps<IRegisterUser>['onFinish'] = async (data) => {
@@ -30,33 +35,20 @@ const RegisterForm: React.FC = () => {
 				ignoreKeys: ['confirm_password'],
 			});
 
-			await registerUser(formattedData).unwrap();
+			const res = await registerUser(formattedData).unwrap();
+
+			if (res.success) {
+				handleSuccess(res);
+				registrationForm.resetFields();
+				navigate('/login');
+			}
 		} catch (err) {
-			console.error('Error during registration:', err);
+			handleError(err);
 		}
 	};
 
-	useEffect(() => {
-		if (isSuccess) {
-			toastify.success('User registered successfully!');
-			form.resetFields();
-			navigate('/login');
-		} else if (isError) {
-			const errorMessage =
-				(error as { data: { message: string } })?.data?.message ||
-				'Something went wrong!';
-			toastify.error(errorMessage);
-		}
-	}, [form, isSuccess, isError, error, toastify, navigate]);
-
-	useEffect(() => {
-		if (user) {
-			navigate(redirectUrl, { replace: true });
-		}
-	}, [navigate, redirectUrl, user]);
-
 	return (
-		<Form form={form} onFinish={handleRegister} layout="vertical">
+		<Form form={registrationForm} onFinish={handleRegister} layout="vertical">
 			<Row gutter={16}>
 				<AntdFormInput
 					label="Name"
