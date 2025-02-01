@@ -12,8 +12,16 @@ export const productApi = baseApi.injectEndpoints({
 			}),
 			invalidatesTags: ['Products'],
 		}),
+
+		getAllProducts: builder.query<IServerResponse<IProduct[]>, string>({
+			query: (query) => ({
+				url: `products`.concat(query),
+				method: 'GET',
+			}),
+			providesTags: ['Products'],
+		}),
 	}),
 	overrideExisting: false,
 });
 
-export const { useCreateProductMutation } = productApi;
+export const { useCreateProductMutation, useGetAllProductsQuery } = productApi;

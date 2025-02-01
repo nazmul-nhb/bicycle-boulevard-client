@@ -53,5 +53,9 @@ export default tseslint.config(
   {
     files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
     rules: { "no-unused-vars": "off" }
+  },
+  {
+    files: ["src/**/*.types.ts", "src/**/*.interfaces.ts", "src/**/types/*.ts"],
+    rules: { "@typescript-eslint/no-empty-object-type": "off", }
   }
 )

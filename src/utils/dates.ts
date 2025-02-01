@@ -50,18 +50,18 @@ export const formatDateTimeDynamic = (input: string | Date): string => {
 		return iDate.fromNow();
 	}
 
-	// If the date is today, return as "Today 12:50:20 am/pm"
+	// If the date is today, return as "Today 12:50 am/pm"
 	if (iDate.isToday()) {
-		return `Today ${iDate.format('hh:mm:ss a')}`;
+		return `Today ${iDate.format('hh:mm A')}`;
 	}
 
-	// If the date is yesterday, return as "Yesterday 12:50:20 am/pm"
+	// If the date is yesterday, return as "Yesterday 12:50 am/pm"
 	if (iDate.isYesterday()) {
-		return `Yesterday ${iDate.format('hh:mm:ss a')}`;
+		return `Yesterday ${iDate.format('hh:mm A')}`;
 	}
 
-	// For any date before yesterday, return as "Sat, Oct 23, 2024 12:50:20 am/pm"
-	return iDate.format('ddd, MMM DD, YYYY hh:mm:ss a');
+	// For any date before yesterday, return as "Sat, Oct 23, 2024 12:50 am/pm"
+	return iDate.format('ddd, MMM DD, YYYY hh:mm A');
 };
 
 /**

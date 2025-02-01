@@ -20,7 +20,7 @@ const Private: React.FC<Props> = ({ roles, children }) => {
 	if (isLoading) {
 		return (
 			<Flex align="center" justify="center" gap="middle">
-				<Spin percent="auto" size="large" fullscreen />
+				<Spin spinning={isLoading} percent="auto" size="large" fullscreen />
 			</Flex>
 		);
 	}

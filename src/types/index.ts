@@ -10,3 +10,10 @@ export type TNotifications = {
 	/** Antd `modal` as `modal` */
 	modal: HookAPI;
 };
+
+export interface DBItem {
+	_id: string;
+	createdAt: string;
+	updatedAt: string;
+	[key: string]: unknown;
+}
