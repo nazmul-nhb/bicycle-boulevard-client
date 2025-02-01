@@ -25,7 +25,7 @@ type SoundEffect =
 	| 'error'
 	| 'info'
 	| 'warning'
-	| 'loading'
+	// | 'loading'
 	| 'confirm'
 	| 'open';
 
@@ -36,19 +36,19 @@ type SoundEffect =
  */
 const getSoundFile = (effect: SoundEffect): string => {
 	const basePath = '/sounds/';
-	
+
 	switch (effect) {
 		case 'success':
-		case 'open':
 			return basePath.concat('success.mp3');
 		case 'error':
 			return basePath.concat('error.mp3');
+		case 'open':
 		case 'info':
 			return basePath.concat('info.mp3');
 		case 'warning':
 			return basePath.concat('warning.mp3');
-		case 'loading':
-			return basePath.concat('loading.mp3');
+		// case 'loading':
+		// 	return basePath.concat('loading.mp3');
 		case 'confirm':
 			return basePath.concat('confirm.mp3');
 		default:

@@ -20,7 +20,7 @@ export const useNotifyResponse = () => {
 
 	/** - Handles API errors and shows notifications */
 	const handleError = (error: unknown) => {
-		let errorMessage = 'Something went wrong!';
+		let errorMessage = 'Something Went Wrong!';
 
 		if (isFetchError(error)) {
 			const errorData = error.data as IErrorResponse | undefined;

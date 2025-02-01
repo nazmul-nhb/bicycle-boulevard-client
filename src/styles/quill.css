@@ -13,7 +13,8 @@
 }
 
 /* Makes sure that the background matches the theme */
-.custom-quill .ql-container, .ql-picker-item{
+.custom-quill .ql-container,
+.ql-picker-item {
 	background-color: var(--ant-background);
 }
 
@@ -21,3 +22,7 @@
 .custom-quill .ql-editor.ql-blank::before {
 	color: var(--ant-text-color-secondary);
 }
+
+/* .ql-snow .ql-picker-options {
+	background-color: var(--ant-background);
+} */

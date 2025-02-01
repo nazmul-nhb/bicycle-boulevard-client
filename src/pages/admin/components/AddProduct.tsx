@@ -1,16 +1,20 @@
 import { Icon } from '@iconify/react';
 import { Button, Col, Form, Row } from 'antd';
 import { useForm, type FormProps } from 'antd/es/form/Form';
+import { useRef } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
-import ReactQuill from 'react-quill';
+import type ReactQuill from 'react-quill';
 import { useCreateProductMutation } from '../../../app/api/productApi';
 import AntdFormInput from '../../../components/AntdFormInput';
+import QuillWrapper from '../../../components/QuillWrapper';
 import { PRODUCT_CATEGORIES } from '../../../configs/constants';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { ICreateProduct } from '../../../types/product.types';
 
 const AddProduct = () => {
 	const [productForm] = useForm();
+
+	const crateRef = useRef<ReactQuill>(null);
 
 	const [createProduct, { isLoading }] = useCreateProductMutation();
 
@@ -48,8 +52,7 @@ const AddProduct = () => {
 			onFinish={handleCreateProduct}
 			layout="vertical"
 			initialValues={{
-				category: 'Select A Category',
-				inStock: 'Select Product Availability',
+				inStock: 1,
 			}}
 		>
 			<Row gutter={16}>
@@ -80,7 +83,7 @@ const AddProduct = () => {
 
 			<Row gutter={16}>
 				<AntdFormInput
-					label="Category"
+					label="Category A Category"
 					name="category"
 					type="select"
 					options={categoryOptions}
@@ -149,7 +152,8 @@ const AddProduct = () => {
 						]}
 						getValueFromEvent={(content) => content}
 					>
-						<ReactQuill
+						<QuillWrapper
+							ref={crateRef}
 							// value={description}
 							// onChange={setDescription}
 							theme="snow"
