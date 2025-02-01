@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { Header } from 'antd/es/layout/layout';
-import { Avatar, Button, Flex, Menu, Popover, theme } from 'antd';
-import { formatRoutes } from '../../utils/routeUtils';
-import { routes } from '../../configs/route_list';
-import type { MappingAlgorithm } from 'antd/es/theme/interface';
 import { Icon } from '@iconify/react';
-import { useAppDispatch } from '../../app/hooks';
-import { setTheme } from '../../app/features/themeSlice';
+import { Avatar, Button, Flex, Menu, Popover, theme } from 'antd';
+import { Header } from 'antd/es/layout/layout';
+import type { MappingAlgorithm } from 'antd/es/theme/interface';
+import Title from 'antd/es/typography/Title';
+import React, { useState } from 'react';
+import { Link } from 'react-router';
 import { AntNotifications } from '../../App';
 import { logOut } from '../../app/features/authSlice';
-import { getImageLink, isDashboard } from '../../utils/helpers';
-import { Link } from 'react-router';
+import { setTheme } from '../../app/features/themeSlice';
+import { useAppDispatch } from '../../app/hooks';
 import type { TRootState } from '../../app/store';
-import Title from 'antd/es/typography/Title';
+import { routes } from '../../configs/route_list';
 import { configs } from '../../configs/site_configs';
-import { useGetSelectedPath } from '../../hooks/useSelectedPath';
-import ResponsiveSidebar from './ResponsiveSidebar';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { useGetSelectedPath } from '../../hooks/useSelectedPath';
+import { getImageLink, isDashboard } from '../../utils/helpers';
+import { formatRoutes } from '../../utils/routeUtils';
+import ResponsiveSidebar from './ResponsiveSidebar';
 
 interface Props {
 	user: TRootState['auth']['user'];
@@ -36,6 +36,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 			title: 'Log out Now?',
 			content: 'Do you really want to log out?',
 			onOk: () => dispatch(logOut()),
+			// onCancel: () => playSound('/sounds/info.mp3'),
 			okText: 'Log out',
 			okType: 'primary',
 			closable: true,

@@ -11,7 +11,7 @@ const Home: React.FC = () => {
 
 	return (
 		<section>
-			<Button onClick={() => toastify.error('Hello Toast!')} type="default">
+			<Button onClick={() => toastify.warning('Hello Toast!')} type="default">
 				Toast
 			</Button>
 			<Button
