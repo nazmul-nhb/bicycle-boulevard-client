@@ -10,5 +10,3 @@ export type TNotifications = {
 	/** Antd `modal` as `modal` */
 	modal: HookAPI;
 };
-
-

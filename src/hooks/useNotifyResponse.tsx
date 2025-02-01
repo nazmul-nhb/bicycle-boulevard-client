@@ -1,6 +1,6 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { AntNotifications } from '../App';
-import type { IErrorResponse, IServerResponse } from '../types/server';
+import type { IErrorResponse, IServerResponse } from '../types/server.types';
 
 /** Show Notifications/toasts based on API responses */
 export const useNotifyResponse = () => {
@@ -30,7 +30,7 @@ export const useNotifyResponse = () => {
 			errorMessage = error.message;
 			console.error('Client Error:', error);
 		} else {
-			console.error('Unknown Error:', JSON.stringify(error));
+			console.error('Unknown Error:', error);
 		}
 
 		notify.error({ message: errorMessage });

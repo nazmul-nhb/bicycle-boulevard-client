@@ -7,7 +7,7 @@ import { useRegisterUserMutation } from '../../../app/api/authApi';
 import AntdFormInput from '../../../components/AntdFormInput';
 import { useAuth } from '../../../hooks/useAuth';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
-import type { IRegisterUser } from '../../../types/user';
+import type { IRegisterUser } from '../../../types/user.types';
 
 const RegisterForm: React.FC = () => {
 	const { user } = useAuth();

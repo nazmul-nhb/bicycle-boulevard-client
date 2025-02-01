@@ -3,12 +3,12 @@ import { Button, Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
-import { configs } from '../../configs/site_configs';
-import { formatRoutes } from '../../utils/routeUtils';
 import { routes } from '../../configs/route_list';
+import { configs } from '../../configs/site_configs';
 import { useGetSelectedPath } from '../../hooks/useSelectedPath';
+import type { ISingleUser } from '../../types/user.types';
 import { isDashboard } from '../../utils/helpers';
-import type { ISingleUser } from '../../types/user';
+import { formatRoutes } from '../../utils/routeUtils';
 
 interface Props {
 	user: ISingleUser;
@@ -71,7 +71,7 @@ const Sidebar: React.FC<Props> = ({ user, isDarkTheme }) => {
 				theme={isDarkTheme ? 'dark' : 'light'}
 				mode="inline"
 				onClick={selectCurrentPath}
-				defaultSelectedKeys={[selectedPath]}
+				defaultSelectedKeys={[selectedPath]} 
 				// openKeys={[selectedPath]}
 				items={formatRoutes(routes, 'menu').filter(
 					(route) =>

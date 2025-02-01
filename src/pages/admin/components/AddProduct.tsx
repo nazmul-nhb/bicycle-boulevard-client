@@ -7,7 +7,7 @@ import { useCreateProductMutation } from '../../../app/api/productApi';
 import AntdFormInput from '../../../components/AntdFormInput';
 import { PRODUCT_CATEGORIES } from '../../../configs/constants';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
-import type { ICreateProduct } from '../../../types/product';
+import type { ICreateProduct } from '../../../types/product.types';
 
 const AddProduct = () => {
 	const [productForm] = useForm();
@@ -30,6 +30,8 @@ const AddProduct = () => {
 			console.log({ data, formData: Object.fromEntries(productData.entries()) });
 
 			const res = await createProduct(productData).unwrap();
+
+			console.log(res);
 
 			if (res.success) {
 				handleSuccess(res);

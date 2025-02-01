@@ -1,5 +1,5 @@
-import type { IServerResponse, ILoginResponse } from '../../types/server';
-import type { ICredentials, INewUser, ISingleUser } from '../../types/user';
+import type { ILoginResponse, IServerResponse } from '../../types/server.types';
+import type { ICredentials, INewUser, ISingleUser } from '../../types/user.types';
 import { setCurrentUser, setToken } from '../features/authSlice';
 import { baseApi } from './baseApi';
 

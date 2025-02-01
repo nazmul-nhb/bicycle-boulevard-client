@@ -1,4 +1,4 @@
-import type { ISingleUser } from './user';
+import type { ISingleUser } from './user.types';
 
 export interface IServerResponse<T> {
 	success: boolean;

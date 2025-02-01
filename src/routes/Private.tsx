@@ -1,9 +1,9 @@
+import { Flex, Spin } from 'antd';
 import React from 'react';
 import { Navigate, useLocation } from 'react-router';
-import type { ISingleUser } from '../types/user';
 import { useGetMeQuery } from '../app/api/authApi';
-import { Flex, Spin } from 'antd';
 import { useAuth } from '../hooks/useAuth';
+import type { ISingleUser } from '../types/user.types';
 
 interface Props {
 	roles: ISingleUser['role'][];

@@ -19,3 +19,7 @@ export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'> 
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface IProductDetails extends IProduct {
+	description: string;
+}

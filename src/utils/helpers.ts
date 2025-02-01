@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
-import type { IDecodedUser } from '../types/user';
 import { configs } from '../configs/site_configs';
+import type { IDecodedUser } from '../types/user.types';
 
 /**
  * Play a short sound effect.

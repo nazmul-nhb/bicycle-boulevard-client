@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { Form, Button, Col, Row } from 'antd';
-import { useLoginUserMutation } from '../../../app/api/authApi';
 import { Icon } from '@iconify/react';
+import { Button, Col, Form, Row } from 'antd';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import type { ICredentials } from '../../../types/user';
-import { useAuth } from '../../../hooks/useAuth';
+import { useLoginUserMutation } from '../../../app/api/authApi';
 import AntdFormInput from '../../../components/AntdFormInput';
+import { useAuth } from '../../../hooks/useAuth';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
+import type { ICredentials } from '../../../types/user.types';
 
 const LoginForm: React.FC = () => {
 	const { user } = useAuth();

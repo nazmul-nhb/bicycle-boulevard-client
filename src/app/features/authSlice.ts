@@ -1,12 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { TRootState } from '../store';
+import { configs } from '../../configs/site_configs';
+import type { ILoggedInState } from '../../types/user.types';
 import {
 	getFromLocalStorage,
 	removeFromLocalStorage,
 	saveToLocalStorage,
 } from '../../utils/localStorage';
-import type { ILoggedInState } from '../../types/user';
-import { configs } from '../../configs/site_configs';
+import type { TRootState } from '../store';
 
 const initialState: ILoggedInState = {
 	user: null,

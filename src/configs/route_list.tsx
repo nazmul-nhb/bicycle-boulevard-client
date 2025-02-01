@@ -1,12 +1,12 @@
-import type { IRoute } from '../types/routes';
-import Home from '../pages/Home/Home';
-import Contact from '../pages/Contact';
 import About from '../pages/About';
 import AdminDashboard from '../pages/admin/Dashboard';
 import ManageProducts from '../pages/admin/ManageProducts';
+import Contact from '../pages/Contact';
 import CustomerDashboard from '../pages/customer/Dashboard';
 import ViewOrder from '../pages/customer/ViewOrder';
+import Home from '../pages/Home/Home';
 import Private from '../routes/Private';
+import type { IRoute } from '../types/routes.types';
 
 export const routes: IRoute[] = [
 	{

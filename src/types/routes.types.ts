@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
 export interface IRoute {
 	/** Label as `ReactNode` but string is okay. */
