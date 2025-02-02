@@ -2,17 +2,40 @@ import { Icon } from '@iconify/react';
 import { Button, Flex, Image, Popconfirm, Spin, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { generateQueryParams, truncateString } from 'nhb-toolbox';
-import { useGetAllProductsQuery } from '../../../app/api/productApi';
+import {
+	useDeleteProductMutation,
+	useGetAllProductsQuery,
+} from '../../../app/api/productApi';
 import AntdTable from '../../../components/AntdTable';
-import { PRODUCT_CATEGORIES } from '../../../configs/constants';
+import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { IProduct } from '../../../types/product.types';
 import { formatDateTimeDynamic, getTimeStamp } from '../../../utils/dates';
 import { generateFilters, getImageLink } from '../../../utils/helpers';
 
 const ProductTable = () => {
-	const queryParams = generateQueryParams({ minPrice: null });
+	const { handleError, handleSuccess } = useNotifyResponse();
+	const queryParams = generateQueryParams({ sort: null });
 
 	const { data, isLoading } = useGetAllProductsQuery(queryParams);
+
+	const [deleteProduct] = useDeleteProductMutation();
+
+	const handleUpdateProduct = async (id: string) => {
+		console.log('Update', id);
+		// Handle the update action
+	};
+
+	const handleDeleteProduct = async (id: string) => {
+		try {
+			const res = await deleteProduct(id).unwrap();
+
+			if (res.success) {
+				handleSuccess(res);
+			}
+		} catch (error) {
+			handleError(error);
+		}
+	};
 
 	console.log({ data, queryParams });
 
@@ -38,7 +61,7 @@ const ProductTable = () => {
 			sorter: (a, b) => a.name.localeCompare(b.name),
 			render: (name: string) => (
 				<Tooltip title={name}>
-					<span>{truncateString(name, 24)}</span>
+					<span>{name.length > 24 ? truncateString(name, 24) : name}</span>
 				</Tooltip>
 			),
 		},
@@ -60,10 +83,7 @@ const ProductTable = () => {
 			title: 'Category',
 			dataIndex: 'category',
 			key: 'category',
-			filters: Object.entries(PRODUCT_CATEGORIES).map(([_key, value]) => ({
-				text: value,
-				value: value,
-			})),
+			filters: generateFilters(data?.data as IProduct[], 'category'),
 			filterSearch: true,
 			onFilter: (category, product) =>
 				product.category.startsWith(category as string),
@@ -86,43 +106,35 @@ const ProductTable = () => {
 			),
 		},
 		{
+			title: 'Last Updated',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
+			render: (updatedAt: string) => formatDateTimeDynamic(updatedAt),
+			sorter: (a, b) => getTimeStamp(a.createdAt) - getTimeStamp(b.createdAt),
+		},
+		{
 			title: 'Actions',
 			dataIndex: '_id',
 			key: '_id',
 			render: (id: string) => {
-				const handleUpdate = (id: string) => {
-					console.log('Update', id);
-					// Handle the update action
-				};
-
-				const handleDelete = (id: string) => {
-					console.log('Delete', id);
-					// Handle the delete action
-				};
 				return (
-					<Flex align="center" gap={4}>
+					<Flex key={id} align="center" gap={4}>
 						{/* Update Button */}
 						<Button
 							type="text"
 							icon={<Icon icon="bx:edit" width={24} />}
-							onClick={() => handleUpdate(id)}
+							onClick={() => handleUpdateProduct(id)}
 						/>
 
 						{/* Delete Button */}
 						<Tooltip title="Delete Product">
 							<Popconfirm
-								onConfirm={() => handleDelete(id)}
+								onConfirm={() => handleDeleteProduct(id)}
 								okText="Yes"
 								cancelText="No"
+								placement="topRight"
 								title="Delete the Product?"
 								description="Are you sure to delete this product?"
-								icon={
-									<Icon
-										icon="ph:question-duotone"
-										width="20"
-										height="20"
-									/>
-								}
 							>
 								<Button
 									danger
@@ -134,13 +146,6 @@ const ProductTable = () => {
 					</Flex>
 				);
 			},
-		},
-		{
-			title: 'Last Updated',
-			dataIndex: 'updatedAt',
-			key: 'updatedAt',
-			render: (updatedAt: string) => formatDateTimeDynamic(updatedAt),
-			sorter: (a, b) => getTimeStamp(a.createdAt) - getTimeStamp(b.createdAt),
 		},
 	];
 

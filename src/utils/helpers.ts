@@ -48,8 +48,9 @@ export const isDashboard = (path: string): boolean => {
  * @returns An array of filter objects for Ant Design Table.
  */
 export const generateFilters = <T>(data: T[], key: keyof T) => {
-	const uniqueValues = Array.from(new Set(data.map((item) => item[key])));
-	return uniqueValues.map((value) => ({
+	const uniqueValues = Array.from(new Set(data?.map((item) => item[key])));
+
+	return uniqueValues?.map((value) => ({
 		text: value,
 		value,
 	}));

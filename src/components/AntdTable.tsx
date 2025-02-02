@@ -98,10 +98,11 @@ const AntdTable = <T extends object & DBItem>({
 				/>
 			</Flex>
 			<Table
+				rowKey="_id"
 				columns={columns}
 				dataSource={paginatedData}
 				pagination={false}
-				rowKey="_id"
+				scroll={{ x: 'max-content' }}
 			/>
 		</React.Fragment>
 	);
