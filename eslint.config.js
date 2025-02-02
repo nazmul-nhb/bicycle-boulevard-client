@@ -1,7 +1,7 @@
 import js from '@eslint/js'
-import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
@@ -53,6 +53,10 @@ export default tseslint.config(
   {
     files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
     rules: { "no-unused-vars": "off" }
+  },
+  {
+    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
+    rules: { "@typescript-eslint/no-explicit-any": "off" }
   },
   {
     files: ["src/**/*.types.ts", "src/**/*.interfaces.ts", "src/**/types/*.ts"],

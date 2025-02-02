@@ -10,3 +10,8 @@ export const PRODUCT_CATEGORIES = {
 	BMX: 'BMX',
 	ELECTRIC: 'Electric',
 } as const;
+
+export const categoryOptions = Object.entries(PRODUCT_CATEGORIES).map(([_key, value]) => ({
+	value: value,
+	label: value,
+}));

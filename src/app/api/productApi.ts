@@ -1,4 +1,4 @@
-import type { IProduct } from '../../types/product.types';
+import type { IProduct, IProductDetails } from '../../types/product.types';
 import type { IServerResponse } from '../../types/server.types';
 import { baseApi } from './baseApi';
 
@@ -21,10 +21,30 @@ export const productApi = baseApi.injectEndpoints({
 			providesTags: ['Products'],
 		}),
 
+		getSingleProduct: builder.query<IServerResponse<IProductDetails>, string>({
+			query: (id) => ({
+				url: `products/`.concat(id),
+				method: 'GET',
+			}),
+			providesTags: (_r, _e, id) => [{ id, type: 'Product' }],
+		}),
+
 		deleteProduct: builder.mutation<IServerResponse<undefined>, string>({
 			query: (id) => ({
 				url: `products/`.concat(id),
 				method: 'DELETE',
+			}),
+			invalidatesTags: ['Products'],
+		}),
+
+		updateProduct: builder.mutation<
+			IServerResponse<undefined>,
+			{ id: string; data: FormData }
+		>({
+			query: ({ id, data }) => ({
+				url: `products/`.concat(id),
+				method: 'PUT',
+				body: data,
 			}),
 			invalidatesTags: ['Products'],
 		}),
@@ -34,6 +54,8 @@ export const productApi = baseApi.injectEndpoints({
 
 export const {
 	useCreateProductMutation,
+	useGetSingleProductQuery,
 	useGetAllProductsQuery,
 	useDeleteProductMutation,
+	useUpdateProductMutation,
 } = productApi;

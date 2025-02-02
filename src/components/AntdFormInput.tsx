@@ -1,7 +1,7 @@
-import { type FC, type ReactNode } from 'react';
-import { Form, Input, Upload, Select, Button, Col, InputNumber } from 'antd';
-import type { UploadProps, SelectProps, FormItemProps, InputNumberProps } from 'antd';
 import { Icon } from '@iconify/react';
+import type { FormItemProps, InputNumberProps, SelectProps, UploadProps } from 'antd';
+import { Button, Col, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { type FC, type ReactNode } from 'react';
 
 interface AntdFormInputProps extends FormItemProps {
 	type?: 'text' | 'number' | 'password' | 'select' | 'upload' | 'multiselect';
@@ -11,6 +11,7 @@ interface AntdFormInputProps extends FormItemProps {
 	selectProps?: SelectProps;
 	uploadProps?: UploadProps;
 	prefix?: ReactNode;
+	disabled?: boolean;
 	maxCount?: number;
 	label: string;
 	name: string;
@@ -24,6 +25,7 @@ const AntdFormInput: FC<AntdFormInputProps> = ({
 	prefix,
 	colSpan = { xs: 24, sm: 12 },
 	options,
+	disabled,
 	maxCount = 1,
 	numberProps,
 	uploadProps,
@@ -33,14 +35,40 @@ const AntdFormInput: FC<AntdFormInputProps> = ({
 	const renderInput = () => {
 		switch (type) {
 			case 'number':
-				return <InputNumber prefix={prefix} {...numberProps} placeholder={label} />;
+				return (
+					<InputNumber
+						disabled={disabled}
+						prefix={prefix}
+						{...numberProps}
+						placeholder={label}
+					/>
+				);
 			case 'password':
-				return <Input.Password prefix={prefix} allowClear placeholder={label} />;
+				return (
+					<Input.Password
+						disabled={disabled}
+						prefix={prefix}
+						allowClear
+						placeholder={label}
+					/>
+				);
 			case 'select':
-				return <Select {...selectProps} prefix={prefix} allowClear options={options} placeholder={label} />;
+				return (
+					<Select
+						disabled={disabled}
+						{...selectProps}
+						prefix={prefix}
+						allowClear
+						options={options}
+						placeholder={label}
+					/>
+				);
 			case 'multiselect':
 				return (
-					<Select {...selectProps} prefix={prefix}
+					<Select
+						disabled={disabled}
+						{...selectProps}
+						prefix={prefix}
 						mode="multiple"
 						allowClear
 						options={options}
@@ -50,6 +78,7 @@ const AntdFormInput: FC<AntdFormInputProps> = ({
 			case 'upload':
 				return (
 					<Upload
+						disabled={disabled}
 						accept="image/*"
 						listType="picture"
 						maxCount={maxCount}

@@ -2,28 +2,27 @@ import { Icon } from '@iconify/react';
 import { Button, Flex, Image, Popconfirm, Spin, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { generateQueryParams, truncateString } from 'nhb-toolbox';
+import { Fragment, useState } from 'react';
 import {
 	useDeleteProductMutation,
 	useGetAllProductsQuery,
 } from '../../../app/api/productApi';
 import AntdTable from '../../../components/AntdTable';
+import CommonDrawer from '../../../components/CommonDrawer';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { IProduct } from '../../../types/product.types';
 import { formatDateTimeDynamic, getTimeStamp } from '../../../utils/dates';
 import { generateFilters, getImageLink } from '../../../utils/helpers';
+import UpdateProduct from './UpdateProduct';
 
 const ProductTable = () => {
 	const { handleError, handleSuccess } = useNotifyResponse();
 	const queryParams = generateQueryParams({ sort: null });
+	const [isDrawerVisible, setDrawerVisible] = useState(false);
 
 	const { data, isLoading } = useGetAllProductsQuery(queryParams);
 
 	const [deleteProduct] = useDeleteProductMutation();
-
-	const handleUpdateProduct = async (id: string) => {
-		console.log('Update', id);
-		// Handle the update action
-	};
 
 	const handleDeleteProduct = async (id: string) => {
 		try {
@@ -37,7 +36,7 @@ const ProductTable = () => {
 		}
 	};
 
-	console.log({ data, queryParams });
+	// console.log({ data, queryParams });
 
 	const ProductsColumn: ColumnsType<IProduct> = [
 		{
@@ -118,32 +117,42 @@ const ProductTable = () => {
 			key: '_id',
 			render: (id: string) => {
 				return (
-					<Flex key={id} align="center" gap={4}>
-						{/* Update Button */}
-						<Button
-							type="text"
-							icon={<Icon icon="bx:edit" width={24} />}
-							onClick={() => handleUpdateProduct(id)}
-						/>
+					<Fragment>
+						<Flex key={id} align="center" gap={4}>
+							{/* Update Button */}
+							<Button
+								type="text"
+								icon={<Icon icon="bx:edit" width={24} />}
+								onClick={() => setDrawerVisible(true)}
+							/>
 
-						{/* Delete Button */}
-						<Tooltip title="Delete Product">
-							<Popconfirm
-								onConfirm={() => handleDeleteProduct(id)}
-								okText="Yes"
-								cancelText="No"
-								placement="topRight"
-								title="Delete the Product?"
-								description="Are you sure to delete this product?"
-							>
-								<Button
-									danger
-									type="text"
-									icon={<Icon icon="mi:delete" width={24} />}
-								/>
-							</Popconfirm>
-						</Tooltip>
-					</Flex>
+							{/* Delete Button */}
+							<Tooltip title="Delete Product">
+								<Popconfirm
+									onConfirm={() => handleDeleteProduct(id)}
+									okText="Yes"
+									cancelText="No"
+									placement="topRight"
+									title="Delete the Product?"
+									description="Are you sure to delete this product?"
+								>
+									<Button
+										danger
+										type="text"
+										icon={<Icon icon="mi:delete" width={24} />}
+									/>
+								</Popconfirm>
+							</Tooltip>
+						</Flex>
+
+						<CommonDrawer
+							title="Add New Product"
+							visible={isDrawerVisible}
+							onClose={() => setDrawerVisible(false)}
+						>
+							<UpdateProduct id={id} setDrawerVisible={setDrawerVisible} />
+						</CommonDrawer>
+					</Fragment>
 				);
 			},
 		},
@@ -158,13 +167,13 @@ const ProductTable = () => {
 	}
 
 	return (
-		<div>
+		<Fragment>
 			<AntdTable
 				data={data?.data}
 				columns={ProductsColumn}
 				searchPlaceholder="Search Product"
 			/>
-		</div>
+		</Fragment>
 	);
 };
 

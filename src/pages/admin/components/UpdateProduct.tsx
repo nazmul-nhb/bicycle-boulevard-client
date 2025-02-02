@@ -1,55 +1,84 @@
 import { Icon } from '@iconify/react';
-import { Button, Col, Form, Row } from 'antd';
+import { Button, Col, Flex, Form, Row, Spin } from 'antd';
 import { useForm, type FormProps } from 'antd/es/form/Form';
-import { useRef } from 'react';
+import { useRef, type Dispatch, type SetStateAction } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
 import type ReactQuill from 'react-quill';
-import { useCreateProductMutation } from '../../../app/api/productApi';
+import {
+	useGetSingleProductQuery,
+	useUpdateProductMutation,
+} from '../../../app/api/productApi';
 import AntdFormInput from '../../../components/AntdFormInput';
 import QuillWrapper from '../../../components/QuillWrapper';
 import { categoryOptions } from '../../../configs/constants';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
-import type { ICreateProduct } from '../../../types/product.types';
+import type { ICreateProduct, IUpdateProduct } from '../../../types/product.types';
+import { getUpdatedFields, previewAntdImage } from '../../../utils/helpers';
 
-const AddProduct = () => {
-	const [productForm] = useForm<ICreateProduct>();
+interface Props {
+	id: string;
+	setDrawerVisible: Dispatch<SetStateAction<boolean>>;
+}
+
+const UpdateProduct = ({ id, setDrawerVisible }: Props) => {
+	const { data: productRes, isLoading: isProductLoading } = useGetSingleProductQuery(id);
+
+	const [productUpdateForm] = useForm<ICreateProduct>();
 
 	const crateRef = useRef<ReactQuill>(null);
 
-	const [createProduct, { isLoading }] = useCreateProductMutation();
+	const [updateProduct, { isLoading }] = useUpdateProductMutation();
 
 	const { handleSuccess, handleError } = useNotifyResponse();
 
-	/** - Handle form submission */
-	const handleCreateProduct: FormProps<ICreateProduct>['onFinish'] = async (values) => {
+	const handleUpdateProduct: FormProps<ICreateProduct>['onFinish'] = async (values) => {
 		try {
-			const data = { ...values, inStock: values.inStock > 0 };
-			const productData = sanitizeFormData(data, {
+			const data: IUpdateProduct = {
+				...values,
+				inStock: values?.inStock && values?.inStock > 0 ? true : false,
+			};
+
+			const originalData = productRes?.data || {};
+
+			const updatedData = getUpdatedFields(originalData, data);
+
+			const productData = sanitizeFormData(updatedData, {
 				requiredKeys: ['inStock', 'price', 'quantity'],
 			});
 
 			// console.log({ data, formData: Object.fromEntries(productData.entries()) });
 
-			const res = await createProduct(productData).unwrap();
+			const res = await updateProduct({ id, data: productData }).unwrap();
 
 			// console.log(res);
 
 			if (res.success) {
 				handleSuccess(res);
-				productForm.resetFields();
+				productUpdateForm.resetFields();
+				setDrawerVisible(false);
 			}
 		} catch (err) {
 			handleError(err);
 		}
 	};
 
+	if (isProductLoading) {
+		return (
+			<Flex align="center" justify="center" gap="middle">
+				<Spin spinning={isProductLoading} percent="auto" size="large" />
+			</Flex>
+		);
+	}
+
 	return (
 		<Form
-			form={productForm}
-			onFinish={handleCreateProduct}
+			form={productUpdateForm}
+			onFinish={handleUpdateProduct}
 			layout="vertical"
 			initialValues={{
-				inStock: 1,
+				...productRes?.data,
+				inStock: productRes?.data?.inStock ? 1 : 0,
+				image: previewAntdImage(productRes?.data?.image as string),
 			}}
 		>
 			<Row gutter={16}>
@@ -57,7 +86,6 @@ const AddProduct = () => {
 					label="Product Name"
 					name="name"
 					rules={[
-						{ required: true, message: 'Please input the product name!' },
 						{
 							min: 1,
 							message: 'Product name must not be empty!',
@@ -69,7 +97,6 @@ const AddProduct = () => {
 					name="brand"
 					prefix={<Icon icon="ic:round-brand-new" width="20" height="20" />}
 					rules={[
-						{ required: true, message: 'Please input the product brand!' },
 						{
 							min: 1,
 							message: 'Product brand must not be empty!',
@@ -80,11 +107,10 @@ const AddProduct = () => {
 
 			<Row gutter={16}>
 				<AntdFormInput
-					label="Select A Category"
+					label="Update Category"
 					name="category"
 					type="select"
 					options={categoryOptions}
-					rules={[{ required: true, message: 'Please select a category!' }]}
 				/>
 				<AntdFormInput
 					label="Stock Availability"
@@ -97,9 +123,6 @@ const AddProduct = () => {
 						{ value: 1, label: 'In Stock' },
 						{ value: 0, label: 'Out of Stock' },
 					]}
-					rules={[
-						{ required: true, message: 'Please specify stock availability!' },
-					]}
 				/>
 			</Row>
 
@@ -109,7 +132,6 @@ const AddProduct = () => {
 					name="price"
 					type="number"
 					rules={[
-						{ required: true, message: 'Please input the product price!' },
 						{
 							min: 0,
 							type: 'number',
@@ -122,7 +144,6 @@ const AddProduct = () => {
 					name="quantity"
 					type="number"
 					rules={[
-						{ required: true, message: 'Please input the product quantity!' },
 						{
 							min: 0,
 							type: 'number',
@@ -139,10 +160,6 @@ const AddProduct = () => {
 						name="description"
 						rules={[
 							{
-								required: true,
-								message: 'Please enter a product description!',
-							},
-							{
 								min: 5,
 								message: 'Description must be at least 5 characters long!',
 							},
@@ -151,8 +168,6 @@ const AddProduct = () => {
 					>
 						<QuillWrapper
 							ref={crateRef}
-							// value={description}
-							// onChange={setDescription}
 							theme="snow"
 							className="custom-quill"
 							placeholder="Write product details"
@@ -162,19 +177,14 @@ const AddProduct = () => {
 			</Row>
 
 			<Row gutter={16}>
-				<AntdFormInput
-					label="Select an Image"
-					name="image"
-					type="upload"
-					rules={[{ required: true, message: 'Please upload an image!' }]}
-				/>
+				<AntdFormInput label="Select an Image" name="image" type="upload" />
 			</Row>
 
 			<Row>
 				<Col xs={24}>
 					<Form.Item>
 						<Button type="primary" htmlType="submit" loading={isLoading}>
-							Add Product
+							Update Product
 						</Button>
 					</Form.Item>
 				</Col>
@@ -183,4 +193,4 @@ const AddProduct = () => {
 	);
 };
 
-export default AddProduct;
+export default UpdateProduct;

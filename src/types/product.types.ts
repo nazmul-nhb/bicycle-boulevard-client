@@ -1,5 +1,5 @@
-import type { DBItem } from './index';
 import type { PRODUCT_CATEGORIES } from '../configs/constants';
+import type { DBItem } from './index';
 
 export interface ICreateProduct {
 	name: string;
@@ -21,4 +21,8 @@ export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'>,
 
 export interface IProductDetails extends IProduct {
 	description: string;
+}
+
+export interface IUpdateProduct extends Partial<Omit<ICreateProduct, 'inStock'>> {
+	inStock: boolean;
 }

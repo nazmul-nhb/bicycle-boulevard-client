@@ -55,3 +55,40 @@ export const generateFilters = <T>(data: T[], key: keyof T) => {
 		value,
 	}));
 };
+
+/**
+ * * Prepare image for ant design upload preview.
+ * @param src Image source, can be only the cloudinary public name for image like `"v1737848641/filename.jpg"`
+ * @returns Prepared image for preview as an array of object.
+ */
+export const previewAntdImage = (src: string) => {
+	return [
+		{
+			name: 'Preview Image',
+			status: 'done',
+			url: getImageLink(src),
+		},
+	];
+};
+
+/**
+ * * Compares the original values with the current form values and returns only the updated fields.
+ *
+ * @param {object} originalData - The original data from the product.
+ * @param {object} currentData - The current form data to be submitted.
+ * @returns {object} - A new object containing only the updated fields.
+ */
+export const getUpdatedFields = <T extends Record<string, any>>(
+	originalData: Record<string, unknown>,
+	currentData: T
+): Partial<T> => {
+	const updatedFields: Partial<T> = {};
+
+	for (const key in currentData) {
+		if (currentData[key] !== originalData[key]) {
+			updatedFields[key] = currentData[key];
+		}
+	}
+
+	return updatedFields;
+};
