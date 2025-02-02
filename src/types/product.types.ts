@@ -1,4 +1,4 @@
-import type { DBItem } from '.';
+import type { DBItem } from './index';
 import type { PRODUCT_CATEGORIES } from '../configs/constants';
 
 export interface ICreateProduct {
@@ -12,13 +12,12 @@ export interface ICreateProduct {
 	image: File;
 }
 
-export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'> {
+export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'>, DBItem {
 	image: string;
-	isDeleted: boolean;
 	createdBy: string;
 }
 
-export interface IProduct extends DBItem {}
+// export interface IProduct extends DBItem {}
 
 export interface IProductDetails extends IProduct {
 	description: string;

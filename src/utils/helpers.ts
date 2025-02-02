@@ -38,5 +38,19 @@ export const getImageLink = (src: string, baseUrl?: string): string => {
  * @returns Boolean.
  */
 export const isDashboard = (path: string): boolean => {
-	return path.startsWith('/dashboard/admin') || path.startsWith('/dashboard/customer');
+	return path.startsWith('/admin') || path.startsWith('/customer');
+};
+
+/**
+ * Generates unique filters from a given dataset.
+ * @param data The dataset to extract unique filter values from.
+ * @param key The key in the dataset to extract unique values.
+ * @returns An array of filter objects for Ant Design Table.
+ */
+export const generateFilters = <T>(data: T[], key: keyof T) => {
+	const uniqueValues = Array.from(new Set(data.map((item) => item[key])));
+	return uniqueValues.map((value) => ({
+		text: value,
+		value,
+	}));
 };

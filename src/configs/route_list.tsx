@@ -29,7 +29,7 @@ export const routes: IRoute[] = [
 	},
 	{
 		label: 'Admin Panel',
-		path: 'dashboard/admin',
+		path: 'admin',
 		icon: 'ic:outline-admin-panel-settings',
 		children: [
 			{
@@ -56,7 +56,7 @@ export const routes: IRoute[] = [
 	},
 	{
 		label: 'Customer Panel',
-		path: 'dashboard/customer',
+		path: 'customer',
 		icon: 'garden:customer-lists-fill-26',
 		children: [
 			{

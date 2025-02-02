@@ -15,5 +15,4 @@ export interface DBItem {
 	_id: string;
 	createdAt: string;
 	updatedAt: string;
-	[key: string]: unknown;
 }

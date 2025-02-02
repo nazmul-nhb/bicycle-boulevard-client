@@ -7,23 +7,31 @@ const AntdBreadcrumb: React.FC = () => {
 	const location = useLocation();
 	const pathnames = location.pathname.split('/').filter(Boolean);
 
-	return (
-		<Breadcrumb>
-			<Breadcrumb.Item>
+	const breadcrumbItems = [
+		{
+			title: (
 				<Link to="/">
 					<Icon icon="line-md:home-twotone" width="20" height="20" />
 				</Link>
-			</Breadcrumb.Item>
-			{pathnames.map((value, index) => {
-				const path = `/${pathnames.slice(0, index + 1).join('/')}`;
+			),
+		},
+		...pathnames.map((value, index) => ({
+			title: (
+				<Link to={`/${pathnames.slice(0, index + 1).join('/')}`}>
+					{value.replace(/-/g, ' ').toUpperCase()}
+				</Link>
+			),
+			key: value,
+		})),
+	];
 
-				return (
-					<Breadcrumb.Item key={path}>
-						<Link to={path}>{value.replace(/-/g, ' ').toUpperCase()}</Link>
-					</Breadcrumb.Item>
-				);
-			})}
-		</Breadcrumb>
+	return (
+		<Breadcrumb
+			items={breadcrumbItems}
+			separator={
+				<Icon icon="fluent:ios-arrow-right-24-filled" width="12" height="12" />
+			}
+		/>
 	);
 };
 
