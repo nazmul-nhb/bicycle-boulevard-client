@@ -1,6 +1,7 @@
 import About from '../pages/About';
 import AdminDashboard from '../pages/admin/Dashboard';
 import ManageProducts from '../pages/admin/ManageProducts';
+import ManageUsers from '../pages/admin/ManageUsers';
 import Contact from '../pages/Contact';
 import CustomerDashboard from '../pages/customer/Dashboard';
 import ViewOrder from '../pages/customer/ViewOrder';
@@ -49,6 +50,16 @@ export const routes: IRoute[] = [
 				element: (
 					<Private roles={['admin']}>
 						<ManageProducts />
+					</Private>
+				),
+			},
+			{
+				label: 'Manage Users',
+				path: 'manage-users',
+				icon: 'fa-solid:users-cog',
+				element: (
+					<Private roles={['admin']}>
+						<ManageUsers />
 					</Private>
 				),
 			},

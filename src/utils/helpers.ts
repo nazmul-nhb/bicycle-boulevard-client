@@ -1,6 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { configs } from '../configs/site_configs';
 import type { IDecodedUser } from '../types/user.types';
+import { capitalizeString } from 'nhb-toolbox';
 
 /**
  * Play a short sound effect.
@@ -48,11 +49,13 @@ export const isDashboard = (path: string): boolean => {
  * @returns An array of filter objects for Ant Design Table.
  */
 export const generateFilters = <T>(data: T[], key: keyof T) => {
-	const uniqueValues = Array.from(new Set(data?.map((item) => item[key])));
+	const uniqueValues = Array.from(new Set(data?.map((item) => item[key]))).filter(
+		(val) => val !== null && val !== undefined
+	);
 
 	return uniqueValues?.map((value) => ({
-		text: value,
-		value,
+		text: capitalizeString(String(value), { capitalizeEachFirst: true }),
+		value: value,
 	}));
 };
 

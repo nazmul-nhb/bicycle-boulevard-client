@@ -103,7 +103,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 							theme={isDarkTheme ? 'dark' : 'light'}
 							mode="horizontal"
 							onClick={selectCurrentPath}
-							// disabledOverflow
+							disabledOverflow
 							overflowedIndicator={<Icon icon="mdi:menu" />}
 							defaultSelectedKeys={[selectedPath]}
 							// openKeys={[selectedPath]}

@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
-import { Button, Flex, Image, Popconfirm, Spin, Tooltip } from 'antd';
+import { Button, Flex, Image, Popconfirm, Spin, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { generateQueryParams, truncateString } from 'nhb-toolbox';
+import { generateQueryParams, getColorForInitial, truncateString } from 'nhb-toolbox';
 import { Fragment, useState } from 'react';
 import {
 	useDeleteProductMutation,
@@ -19,9 +19,10 @@ const ProductTable = () => {
 	const { handleError, handleSuccess } = useNotifyResponse();
 	const queryParams = generateQueryParams({ sort: null });
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
-	const [selectedProductId, setSelectedProductId] = useState<string>('');
 
 	const { data, isLoading } = useGetAllProductsQuery(queryParams);
+	
+	const [selectedProductId, setSelectedProductId] = useState<string>('');
 
 	const [deleteProduct] = useDeleteProductMutation();
 
@@ -70,7 +71,7 @@ const ProductTable = () => {
 			dataIndex: 'brand',
 			key: 'brand',
 			filters: generateFilters(data?.data as IProduct[], 'brand'),
-			onFilter: (value, record) => record.brand === value,
+			onFilter: (value, product) => product.brand === value,
 			sorter: (a, b) => a.brand.localeCompare(b.brand),
 		},
 		{
@@ -88,6 +89,17 @@ const ProductTable = () => {
 			onFilter: (category, product) =>
 				product.category.startsWith(category as string),
 			sorter: (a, b) => a.category.localeCompare(b.category),
+			render: (category: IProduct['category']) => (
+				<Tag
+					style={{
+						backgroundColor: getColorForInitial(category, 30),
+						borderColor: getColorForInitial(category, 60),
+					}}
+					color={getColorForInitial(category, 50)}
+				>
+					{category}
+				</Tag>
+			),
 		},
 		{
 			title: 'Quantity',
@@ -96,13 +108,13 @@ const ProductTable = () => {
 			sorter: (a, b) => a.quantity - b.quantity,
 		},
 		{
-			title: 'In Stock',
+			title: 'Availability',
 			dataIndex: 'inStock',
 			key: 'inStock',
 			render: (inStock: boolean) => (
-				<span style={{ color: inStock ? 'green' : 'red' }}>
-					{inStock ? 'Yes' : 'No'}
-				</span>
+				<Tag color={inStock ? 'green' : 'red'}>
+					{inStock ? 'In Stock' : 'Out of Stock'}
+				</Tag>
 			),
 		},
 		{
@@ -118,17 +130,21 @@ const ProductTable = () => {
 			key: '_id',
 			render: (id: string) => {
 				return (
-					<Fragment>
-						<Flex key={id} align="center" gap={4}>
+					<Fragment key={id}>
+						<Flex align="center" gap={4}>
 							{/* Update Button */}
-							<Button
-								type="text"
-								icon={<Icon icon="bx:edit" width={24} />}
-								onClick={() => {
-									setSelectedProductId(id);
-									setDrawerVisible(true);
-								}}
-							/>
+							<Tooltip title="Update Product">
+								<Button
+									color="green"
+									type="text"
+									variant="text"
+									icon={<Icon icon="bx:edit" width={24} />}
+									onClick={() => {
+										setSelectedProductId(id);
+										setDrawerVisible(true);
+									}}
+								/>
+							</Tooltip>
 
 							{/* Delete Button */}
 							<Tooltip title="Delete Product">
@@ -150,7 +166,6 @@ const ProductTable = () => {
 						</Flex>
 
 						<CommonDrawer
-							key={selectedProductId}
 							title="Add New Product"
 							visible={isDrawerVisible}
 							onClose={() => {
