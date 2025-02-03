@@ -19,6 +19,7 @@ const ProductTable = () => {
 	const { handleError, handleSuccess } = useNotifyResponse();
 	const queryParams = generateQueryParams({ sort: null });
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
+	const [selectedProductId, setSelectedProductId] = useState<string>('');
 
 	const { data, isLoading } = useGetAllProductsQuery(queryParams);
 
@@ -123,7 +124,10 @@ const ProductTable = () => {
 							<Button
 								type="text"
 								icon={<Icon icon="bx:edit" width={24} />}
-								onClick={() => setDrawerVisible(true)}
+								onClick={() => {
+									setSelectedProductId(id);
+									setDrawerVisible(true);
+								}}
 							/>
 
 							{/* Delete Button */}
@@ -146,11 +150,19 @@ const ProductTable = () => {
 						</Flex>
 
 						<CommonDrawer
+							key={selectedProductId}
 							title="Add New Product"
 							visible={isDrawerVisible}
-							onClose={() => setDrawerVisible(false)}
+							onClose={() => {
+								setDrawerVisible(false);
+								setSelectedProductId('');
+							}}
 						>
-							<UpdateProduct id={id} setDrawerVisible={setDrawerVisible} />
+							<UpdateProduct
+								id={selectedProductId}
+								setDrawerVisible={setDrawerVisible}
+								setSelectedProductId={setSelectedProductId}
+							/>
 						</CommonDrawer>
 					</Fragment>
 				);

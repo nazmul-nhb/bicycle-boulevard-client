@@ -1,11 +1,12 @@
 import { Icon } from '@iconify/react';
-import { Avatar, Button, Flex, Menu, Popover, theme } from 'antd';
+import { Avatar, Button, Flex, Menu, Popover, Spin, theme } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 import type { MappingAlgorithm } from 'antd/es/theme/interface';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { AntNotifications } from '../../App';
+import { useGetMeQuery } from '../../app/api/authApi';
 import { logOut } from '../../app/features/authSlice';
 import { setTheme } from '../../app/features/themeSlice';
 import { useAppDispatch } from '../../app/hooks';
@@ -30,6 +31,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 	const dispatch = useAppDispatch();
 	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
 	const { modal } = AntNotifications(true);
+	const { isLoading } = useGetMeQuery();
 
 	const handleLogOut = () => {
 		modal.confirm({
@@ -146,7 +148,9 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 								shape="circle"
 							/>
 						)}
-						{user ? (
+						{isLoading ? (
+							<Spin />
+						) : user ? (
 							<Popover
 								trigger="click"
 								placement="bottomRight"

@@ -29,24 +29,30 @@ export const productApi = baseApi.injectEndpoints({
 			providesTags: (_r, _e, id) => [{ id, type: 'Product' }],
 		}),
 
-		deleteProduct: builder.mutation<IServerResponse<undefined>, string>({
+		deleteProduct: builder.mutation<IServerResponse<void>, string>({
 			query: (id) => ({
 				url: `products/`.concat(id),
 				method: 'DELETE',
 			}),
-			invalidatesTags: ['Products'],
+			invalidatesTags: (_r, _e, id) => [
+				{ id, type: 'Product' },
+				{ type: 'Products' },
+			],
 		}),
 
 		updateProduct: builder.mutation<
-			IServerResponse<undefined>,
+			IServerResponse<void>,
 			{ id: string; data: FormData }
 		>({
 			query: ({ id, data }) => ({
 				url: `products/`.concat(id),
-				method: 'PUT',
+				method: 'PATCH',
 				body: data,
 			}),
-			invalidatesTags: ['Products'],
+			invalidatesTags: (_r, _e, { id }) => [
+				{ id, type: 'Product' },
+				{ type: 'Products' },
+			],
 		}),
 	}),
 	overrideExisting: false,

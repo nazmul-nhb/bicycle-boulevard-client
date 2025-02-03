@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Button, Col, Flex, Form, Row, Spin } from 'antd';
 import { useForm, type FormProps } from 'antd/es/form/Form';
-import { useRef, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
 import type ReactQuill from 'react-quill';
 import {
@@ -18,10 +18,15 @@ import { getUpdatedFields, previewAntdImage } from '../../../utils/helpers';
 interface Props {
 	id: string;
 	setDrawerVisible: Dispatch<SetStateAction<boolean>>;
+	setSelectedProductId: Dispatch<SetStateAction<string>>;
 }
 
-const UpdateProduct = ({ id, setDrawerVisible }: Props) => {
-	const { data: productRes, isLoading: isProductLoading } = useGetSingleProductQuery(id);
+const UpdateProduct = ({ id, setDrawerVisible, setSelectedProductId }: Props) => {
+	const {
+		data: productRes,
+		isLoading: isProductLoading,
+		refetch,
+	} = useGetSingleProductQuery(id);
 
 	const [productUpdateForm] = useForm<ICreateProduct>();
 
@@ -54,13 +59,25 @@ const UpdateProduct = ({ id, setDrawerVisible }: Props) => {
 
 			if (res.success) {
 				handleSuccess(res);
-				productUpdateForm.resetFields();
+				await refetch();
+				// productUpdateForm.resetFields();
 				setDrawerVisible(false);
+				setSelectedProductId('');
 			}
 		} catch (err) {
 			handleError(err);
 		}
 	};
+
+	useEffect(() => {
+		if (productRes?.data) {
+			productUpdateForm.setFieldsValue({
+				...productRes.data,
+				inStock: productRes.data.inStock ? 1 : 0,
+				image: previewAntdImage(productRes.data.image as string),
+			});
+		}
+	}, [productRes?.data, productUpdateForm]);
 
 	if (isProductLoading) {
 		return (
@@ -72,14 +89,16 @@ const UpdateProduct = ({ id, setDrawerVisible }: Props) => {
 
 	return (
 		<Form
+			key={id}
+			id={id}
 			form={productUpdateForm}
 			onFinish={handleUpdateProduct}
 			layout="vertical"
-			initialValues={{
-				...productRes?.data,
-				inStock: productRes?.data?.inStock ? 1 : 0,
-				image: previewAntdImage(productRes?.data?.image as string),
-			}}
+			// initialValues={{
+			// 	...productRes?.data,
+			// 	inStock: productRes?.data?.inStock ? 1 : 0,
+			// 	image: previewAntdImage(productRes?.data?.image as string),
+			// }}
 		>
 			<Row gutter={16}>
 				<AntdFormInput

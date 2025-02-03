@@ -79,7 +79,7 @@ export const previewAntdImage = (src: string) => {
  * @returns {object} - A new object containing only the updated fields.
  */
 export const getUpdatedFields = <T extends Record<string, any>>(
-	originalData: Record<string, unknown>,
+	originalData: Record<string, any>,
 	currentData: T
 ): Partial<T> => {
 	const updatedFields: Partial<T> = {};
