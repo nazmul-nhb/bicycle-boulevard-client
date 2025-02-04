@@ -22,7 +22,15 @@ export const userAdminApi = baseApi.injectEndpoints({
 
 		deactivateUser: builder.mutation<IServerResponse<void>, string>({
 			query: (id) => ({
-				url: `admin/users/`.concat(id).concat('/block'),
+				url: `admin/users/block/`.concat(id),
+				method: 'PATCH',
+			}),
+			invalidatesTags: (_r, _e, id) => [{ id, type: 'User' }, { type: 'Users' }],
+		}),
+
+		reactivateUser: builder.mutation<IServerResponse<void>, string>({
+			query: (id) => ({
+				url: `admin/users/unblock/`.concat(id),
 				method: 'PATCH',
 			}),
 			invalidatesTags: (_r, _e, id) => [{ id, type: 'User' }, { type: 'Users' }],
@@ -49,5 +57,6 @@ export const {
 	useGetSingleUserQuery,
 	useGetAllUsersQuery,
 	useDeactivateUserMutation,
+	useReactivateUserMutation,
 	useUpdateUserMutation,
 } = userAdminApi;

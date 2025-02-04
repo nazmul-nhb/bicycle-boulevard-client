@@ -6,6 +6,7 @@ import { Fragment } from 'react';
 import {
 	useDeactivateUserMutation,
 	useGetAllUsersQuery,
+	useReactivateUserMutation,
 } from '../../../app/api/userAdminApi';
 import AntdTable from '../../../components/AntdTable';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
@@ -19,10 +20,23 @@ const UsersTable = () => {
 	const { data, isLoading: isUsersLoading } = useGetAllUsersQuery();
 
 	const [deactivateUser] = useDeactivateUserMutation();
+	const [reactivateUser] = useReactivateUserMutation();
 
 	const handleDeactivateUser = async (id: string) => {
 		try {
 			const res = await deactivateUser(id).unwrap();
+
+			if (res.success) {
+				handleSuccess(res);
+			}
+		} catch (error) {
+			handleError(error);
+		}
+	};
+
+	const handleReactivateUser = async (id: string) => {
+		try {
+			const res = await reactivateUser(id).unwrap();
 
 			if (res.success) {
 				handleSuccess(res);
@@ -116,44 +130,47 @@ const UsersTable = () => {
 			key: '_id',
 			render: (id: string, user) => {
 				return (
-					<Flex justify="center" align="center">
-						{user.isActive ? (
-							<Tooltip title="Deactivate User">
-								<Popconfirm
-									onConfirm={() => handleDeactivateUser(id)}
-									okText="Yes"
-									cancelText="No"
-									placement="topRight"
-									title={`Deactivate ${user.name}?`}
-									description={`Are you sure to deactivate ${user.name}?"`}
-								>
-									<Button
-										danger
-										type="text"
-										icon={<Icon icon="charm:block" width={24} />}
-									/>
-								</Popconfirm>
-							</Tooltip>
-						) : (
-							<Tooltip title="Deactivate User">
-								<Popconfirm
-									onConfirm={() => handleDeactivateUser(id)}
-									okText="Yes"
-									cancelText="No"
-									placement="topRight"
-									title={`Activate ${user.name}?`}
-									description={`Are you sure to activate ${user.name}?"`}
-								>
-									<Button
-										color="green"
-										type="text"
-										variant="text"
-										icon={<Icon icon="gg:unblock" width={28} />}
-									/>
-								</Popconfirm>
-							</Tooltip>
-						)}
-					</Flex>
+					user.role === 'admin' || (
+						<Flex justify="center" align="center">
+							{user.isActive ? (
+								<Tooltip title="Deactivate User">
+									<Popconfirm
+										onConfirm={() => handleDeactivateUser(id)}
+										okText="Yes"
+										cancelText="No"
+										placement="topRight"
+										title={`Deactivate ${user.name}?`}
+										description={`Are you sure to deactivate ${user.name}?"`}
+									>
+										<Button
+											// disabled={!user.isActive}
+											danger
+											type="text"
+											icon={<Icon icon="charm:block" width={24} />}
+										/>
+									</Popconfirm>
+								</Tooltip>
+							) : (
+								<Tooltip title="Reactivate User">
+									<Popconfirm
+										onConfirm={() => handleReactivateUser(id)}
+										okText="Yes"
+										cancelText="No"
+										placement="topRight"
+										title={`Reactivate ${user.name}?`}
+										description={`Are you sure to reactivate ${user.name}?"`}
+									>
+										<Button
+											color="green"
+											type="text"
+											variant="text"
+											icon={<Icon icon="gg:unblock" width={28} />}
+										/>
+									</Popconfirm>
+								</Tooltip>
+							)}
+						</Flex>
+					)
 				);
 			},
 		},
