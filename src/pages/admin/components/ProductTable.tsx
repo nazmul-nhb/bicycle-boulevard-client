@@ -14,14 +14,16 @@ import type { IProduct } from '../../../types/product.types';
 import { formatDateTimeDynamic, getTimeStamp } from '../../../utils/dates';
 import { generateFilters, getImageLink } from '../../../utils/helpers';
 import UpdateProduct from './UpdateProduct';
+import { useTheme } from '../../../hooks/useTheme';
 
 const ProductTable = () => {
+	const { isDarkTheme } = useTheme();
 	const { handleError, handleSuccess } = useNotifyResponse();
 	const queryParams = generateQueryParams({ sort: null });
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
 
 	const { data, isLoading } = useGetAllProductsQuery(queryParams);
-	
+
 	const [selectedProductId, setSelectedProductId] = useState<string>('');
 
 	const [deleteProduct] = useDeleteProductMutation();
@@ -42,28 +44,25 @@ const ProductTable = () => {
 
 	const ProductsColumn: ColumnsType<IProduct> = [
 		{
-			title: 'Image',
-			dataIndex: 'image',
-			key: 'image',
-			render: (_, product) => (
-				<Image
-					width={40}
-					height={40}
-					src={getImageLink(product.image)}
-					preview={{ mask: <Icon icon="mdi:eye" /> }}
-					alt={product.name}
-				/>
-			),
-		},
-		{
-			title: 'Name',
+			title: 'Product Title',
 			dataIndex: 'name',
 			key: 'name',
 			sorter: (a, b) => a.name.localeCompare(b.name),
-			render: (name: string) => (
-				<Tooltip title={name}>
-					<span>{name.length > 24 ? truncateString(name, 24) : name}</span>
-				</Tooltip>
+			render: (name: string, product) => (
+				<Flex align="center" gap={6}>
+					<Image
+						width={40}
+						height={40}
+						src={getImageLink(product.image)}
+						preview={{ mask: <Icon icon="mdi:eye" /> }}
+						alt={product.name}
+					/>
+					<Tooltip title={name}>
+						<span style={{ fontWeight: 'bold' }}>
+							{name.length > 24 ? truncateString(name, 24) : name}
+						</span>
+					</Tooltip>
+				</Flex>
 			),
 		},
 		{
@@ -92,10 +91,14 @@ const ProductTable = () => {
 			render: (category: IProduct['category']) => (
 				<Tag
 					style={{
-						backgroundColor: getColorForInitial(category, 30),
-						borderColor: getColorForInitial(category, 60),
+						borderColor: getColorForInitial(category, 40),
+						color: isDarkTheme ? 'white' : getColorForInitial(category),
 					}}
-					color={getColorForInitial(category, 50)}
+					color={
+						isDarkTheme
+							? getColorForInitial(category, 30)
+							: getColorForInitial(category, 10)
+					}
 				>
 					{category}
 				</Tag>
@@ -118,11 +121,26 @@ const ProductTable = () => {
 			),
 		},
 		{
-			title: 'Last Updated',
+			title: 'Created By',
+			dataIndex: 'createdBy',
+			key: 'createdBy',
+			filters: generateFilters(data?.data as IProduct[], 'createdBy'),
+			onFilter: (value, product) => product.createdBy === value,
+			sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
+		},
+		{
+			title: 'Creation Date',
+			dataIndex: 'createdAt',
+			key: 'createdAt',
+			render: (createdAt: string) => formatDateTimeDynamic(createdAt),
+			sorter: (a, b) => getTimeStamp(a.createdAt) - getTimeStamp(b.createdAt),
+		},
+		{
+			title: 'Updated Date',
 			dataIndex: 'updatedAt',
 			key: 'updatedAt',
 			render: (updatedAt: string) => formatDateTimeDynamic(updatedAt),
-			sorter: (a, b) => getTimeStamp(a.createdAt) - getTimeStamp(b.createdAt),
+			sorter: (a, b) => getTimeStamp(a.updatedAt) - getTimeStamp(b.updatedAt),
 		},
 		{
 			title: 'Actions',
@@ -198,6 +216,7 @@ const ProductTable = () => {
 			<AntdTable
 				data={data?.data}
 				columns={ProductsColumn}
+				excludedFields={['createdAt', 'updatedAt', 'createdBy']}
 				searchPlaceholder="Search Product"
 			/>
 		</Fragment>

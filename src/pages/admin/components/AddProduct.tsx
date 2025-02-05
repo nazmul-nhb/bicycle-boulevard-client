@@ -111,7 +111,7 @@ const AddProduct = () => {
 					rules={[
 						{ required: true, message: 'Please input the product price!' },
 						{
-							min: 0,
+							min: 1,
 							type: 'number',
 							message: 'Price must be a positive number!',
 						},
@@ -124,9 +124,9 @@ const AddProduct = () => {
 					rules={[
 						{ required: true, message: 'Please input the product quantity!' },
 						{
-							min: 0,
+							min: 1,
 							type: 'number',
-							message: 'Quantity must be a non-negative number!',
+							message: 'Quantity must be at least 1!',
 						},
 					]}
 				/>

@@ -1,7 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 import { configs } from '../configs/site_configs';
 import type { IDecodedUser } from '../types/user.types';
-import { capitalizeString } from 'nhb-toolbox';
 
 /**
  * Play a short sound effect.
@@ -54,7 +53,7 @@ export const generateFilters = <T>(data: T[], key: keyof T) => {
 	);
 
 	return uniqueValues?.map((value) => ({
-		text: capitalizeString(String(value), { capitalizeEachFirst: true }),
+		text: typeof value === 'boolean' ? (value === true ? 'Yes' : 'No') : String(value),
 		value: value,
 	}));
 };

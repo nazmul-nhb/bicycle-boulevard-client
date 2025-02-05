@@ -13,8 +13,10 @@ import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { ISingleUser } from '../../../types/user.types';
 import { formatDateTimeDynamic, getTimeStamp } from '../../../utils/dates';
 import { generateFilters, getImageLink } from '../../../utils/helpers';
+import { useTheme } from '../../../hooks/useTheme';
 
 const UsersTable = () => {
+	const { isDarkTheme } = useTheme();
 	const { handleError, handleSuccess } = useNotifyResponse();
 
 	const { data, isLoading: isUsersLoading } = useGetAllUsersQuery();
@@ -48,28 +50,25 @@ const UsersTable = () => {
 
 	const UsersColumn: ColumnsType<ISingleUser> = [
 		{
-			title: 'Image',
-			dataIndex: 'image',
-			key: 'image',
-			render: (_, user) => (
-				<Image
-					width={40}
-					height={40}
-					src={getImageLink(user.image)}
-					preview={{ mask: <Icon icon="mdi:eye" /> }}
-					alt={user.name}
-				/>
-			),
-		},
-		{
-			title: 'Name',
+			title: 'User Name',
 			dataIndex: 'name',
 			key: 'name',
 			sorter: (a, b) => a.name.localeCompare(b.name),
-			render: (name: string) => (
-				<Tooltip title={name}>
-					<span>{name.length > 24 ? truncateString(name, 24) : name}</span>
-				</Tooltip>
+			render: (name: string, user) => (
+				<Flex align="center" gap={6}>
+					<Image
+						width={40}
+						height={40}
+						src={getImageLink(user.image)}
+						preview={{ mask: <Icon icon="mdi:eye" /> }}
+						alt={user.name}
+					/>
+					<Tooltip title={name}>
+						<span style={{ fontWeight: 'bold' }}>
+							{name.length > 24 ? truncateString(name, 24) : name}
+						</span>
+					</Tooltip>
+				</Flex>
 			),
 		},
 		{
@@ -82,10 +81,14 @@ const UsersTable = () => {
 			render: (role: string) => (
 				<Tag
 					style={{
-						backgroundColor: getColorForInitial(role, 30),
-						borderColor: getColorForInitial(role, 60),
+						borderColor: getColorForInitial(role, 40),
+						color: isDarkTheme ? 'white' : getColorForInitial(role),
 					}}
-					color={getColorForInitial(role, 50)}
+					color={
+						isDarkTheme
+							? getColorForInitial(role, 25)
+							: getColorForInitial(role, 10)
+					}
 				>
 					{capitalizeString(role, { capitalizeEachFirst: true })}
 				</Tag>
@@ -102,8 +105,8 @@ const UsersTable = () => {
 			dataIndex: 'isActive',
 			key: 'isActive',
 			sorter: (a, b) => String(a.isActive).localeCompare(String(b.isActive)),
-			// filters: generateFilters(data?.data as ISingleUser[], 'isActive'),
-			// onFilter: (value, user) => user.isActive === value,
+			filters: generateFilters(data?.data as ISingleUser[], 'isActive'),
+			onFilter: (value, user) => user.isActive === value,
 			render: (isActive: boolean) => (
 				<Tag color={isActive ? 'green' : 'red'}>
 					{isActive ? 'Active' : 'Deactivated'}
@@ -129,48 +132,51 @@ const UsersTable = () => {
 			dataIndex: '_id',
 			key: '_id',
 			render: (id: string, user) => {
-				return (
-					user.role === 'admin' || (
-						<Flex justify="center" align="center">
-							{user.isActive ? (
-								<Tooltip title="Deactivate User">
-									<Popconfirm
-										onConfirm={() => handleDeactivateUser(id)}
-										okText="Yes"
-										cancelText="No"
-										placement="topRight"
-										title={`Deactivate ${user.name}?`}
-										description={`Are you sure to deactivate ${user.name}?"`}
-									>
-										<Button
-											// disabled={!user.isActive}
-											danger
-											type="text"
-											icon={<Icon icon="charm:block" width={24} />}
-										/>
-									</Popconfirm>
-								</Tooltip>
-							) : (
-								<Tooltip title="Reactivate User">
-									<Popconfirm
-										onConfirm={() => handleReactivateUser(id)}
-										okText="Yes"
-										cancelText="No"
-										placement="topRight"
-										title={`Reactivate ${user.name}?`}
-										description={`Are you sure to reactivate ${user.name}?"`}
-									>
-										<Button
-											color="green"
-											type="text"
-											variant="text"
-											icon={<Icon icon="gg:unblock" width={28} />}
-										/>
-									</Popconfirm>
-								</Tooltip>
-							)}
-						</Flex>
-					)
+				return user.role === 'admin' ? (
+					<Flex justify="center" align="center">
+						<Tooltip title="Not Allowed">
+							<Icon icon="guidance:forbidden" width={24} />
+						</Tooltip>
+					</Flex>
+				) : (
+					<Flex justify="center" align="center">
+						{user.isActive ? (
+							<Tooltip title="Deactivate User">
+								<Popconfirm
+									onConfirm={() => handleDeactivateUser(id)}
+									okText="Yes"
+									cancelText="No"
+									placement="topRight"
+									title={`Deactivate ${user.name}?`}
+									description={`Are you sure to deactivate ${user.name}?"`}
+								>
+									<Button
+										danger
+										type="text"
+										icon={<Icon icon="charm:block" width={24} />}
+									/>
+								</Popconfirm>
+							</Tooltip>
+						) : (
+							<Tooltip title="Reactivate User">
+								<Popconfirm
+									onConfirm={() => handleReactivateUser(id)}
+									okText="Yes"
+									cancelText="No"
+									placement="topRight"
+									title={`Reactivate ${user.name}?`}
+									description={`Are you sure to reactivate ${user.name}?"`}
+								>
+									<Button
+										color="green"
+										type="text"
+										variant="text"
+										icon={<Icon icon="gg:unblock" width={28} />}
+									/>
+								</Popconfirm>
+							</Tooltip>
+						)}
+					</Flex>
 				);
 			},
 		},

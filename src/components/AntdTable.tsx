@@ -1,15 +1,17 @@
-import { DatePicker, Flex, Input, Pagination, Table } from 'antd';
+import { Checkbox, DatePicker, Flex, Input, Pagination, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import React, { useMemo, useState } from 'react';
 import type { DBItem } from '../types';
+import Title from 'antd/es/typography/Title';
 
 dayjs.extend(isBetween);
 
 interface Props<T> {
 	data?: T[];
+	excludedFields?: (keyof T)[];
 	columns: ColumnsType<T>;
 	searchPlaceholder: string;
 }
@@ -18,11 +20,19 @@ const AntdTable = <T extends object & DBItem>({
 	data,
 	columns,
 	searchPlaceholder,
+	excludedFields,
 }: Props<T>) => {
 	const [searchText, setSearchText] = useState<string>('');
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [pageSize] = useState<number>(6);
 	const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
+	const [selectedColumns, setSelectedColumns] = useState<(keyof T)[]>(() => {
+		const allColumns = columns.map((col) => col.key as keyof T);
+		const defaultExcluded = ['createdAt', 'updatedAt'] as (keyof T)[];
+		const excludedSet = new Set([...(excludedFields || []), ...defaultExcluded]);
+
+		return allColumns.filter((key) => !excludedSet.has(key));
+	});
 
 	const filteredData = useMemo(() => {
 		return data?.filter((item) => {
@@ -33,20 +43,8 @@ const AntdTable = <T extends object & DBItem>({
 			);
 
 			const matchesDateRange = dateRange
-				? (item.createdAt &&
-						dayjs(item.createdAt).isBetween(
-							dateRange[0],
-							dateRange[1],
-							null,
-							'[]'
-						)) ||
-				  (item.updatedAt &&
-						dayjs(item.updatedAt).isBetween(
-							dateRange[0],
-							dateRange[1],
-							null,
-							'[]'
-						))
+				? item.createdAt &&
+				  dayjs(item.createdAt).isBetween(dateRange[0], dateRange[1], null, '[]')
 				: true;
 
 			return matchesSearch && matchesDateRange;
@@ -67,6 +65,14 @@ const AntdTable = <T extends object & DBItem>({
 		setCurrentPage(1);
 	};
 
+	const handleColumnChange = (checkedValues: (keyof T)[]) => {
+		setSelectedColumns(checkedValues);
+	};
+
+	const displayedColumns = columns.filter((col) =>
+		selectedColumns.includes(col.key as keyof T)
+	);
+
 	const paginatedData = filteredData?.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize
@@ -74,6 +80,17 @@ const AntdTable = <T extends object & DBItem>({
 
 	return (
 		<React.Fragment>
+			{/* Column Selector */}
+			<Title level={4}>Select Columns</Title>
+			<Checkbox.Group
+				options={columns.map((col) => ({
+					label: col.title as string,
+					value: col.key as keyof T,
+				}))}
+				value={selectedColumns}
+				onChange={handleColumnChange}
+			/>
+			{/* Search, Date Range Select and Pagination */}
 			<Flex align="center" justify="space-between" style={{ margin: '16px 0' }}>
 				<Input.Search
 					placeholder={searchPlaceholder}
@@ -85,11 +102,10 @@ const AntdTable = <T extends object & DBItem>({
 				/>
 				<DatePicker.RangePicker
 					size="middle"
-					placeholder={['Created At', 'Created At']}
+					placeholder={['First Created', 'Last Created']}
 					onChange={(e) => handleDateRangeChange(e as [Dayjs, Dayjs])}
 					style={{ marginLeft: '16px' }}
 				/>
-
 				<Pagination
 					current={currentPage}
 					total={filteredData?.length}
@@ -97,9 +113,10 @@ const AntdTable = <T extends object & DBItem>({
 					onChange={handleChangePage}
 				/>
 			</Flex>
+
 			<Table
 				rowKey="_id"
-				columns={columns}
+				columns={displayedColumns}
 				dataSource={paginatedData}
 				pagination={false}
 				scroll={{ x: 'max-content' }}
