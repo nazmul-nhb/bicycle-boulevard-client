@@ -1,10 +1,11 @@
 import { Icon } from '@iconify/react';
-import { Button, Col, Flex, Form, Row, Typography, Upload, type FormProps } from 'antd';
+import { Button, Col, Form, Row, Typography, type FormProps } from 'antd';
 import React, { useEffect } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
 import { useLocation, useNavigate } from 'react-router';
 import { useRegisterUserMutation } from '../../../app/api/authApi';
 import AntdFormInput from '../../../components/AntdFormInput';
+import DraggableUpload from '../../../components/DraggableUpload';
 import { useAuth } from '../../../hooks/useAuth';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { IRegisterUser } from '../../../types/user.types';
@@ -109,33 +110,13 @@ const RegisterForm: React.FC = () => {
 			</Row>
 
 			<Row gutter={16}>
-				<Col xs={24} sm={24}>
-					<Form.Item
-						rules={[{ required: true, message: 'Please upload an image!' }]}
-						label="Choose Your Image"
-						name="image"
-						valuePropName="fileList"
-						getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-					>
-						<Upload.Dragger
-							accept="image/*"
-							listType="picture"
-							maxCount={1}
-							beforeUpload={() => false}
-						>
-							<Flex align="center" gap={6}>
-								<Icon icon="uil:image-upload" width="36" height="36" />
-								<p>Click or drag an image file to this area</p>
-							</Flex>
-						</Upload.Dragger>
-					</Form.Item>
-				</Col>
-				{/* <AntdFormInput
-					label="Select an Image"
-					name="image"
-					type="upload"
+				<DraggableUpload
 					rules={[{ required: true, message: 'Please upload an image!' }]}
-				/> */}
+					label="Choose Your Image"
+					name="image"
+					accept="image/*"
+					listType="picture"
+				/>
 			</Row>
 
 			<Row>
@@ -147,13 +128,10 @@ const RegisterForm: React.FC = () => {
 							htmlType="submit"
 							loading={isLoading}
 							block
+							size="large"
 							style={{ width: '100%' }}
 							icon={
-								<Icon
-									icon="ant-design:register-outlined"
-									width="24"
-									height="24"
-								/>
+								<Icon icon="mdi:register-outline" width="24" height="24" />
 							}
 						>
 							Register

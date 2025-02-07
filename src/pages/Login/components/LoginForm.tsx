@@ -91,6 +91,8 @@ const LoginForm: React.FC = () => {
 					<Form.Item>
 						<Button
 							block
+							size="large"
+							style={{ width: '100%' }}
 							icon={
 								<Icon
 									icon="ant-design:login-outlined"
@@ -102,7 +104,6 @@ const LoginForm: React.FC = () => {
 							type="default"
 							htmlType="submit"
 							loading={isLoading}
-							style={{ width: '100%' }}
 						>
 							Login
 						</Button>
