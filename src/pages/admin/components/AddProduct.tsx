@@ -6,6 +6,7 @@ import { sanitizeFormData } from 'react-form-sanitization';
 import type ReactQuill from 'react-quill';
 import { useCreateProductMutation } from '../../../app/api/productApi';
 import AntdFormInput from '../../../components/AntdFormInput';
+import DraggableUpload from '../../../components/DraggableUpload';
 import QuillWrapper from '../../../components/QuillWrapper';
 import { categoryOptions } from '../../../configs/constants';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
@@ -162,11 +163,12 @@ const AddProduct = () => {
 			</Row>
 
 			<Row gutter={16}>
-				<AntdFormInput
-					label="Select an Image"
-					name="image"
-					type="upload"
+				<DraggableUpload
 					rules={[{ required: true, message: 'Please upload an image!' }]}
+					label="Choose an Image"
+					name="image"
+					accept="image/*"
+					listType="picture"
 				/>
 			</Row>
 

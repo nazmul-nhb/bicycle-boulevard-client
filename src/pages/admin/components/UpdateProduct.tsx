@@ -14,6 +14,7 @@ import { categoryOptions } from '../../../configs/constants';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { ICreateProduct, IUpdateProduct } from '../../../types/product.types';
 import { getUpdatedFields, previewAntdImage } from '../../../utils/helpers';
+import DraggableUpload from '../../../components/DraggableUpload';
 
 interface Props {
 	id: string;
@@ -196,7 +197,12 @@ const UpdateProduct = ({ id, setDrawerVisible, setSelectedProductId }: Props) =>
 			</Row>
 
 			<Row gutter={16}>
-				<AntdFormInput label="Select an Image" name="image" type="upload" />
+				<DraggableUpload
+					label="Choose an Image"
+					name="image"
+					accept="image/*"
+					listType="picture"
+				/>
 			</Row>
 
 			<Row>
