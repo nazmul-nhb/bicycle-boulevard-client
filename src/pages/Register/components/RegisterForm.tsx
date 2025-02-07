@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Col, Flex, Form, Row, Upload, type FormProps } from 'antd';
+import { Button, Col, Flex, Form, Row, Typography, Upload, type FormProps } from 'antd';
 import React, { useEffect } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
 import { useLocation, useNavigate } from 'react-router';
@@ -48,7 +48,21 @@ const RegisterForm: React.FC = () => {
 	};
 
 	return (
-		<Form form={registrationForm} onFinish={handleRegister} layout="vertical">
+		<Form
+			style={{
+				padding: '24px',
+				marginTop: '24px',
+				borderRadius: '12px',
+				backgroundColor: 'rgba(36, 36, 36, 0.61)',
+				backdropFilter: 'blur(10px)',
+				boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+				maxWidth: '640px',
+				width: '100%',
+			}}
+			form={registrationForm}
+			onFinish={handleRegister}
+			layout="vertical"
+		>
 			<Row gutter={16}>
 				<AntdFormInput
 					label="Name"
@@ -127,10 +141,44 @@ const RegisterForm: React.FC = () => {
 			<Row>
 				<Col xs={24}>
 					<Form.Item>
-						<Button type="primary" htmlType="submit" loading={isLoading}>
+						<Button
+							variant="solid"
+							type="default"
+							htmlType="submit"
+							loading={isLoading}
+							block
+							style={{ width: '100%' }}
+							icon={
+								<Icon
+									icon="ant-design:register-outlined"
+									width="24"
+									height="24"
+								/>
+							}
+						>
 							Register
 						</Button>
 					</Form.Item>
+				</Col>
+			</Row>
+
+			{/* Login Section */}
+			<Row justify="center">
+				<Col>
+					<Typography.Text style={{ color: '#fff', fontSize: '14px' }}>
+						Already have an account?
+					</Typography.Text>
+				</Col>
+			</Row>
+			<Row justify="center">
+				<Col>
+					<Button
+						type="link"
+						onClick={() => navigate('/login')}
+						style={{ fontSize: '14px' }}
+					>
+						Login Here
+					</Button>
 				</Col>
 			</Row>
 		</Form>

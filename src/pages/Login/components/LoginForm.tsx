@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Col, Form, Row } from 'antd';
+import { Button, Col, Form, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useLoginUserMutation } from '../../../app/api/authApi';
@@ -41,17 +41,27 @@ const LoginForm: React.FC = () => {
 		}
 	};
 
-	/** Handles Google login */
-	const handleGoogleLogin = () => {
-		console.info('Google login clicked!');
-	};
-
 	return (
-		<Form size="large" form={loginForm} onFinish={handleLogin} layout="vertical">
+		<Form
+			style={{
+				padding: '24px',
+				marginTop: '24px',
+				borderRadius: '12px',
+				backgroundColor: 'rgba(36, 36, 36, 0.61)',
+				backdropFilter: 'blur(10px)',
+				boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+				maxWidth: '640px',
+				width: '100%',
+			}}
+			size="large"
+			form={loginForm}
+			onFinish={handleLogin}
+			layout="vertical"
+		>
 			{/* Email Field */}
 			<Row gutter={16}>
 				<AntdFormInput
-					colSpan={{ sm: 20, xs: 24 }}
+					colSpan={{ sm: 24, xs: 24 }}
 					label="Your Email"
 					name="email"
 					type="text"
@@ -66,7 +76,7 @@ const LoginForm: React.FC = () => {
 			{/* Password Field */}
 			<Row gutter={16}>
 				<AntdFormInput
-					colSpan={{ sm: 20, xs: 24 }}
+					colSpan={{ sm: 24, xs: 24 }}
 					label="Your Password"
 					name="password"
 					type="password"
@@ -77,18 +87,19 @@ const LoginForm: React.FC = () => {
 
 			{/* Submit Button */}
 			<Row>
-				<Col xs={12}>
+				<Col xs={24}>
 					<Form.Item>
 						<Button
 							block
 							icon={
 								<Icon
-									icon="solar:login-3-bold-duotone"
+									icon="ant-design:login-outlined"
 									width="24"
 									height="24"
 								/>
 							}
-							type="primary"
+							variant="solid"
+							type="default"
 							htmlType="submit"
 							loading={isLoading}
 							style={{ width: '100%' }}
@@ -99,19 +110,23 @@ const LoginForm: React.FC = () => {
 				</Col>
 			</Row>
 
-			{/* Google Login Button */}
-			<Row>
-				<Col xs={12}>
-					<Form.Item>
-						<Button
-							block
-							type="default"
-							icon={<Icon icon="devicon:google" width="24" height="24" />}
-							onClick={handleGoogleLogin}
-						>
-							Login
-						</Button>
-					</Form.Item>
+			{/* Register Section */}
+			<Row justify="center">
+				<Col>
+					<Typography.Text style={{ color: '#fff', fontSize: '14px' }}>
+						Don't have an account?
+					</Typography.Text>
+				</Col>
+			</Row>
+			<Row justify="center">
+				<Col>
+					<Button
+						type="link"
+						onClick={() => navigate('/register')}
+						style={{ fontSize: '14px' }}
+					>
+						Register Here
+					</Button>
 				</Col>
 			</Row>
 		</Form>
