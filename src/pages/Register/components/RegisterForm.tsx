@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Col, Form, Row, type FormProps } from 'antd';
+import { Button, Col, Flex, Form, Row, Upload, type FormProps } from 'antd';
 import React, { useEffect } from 'react';
 import { sanitizeFormData } from 'react-form-sanitization';
 import { useLocation, useNavigate } from 'react-router';
@@ -95,12 +95,33 @@ const RegisterForm: React.FC = () => {
 			</Row>
 
 			<Row gutter={16}>
-				<AntdFormInput
+				<Col xs={24} sm={24}>
+					<Form.Item
+						rules={[{ required: true, message: 'Please upload an image!' }]}
+						label="Choose Your Image"
+						name="image"
+						valuePropName="fileList"
+						getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+					>
+						<Upload.Dragger
+							accept="image/*"
+							listType="picture"
+							maxCount={1}
+							beforeUpload={() => false}
+						>
+							<Flex align="center" gap={6}>
+								<Icon icon="uil:image-upload" width="36" height="36" />
+								<p>Click or drag an image file to this area</p>
+							</Flex>
+						</Upload.Dragger>
+					</Form.Item>
+				</Col>
+				{/* <AntdFormInput
 					label="Select an Image"
 					name="image"
 					type="upload"
 					rules={[{ required: true, message: 'Please upload an image!' }]}
-				/>
+				/> */}
 			</Row>
 
 			<Row>

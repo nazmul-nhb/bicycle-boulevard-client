@@ -66,6 +66,7 @@ export const generateFilters = <T>(data: T[], key: keyof T) => {
 export const previewAntdImage = (src: string) => {
 	return [
 		{
+			uid: '-1',
 			name: 'Preview Image',
 			status: 'done',
 			url: getImageLink(src),
