@@ -112,7 +112,7 @@ const RegisterForm: React.FC = () => {
 			<Row gutter={16}>
 				<DraggableUpload
 					rules={[{ required: true, message: 'Please upload an image!' }]}
-					label="Choose Your Image"
+					label="Choose an Image for Your Profile"
 					name="image"
 					accept="image/*"
 					listType="picture"

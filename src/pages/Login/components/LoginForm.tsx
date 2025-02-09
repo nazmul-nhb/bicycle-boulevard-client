@@ -50,7 +50,7 @@ const LoginForm: React.FC = () => {
 				backgroundColor: 'rgba(36, 36, 36, 0.61)',
 				backdropFilter: 'blur(10px)',
 				boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-				maxWidth: '640px',
+				maxWidth: '400px',
 				width: '100%',
 			}}
 			size="large"

@@ -11,7 +11,7 @@ const Register: React.FC = () => {
 				style={{
 					overflow: 'hidden',
 					position: 'relative',
-					backgroundImage: 'url("/assets/bicycle-handle.jpg")',
+					backgroundImage: 'url("/assets/bicycle-full.jpg")',
 					backgroundRepeat: 'no-repeat',
 					backgroundPosition: 'center',
 					backgroundSize: 'cover',
@@ -27,8 +27,8 @@ const Register: React.FC = () => {
 						height: '100%',
 						position: 'absolute',
 						backgroundColor: 'rgba(0, 0, 0, 0.3)',
-						backdropFilter: 'blur(4px)',
-						WebkitBackdropFilter: 'blur(4px)',
+						backdropFilter: 'blur(2px)',
+						WebkitBackdropFilter: 'blur(2px)',
 					}}
 				/>
 				<Flex
