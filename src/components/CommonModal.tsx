@@ -62,7 +62,7 @@ const CommonModal: FC<Props> = ({ title, children, visible, width = 540, onClose
 				<Draggable
 					disabled={disabled}
 					bounds={bounds}
-					nodeRef={draggleRef}
+					nodeRef={draggleRef as React.RefObject<HTMLElement>}
 					onStart={(event, uiData) => onStart(event, uiData)}
 				>
 					<div ref={draggleRef}>{modal}</div>

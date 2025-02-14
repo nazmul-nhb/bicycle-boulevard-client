@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Flex, Image, Popconfirm, Spin, Tag, Tooltip } from 'antd';
+import { Button, Flex, Popconfirm, Spin, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { generateQueryParams, getColorForInitial, truncateString } from 'nhb-toolbox';
 import { Fragment, useState } from 'react';
@@ -7,14 +7,15 @@ import {
 	useDeleteProductMutation,
 	useGetAllProductsQuery,
 } from '../../../app/api/productApi';
+import AntdImage from '../../../components/AntdImage';
 import AntdTable from '../../../components/AntdTable';
 import CommonDrawer from '../../../components/CommonDrawer';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
+import { useTheme } from '../../../hooks/useTheme';
 import type { IProduct } from '../../../types/product.types';
 import { formatDateTimeDynamic, getTimeStamp } from '../../../utils/dates';
 import { generateFilters, getImageLink } from '../../../utils/helpers';
 import UpdateProduct from './UpdateProduct';
-import { useTheme } from '../../../hooks/useTheme';
 
 const ProductTable = () => {
 	const { isDarkTheme } = useTheme();
@@ -50,12 +51,12 @@ const ProductTable = () => {
 			sorter: (a, b) => a.name.localeCompare(b.name),
 			render: (name: string, product) => (
 				<Flex align="center" gap={6}>
-					<Image
+					<AntdImage
 						width={40}
 						height={40}
 						src={getImageLink(product.image)}
-						preview={{ mask: <Icon icon="mdi:eye" /> }}
 						alt={product.name}
+						preview={false}
 					/>
 					<Tooltip title={name}>
 						<span style={{ fontWeight: 'bold' }}>

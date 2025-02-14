@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Flex, Image, Popconfirm, Spin, Tag, Tooltip } from 'antd';
+import { Button, Flex, Popconfirm, Spin, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { capitalizeString, getColorForInitial, truncateString } from 'nhb-toolbox';
 import { Fragment } from 'react';
@@ -8,12 +8,13 @@ import {
 	useGetAllUsersQuery,
 	useReactivateUserMutation,
 } from '../../../app/api/userAdminApi';
+import AntdImage from '../../../components/AntdImage';
 import AntdTable from '../../../components/AntdTable';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
+import { useTheme } from '../../../hooks/useTheme';
 import type { ISingleUser } from '../../../types/user.types';
 import { formatDateTimeDynamic, getTimeStamp } from '../../../utils/dates';
 import { generateFilters, getImageLink } from '../../../utils/helpers';
-import { useTheme } from '../../../hooks/useTheme';
 
 const UsersTable = () => {
 	const { isDarkTheme } = useTheme();
@@ -56,12 +57,14 @@ const UsersTable = () => {
 			sorter: (a, b) => a.name.localeCompare(b.name),
 			render: (name: string, user) => (
 				<Flex align="center" gap={6}>
-					<Image
+					<AntdImage
 						width={40}
 						height={40}
 						src={getImageLink(user.image)}
-						preview={{ mask: <Icon icon="mdi:eye" /> }}
 						alt={user.name}
+						style={{
+							border: '5px solid red',
+						}}
 					/>
 					<Tooltip title={name}>
 						<span style={{ fontWeight: 'bold' }}>
