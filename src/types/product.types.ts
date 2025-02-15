@@ -19,8 +19,9 @@ export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'>,
 
 // export interface IProduct extends DBItem {}
 
-export interface IProductDetails extends IProduct {
-	description: string;
+export interface IProductDetails extends Omit<ICreateProduct, 'image'> {
+	image: string;
+	createdBy: string;
 }
 
 export interface IUpdateProduct extends Partial<Omit<ICreateProduct, 'inStock'>> {

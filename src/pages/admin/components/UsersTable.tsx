@@ -68,7 +68,7 @@ const UsersTable = () => {
 					/>
 					<Tooltip title={name}>
 						<span style={{ fontWeight: 'bold' }}>
-							{name.length > 24 ? truncateString(name, 24) : name}
+							{truncateString(name, 24)}
 						</span>
 					</Tooltip>
 				</Flex>

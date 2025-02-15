@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Button, Flex, Popconfirm, Spin, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { generateQueryParams, getColorForInitial, truncateString } from 'nhb-toolbox';
+import { getColorForInitial, truncateString } from 'nhb-toolbox';
 import { Fragment, useState } from 'react';
 import {
 	useDeleteProductMutation,
@@ -20,10 +20,10 @@ import UpdateProduct from './UpdateProduct';
 const ProductTable = () => {
 	const { isDarkTheme } = useTheme();
 	const { handleError, handleSuccess } = useNotifyResponse();
-	const queryParams = generateQueryParams({ sort: null });
+
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
 
-	const { data, isLoading } = useGetAllProductsQuery(queryParams);
+	const { data, isLoading } = useGetAllProductsQuery({ sortBy: 'createdAt', limit: 0 });
 
 	const [selectedProductId, setSelectedProductId] = useState<string>('');
 
@@ -60,7 +60,7 @@ const ProductTable = () => {
 					/>
 					<Tooltip title={name}>
 						<span style={{ fontWeight: 'bold' }}>
-							{name.length > 24 ? truncateString(name, 24) : name}
+							{truncateString(name, 24)}
 						</span>
 					</Tooltip>
 				</Flex>

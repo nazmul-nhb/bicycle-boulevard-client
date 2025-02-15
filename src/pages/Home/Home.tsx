@@ -1,59 +1,9 @@
-import { Button } from 'antd';
-import React, { useState } from 'react';
-import { AntNotifications } from '../../App';
-import CommonDrawer from '../../components/CommonDrawer';
-import CommonModal from '../../components/CommonModal';
+import Products from './components/Products';
 
 const Home: React.FC = () => {
-	const [isDrawerVisible, setDrawerVisible] = useState(false);
-	const [isModalVisible, setModalVisible] = useState(false);
-	const { notify, toastify, modal } = AntNotifications(true);
-
 	return (
 		<section>
-			<Button onClick={() => toastify.warning('Hello Toast!')} type="default">
-				Toast
-			</Button>
-			<Button
-				onClick={() => notify.success({ message: 'Hello Notification!' })}
-				type="default"
-			>
-				Notify
-			</Button>
-			<Button
-				onClick={() =>
-					modal.error({
-						title: 'Modal',
-						content: 'This is Modal!',
-						cancelText: 'Cancel',
-						closable: true,
-					})
-				}
-				type="default"
-			>
-				Show Modal
-			</Button>
-			<Button onClick={() => setDrawerVisible(true)} type="primary">
-				Open Drawer
-			</Button>
-			<Button onClick={() => setModalVisible(true)} danger>
-				Open Modal
-			</Button>
-			<CommonDrawer
-				title="My Drawer"
-				visible={isDrawerVisible}
-				onClose={() => setDrawerVisible(false)}
-			>
-				<p>This is the drawer content.</p>
-			</CommonDrawer>
-
-			<CommonModal
-				title="My Modal"
-				visible={isModalVisible}
-				onClose={() => setModalVisible(false)}
-			>
-				<p>This is the modal content.</p>
-			</CommonModal>
+			<Products />
 		</section>
 	);
 };

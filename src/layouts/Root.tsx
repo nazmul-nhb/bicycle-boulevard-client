@@ -26,8 +26,8 @@ const Root: React.FC = () => {
 				) : null)}
 			<Layout>
 				<Navbar user={user} algorithm={algorithm} isDarkTheme={isDarkTheme} />
-				<div style={{ overflow: 'auto', height: '100vh', padding: '8px 12px' }}>
-					<Content style={{ minHeight: '100vh' }}>
+				<div style={{ overflow: 'auto', height: '100vh' }}>
+					<Content style={{ minHeight: '100vh', padding: '8px 12px' }}>
 						<Outlet />
 					</Content>
 					<Footer style={{ textAlign: 'center' }}>
