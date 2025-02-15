@@ -26,6 +26,10 @@ input:-webkit-autofill:active {
 	}
 }
 
+.ant-picker-dropdown {
+	overflow-x: auto;
+}
+
 /* Custom Scrollbar */
 *,
 .bicycle-scrollbar {

@@ -103,7 +103,11 @@ const AntdImage: React.FC<Props> = ({
 						backdropFilter: 'blur(2px)',
 					},
 					toolbarRender: (originNode, _) => (
-						<Flex align="center" justify="center" className="toolbar-wrapper">
+						<Flex
+							align="center"
+							justify="center"
+							className="toolbar-wrapper ant-image-preview-operations"
+						>
 							<Button
 								type="text"
 								onClick={handleImageInfo}

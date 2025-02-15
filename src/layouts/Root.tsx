@@ -1,14 +1,14 @@
+import { Layout } from 'antd';
 import React from 'react';
 import { Outlet } from 'react-router';
-import { Layout } from 'antd';
 import { configs } from '../configs/site_configs';
-import Navbar from './components/Navbar';
-import { useGetSelectedPath } from '../hooks/useSelectedPath';
-import Sidebar from './components/Sidebar';
-import { isDashboard } from '../utils/helpers';
-import { useIsMobile } from '../hooks/useIsMobile';
 import { useAuth } from '../hooks/useAuth';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+import { useGetSelectedPath } from '../hooks/useSelectedPath';
 import { useTheme } from '../hooks/useTheme';
+import { isDashboard } from '../utils/helpers';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 
 const { Content, Footer } = Layout;
 
@@ -16,7 +16,7 @@ const Root: React.FC = () => {
 	const { user } = useAuth();
 	const { algorithm, isDarkTheme } = useTheme();
 	const { selectedPath } = useGetSelectedPath();
-	const isMobile = useIsMobile();
+	const isMobile = useMediaQuery();
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>

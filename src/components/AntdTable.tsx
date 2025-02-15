@@ -1,11 +1,12 @@
 import { Checkbox, DatePicker, Flex, Input, Pagination, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import Title from 'antd/es/typography/Title';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import React, { useMemo, useState } from 'react';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import type { DBItem } from '../types';
-import Title from 'antd/es/typography/Title';
 
 dayjs.extend(isBetween);
 
@@ -33,6 +34,8 @@ const AntdTable = <T extends object & DBItem>({
 
 		return allColumns.filter((key) => !excludedSet.has(key));
 	});
+
+	const isMobile = useMediaQuery(768);
 
 	const filteredData = useMemo(() => {
 		return data?.filter((item) => {
@@ -91,26 +94,43 @@ const AntdTable = <T extends object & DBItem>({
 				onChange={handleColumnChange}
 			/>
 			{/* Search, Date Range Select and Pagination */}
-			<Flex align="center" justify="space-between" style={{ margin: '16px 0' }}>
+			<Flex
+				gap={8}
+				align="center"
+				justify="space-between"
+				// className="md-flex-col"
+				wrap="wrap"
+				style={{
+					margin: '16px 0',
+					// flexDirection: isMobile ? 'row-reverse' : 'row',
+				}}
+			>
 				<Input.Search
 					placeholder={searchPlaceholder}
 					onSearch={handleSearch}
 					onChange={(e) => handleSearch(e.target.value)}
 					allowClear
 					size="middle"
-					style={{ width: '240px' }}
-				/>
-				<DatePicker.RangePicker
-					size="middle"
-					placeholder={['First Created', 'Last Created']}
-					onChange={(e) => handleDateRangeChange(e as [Dayjs, Dayjs])}
-					style={{ marginLeft: '16px' }}
+					style={{
+						width: isMobile ? '60%' : 'auto',
+						// flexDirection: isMobile ? 'column' : 'row',
+					}}
 				/>
 				<Pagination
 					current={currentPage}
 					total={filteredData?.length}
 					pageSize={pageSize}
 					onChange={handleChangePage}
+				/>
+				<DatePicker.RangePicker
+					showTime={{ format: 'HH:mm' }}
+					format="MM-DD HH:mm"
+					size="middle"
+					maxDate={dayjs()}
+					placement="bottomLeft"
+					placeholder={['First Created', 'Last Created']}
+					onChange={(e) => handleDateRangeChange(e as [Dayjs, Dayjs])}
+					style={{ width: isMobile ? '100%' : '240px' }}
 				/>
 			</Flex>
 

@@ -13,7 +13,7 @@ import { useAppDispatch } from '../../app/hooks';
 import type { TRootState } from '../../app/store';
 import { routes } from '../../configs/route_list';
 import { configs } from '../../configs/site_configs';
-import { useIsMobile } from '../../hooks/useIsMobile';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useGetSelectedPath } from '../../hooks/useSelectedPath';
 import { getImageLink, isDashboard } from '../../utils/helpers';
 import { formatRoutes } from '../../utils/routeUtils';
@@ -27,7 +27,7 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 	const [open, setOpen] = useState<boolean>(false);
-	const isMobile = useIsMobile();
+	const isMobile = useMediaQuery();
 	const dispatch = useAppDispatch();
 	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
 	const { modal } = AntNotifications(true);
