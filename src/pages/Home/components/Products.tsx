@@ -14,10 +14,12 @@ import {
 import { useState } from 'react';
 import { useGetAllProductsQuery } from '../../../app/api/productApi';
 import ProductCard from '../../../components/ProductCard';
-import { categoryOptions, PRODUCT_CATEGORIES } from '../../../configs/constants';
+import { categoryOptions } from '../../../configs/constants';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import useQueryParams from '../../../hooks/useQueryParams';
 import type { IQueryParams } from '../../../types';
 import type { IProduct } from '../../../types/product.types';
+import { debounceAction } from '../../../utils/helpers';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -25,16 +27,24 @@ const { Option } = Select;
 const Products = () => {
 	const isMobile = useMediaQuery(768);
 	const [visible, setVisible] = useState(false);
-	const [search, setSearch] = useState('');
-	const [category, setCategory] = useState<IProduct['category'] | null>(null);
+
+	const { getQueryParam, setQueryParams } = useQueryParams();
+
+	const [searchInput, setSearchInput] = useState(getQueryParam('search') || '');
+	const [search, setSearch] = useState(getQueryParam('search') || '');
+
+	const [category, setCategory] = useState<IProduct['category'] | 'all'>(
+		(getQueryParam('category') as IProduct['category']) || 'all'
+	);
+
 	const [sort, setSort] = useState<Pick<IQueryParams, 'sortBy' | 'sortOrder'>>({
-		sortBy: 'createdAt',
-		sortOrder: 'desc',
+		sortBy: getQueryParam('sort') || 'createdAt',
+		sortOrder: (getQueryParam('sortOrder') as 'asc' | 'desc') || 'desc',
 	});
 
 	const { data, isLoading } = useGetAllProductsQuery({
 		search,
-		category,
+		category: category === 'all' ? '' : category,
 		...sort,
 		page: 1,
 		limit: 12,
@@ -44,7 +54,7 @@ const Products = () => {
 		setVisible(true);
 	};
 
-	const onClose = () => {
+	const closeDrawer = () => {
 		setVisible(false);
 	};
 
@@ -52,14 +62,23 @@ const Products = () => {
 		const [sortBy, sortOrder] = value.split(':');
 
 		setSort({ sortBy, sortOrder: sortOrder as 'asc' | 'desc' });
+
+		setQueryParams({ sortBy, sortOrder });
 	};
 
-	const handleCategoryFilter = (value: IProduct['category']) => {
-		if (!Object.values(PRODUCT_CATEGORIES).includes(value)) {
-			setCategory(null);
-		} else {
-			setCategory(value);
-		}
+	const handleCategoryFilter = (value: typeof category) => {
+		setCategory(value);
+		setQueryParams({ category: value });
+	};
+
+	const debouncedSearch = debounceAction((value: string) => {
+		setSearch(value);
+		setQueryParams({ search: value });
+	}, 500);
+
+	const handleSearch = (value: string) => {
+		setSearchInput(value);
+		debouncedSearch(value);
 	};
 
 	return (
@@ -84,6 +103,8 @@ const Products = () => {
 					Filter
 				</Button>
 			</Flex>
+
+			{/* ! TODO: Create Separate Component */}
 
 			{/* Products Grid */}
 			{isLoading ? (
@@ -113,17 +134,19 @@ const Products = () => {
 			{/* Drawer for Mobile */}
 			<Drawer
 				title="Filters"
-				placement={isMobile ? 'bottom' : 'left'}
+				placement={isMobile ? 'bottom' : 'right'}
 				closable={true}
-				onClose={onClose}
+				onClose={closeDrawer}
 				open={visible}
 				height="auto"
 				// style={{ padding: '20px' }}
 			>
 				<Search
 					allowClear
+					value={searchInput}
 					placeholder="Search products..."
-					onSearch={(value) => setSearch(value)}
+					onSearch={handleSearch}
+					onChange={(e) => handleSearch(e.target.value)}
 					style={{ marginBottom: '20px' }}
 				/>
 				<div style={{ marginBottom: '20px' }}>
@@ -133,8 +156,8 @@ const Products = () => {
 				<div style={{ marginBottom: '20px' }}>
 					<h4>Category</h4>
 					<Select
-						options={[{ value: null, label: 'All' }, ...categoryOptions]}
-						defaultValue={null}
+						options={[{ value: 'all', label: 'All' }, ...categoryOptions]}
+						defaultValue={category}
 						style={{ width: '100%' }}
 						onChange={handleCategoryFilter}
 					/>
@@ -142,7 +165,7 @@ const Products = () => {
 				<div>
 					<h4>Sort By</h4>
 					<Select
-						defaultValue="createdAt:desc"
+						defaultValue={`${sort.sortBy}:${sort.sortOrder}`}
 						style={{ width: '100%' }}
 						onChange={handleSortChange}
 					>

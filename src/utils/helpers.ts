@@ -95,3 +95,30 @@ export const getUpdatedFields = <T extends Record<string, any>>(
 
 	return updatedFields;
 };
+
+/**
+ * * A generic debounce function that delays the execution of a callback.
+ *
+ * @template T - The type of the callback function.
+ * @param callback - The function to debounce.
+ * @param delay - The delay in milliseconds.
+ * @returns A debounced version of the callback function.
+ *
+ * @example
+ * const debouncedSearch = debounceAction((query: string) => {
+ *   console.log(`Searching for: ${query}`);
+ * }, 300);
+ *
+ * debouncedSearch('laptop'); // Executes after 300ms of inactivity.
+ */
+export const debounceAction = <T extends (...args: any[]) => void>(
+	callback: T,
+	delay: number
+): ((...args: Parameters<T>) => void) => {
+	let timeoutId: ReturnType<typeof setTimeout>;
+
+	return (...args: Parameters<T>) => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => callback(...args), delay);
+	};
+};
