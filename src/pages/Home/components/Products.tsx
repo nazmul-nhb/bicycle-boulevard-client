@@ -1,17 +1,44 @@
 import { Icon } from '@iconify/react';
-import { Button, Col, Drawer, Flex, Input, Row, Select, Slider } from 'antd';
+import {
+	Button,
+	Col,
+	Drawer,
+	Empty,
+	Flex,
+	Input,
+	Row,
+	Select,
+	Skeleton,
+	Slider,
+} from 'antd';
 import { useState } from 'react';
 import { useGetAllProductsQuery } from '../../../app/api/productApi';
 import ProductCard from '../../../components/ProductCard';
+import { categoryOptions, PRODUCT_CATEGORIES } from '../../../configs/constants';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
+import type { IQueryParams } from '../../../types';
+import type { IProduct } from '../../../types/product.types';
 
 const { Search } = Input;
 const { Option } = Select;
 
 const Products = () => {
-	const { data } = useGetAllProductsQuery({ sortBy: 'createdAt', page: 1, limit: 12 });
-	const [visible, setVisible] = useState(false);
 	const isMobile = useMediaQuery(768);
+	const [visible, setVisible] = useState(false);
+	const [search, setSearch] = useState('');
+	const [category, setCategory] = useState<IProduct['category'] | null>(null);
+	const [sort, setSort] = useState<Pick<IQueryParams, 'sortBy' | 'sortOrder'>>({
+		sortBy: 'createdAt',
+		sortOrder: 'desc',
+	});
+
+	const { data, isLoading } = useGetAllProductsQuery({
+		search,
+		category,
+		...sort,
+		page: 1,
+		limit: 12,
+	});
 
 	const showDrawer = () => {
 		setVisible(true);
@@ -19,6 +46,20 @@ const Products = () => {
 
 	const onClose = () => {
 		setVisible(false);
+	};
+
+	const handleSortChange = (value: string) => {
+		const [sortBy, sortOrder] = value.split(':');
+
+		setSort({ sortBy, sortOrder: sortOrder as 'asc' | 'desc' });
+	};
+
+	const handleCategoryFilter = (value: IProduct['category']) => {
+		if (!Object.values(PRODUCT_CATEGORIES).includes(value)) {
+			setCategory(null);
+		} else {
+			setCategory(value);
+		}
 	};
 
 	return (
@@ -43,14 +84,31 @@ const Products = () => {
 					Filter
 				</Button>
 			</Flex>
+
 			{/* Products Grid */}
-			<Row gutter={[24, 24]}>
-				{data?.data?.map((product) => (
-					<Col key={product._id} xs={24} sm={12} md={8} lg={6}>
-						<ProductCard product={product} />
-					</Col>
-				))}
-			</Row>
+			{isLoading ? (
+				<Row gutter={[24, 24]}>
+					{Array.from({ length: 12 }).map((_, index) => (
+						<Col key={index} xs={24} sm={12} md={8} lg={6}>
+							<Skeleton active={isLoading} />
+						</Col>
+					))}
+				</Row>
+			) : data?.data?.length === 0 ? (
+				<Empty
+					image={Empty.PRESENTED_IMAGE_SIMPLE}
+					description="No Products Found!"
+					style={{ marginTop: 40 }}
+				/>
+			) : (
+				<Row gutter={[24, 24]}>
+					{data?.data?.map((product) => (
+						<Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+							<ProductCard product={product} />
+						</Col>
+					))}
+				</Row>
+			)}
 
 			{/* Drawer for Mobile */}
 			<Drawer
@@ -63,8 +121,9 @@ const Products = () => {
 				// style={{ padding: '20px' }}
 			>
 				<Search
+					allowClear
 					placeholder="Search products..."
-					onSearch={(value) => console.log(value)}
+					onSearch={(value) => setSearch(value)}
 					style={{ marginBottom: '20px' }}
 				/>
 				<div style={{ marginBottom: '20px' }}>
@@ -73,19 +132,24 @@ const Products = () => {
 				</div>
 				<div style={{ marginBottom: '20px' }}>
 					<h4>Category</h4>
-					<Select defaultValue="all" style={{ width: '100%' }}>
-						<Option value="all">All</Option>
-						<Option value="electronics">Electronics</Option>
-						<Option value="clothing">Clothing</Option>
-						<Option value="books">Books</Option>
-					</Select>
+					<Select
+						options={[{ value: null, label: 'All' }, ...categoryOptions]}
+						defaultValue={null}
+						style={{ width: '100%' }}
+						onChange={handleCategoryFilter}
+					/>
 				</div>
 				<div>
 					<h4>Sort By</h4>
-					<Select defaultValue="createdAt" style={{ width: '100%' }}>
-						<Option value="createdAt">Newest</Option>
-						<Option value="priceAsc">Price: Low to High</Option>
-						<Option value="priceDesc">Price: High to Low</Option>
+					<Select
+						defaultValue="createdAt:desc"
+						style={{ width: '100%' }}
+						onChange={handleSortChange}
+					>
+						<Option value="createdAt:desc">Newest</Option>
+						<Option value="createdAt:asc">Oldest</Option>
+						<Option value="price:asc">Price: Low to High</Option>
+						<Option value="price:desc">Price: High to Low</Option>
 					</Select>
 				</div>
 			</Drawer>

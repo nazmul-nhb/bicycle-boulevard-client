@@ -102,6 +102,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						<Menu
 							style={{
 								backgroundColor: isDarkTheme ? '#141414' : '#727272',
+								borderBottom: 0,
 							}}
 							theme={isDarkTheme ? 'dark' : 'light'}
 							mode="horizontal"
