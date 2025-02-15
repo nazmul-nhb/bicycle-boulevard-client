@@ -23,7 +23,7 @@ const ResponsiveSidebar: React.FC<Props> = ({ user, open, setOpen, isDarkTheme }
 			placement="left"
 			footer={null}
 			closable={true}
-			extra={'Hello World'}
+			extra={user ? user.name : 'Welcome'}
 			width={260}
 			style={{ background: isDarkTheme ? '#141414' : '#727272', padding: 0 }}
 		>

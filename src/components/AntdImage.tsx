@@ -147,7 +147,9 @@ const AntdImage: React.FC<Props> = ({
 					title={truncateString(alt, 64)}
 				>
 					<Descriptions.Item span={2} label="URL">
-						<Typography.Link copyable>{src}</Typography.Link>
+						<Typography.Link href={src} target="_blank" copyable>
+							{src}
+						</Typography.Link>
 					</Descriptions.Item>
 					<Descriptions.Item span={2} label="Description">
 						{alt}

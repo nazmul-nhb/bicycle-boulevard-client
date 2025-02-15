@@ -23,8 +23,12 @@ const Sidebar: React.FC<Props> = ({ user, isDarkTheme }) => {
 		<Sider
 			width={240}
 			style={{
+				height: '100vh',
+				overflow: 'hidden',
 				backgroundColor: isDarkTheme ? '#141414' : '#727272',
 			}}
+			collapsible
+			collapsed={isCollapsed}
 			trigger={
 				<Button
 					type="text"
@@ -45,14 +49,11 @@ const Sidebar: React.FC<Props> = ({ user, isDarkTheme }) => {
 					}}
 				/>
 			}
-			collapsible={true}
-			collapsed={isCollapsed}
 		>
 			<Title
 				style={{
-					// color: isDarkTheme ? '#d9d9d9' : '#000000',
 					textAlign: 'center',
-					paddingTop: 8,
+					paddingTop: 16,
 					textWrap: 'nowrap',
 				}}
 				level={3}
@@ -64,21 +65,29 @@ const Sidebar: React.FC<Props> = ({ user, isDarkTheme }) => {
 					configs.site_title
 				)}
 			</Title>
-			<Menu
+			{/* Make the menu scrollable independently */}
+			<div
 				style={{
-					backgroundColor: isDarkTheme ? '#141414' : '#727272',
+					flex: 1,
+					overflowY: 'auto',
+					height: 'calc(100vh - 100px)', // Adjust based on content
 				}}
-				theme={isDarkTheme ? 'dark' : 'light'}
-				mode="inline"
-				onClick={selectCurrentPath}
-				defaultSelectedKeys={[selectedPath]} 
-				// openKeys={[selectedPath]}
-				items={formatRoutes(routes, 'menu').filter(
-					(route) =>
-						isDashboard(route?.key as string) &&
-						(route?.key as string).includes(user.role)
-				)}
-			/>
+			>
+				<Menu
+					style={{
+						backgroundColor: isDarkTheme ? '#141414' : '#727272',
+					}}
+					theme={isDarkTheme ? 'dark' : 'light'}
+					mode="inline"
+					onClick={selectCurrentPath}
+					defaultSelectedKeys={[selectedPath]}
+					items={formatRoutes(routes, 'menu').filter(
+						(route) =>
+							isDashboard(route?.key as string) &&
+							(route?.key as string).includes(user.role)
+					)}
+				/>
+			</div>
 		</Sider>
 	);
 };

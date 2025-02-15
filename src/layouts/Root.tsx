@@ -19,19 +19,21 @@ const Root: React.FC = () => {
 	const isMobile = useMediaQuery();
 
 	return (
-		<Layout style={{ minHeight: '100vh' }}>
+		<Layout style={{ height: '100vh', overflow: 'hidden' }}>
 			{isMobile ||
 				(user && isDashboard(selectedPath) ? (
 					<Sidebar user={user} isDarkTheme={isDarkTheme} />
 				) : null)}
 			<Layout>
 				<Navbar user={user} algorithm={algorithm} isDarkTheme={isDarkTheme} />
-				<Content style={{ padding: '8px 12px' }}>
-					<Outlet />
-				</Content>
-				<Footer style={{ textAlign: 'center' }}>
-					&copy; {new Date().getFullYear()} {configs.site_title}
-				</Footer>
+				<div style={{ overflow: 'auto', height: '100vh', padding: '8px 12px' }}>
+					<Content style={{ minHeight: '100vh' }}>
+						<Outlet />
+					</Content>
+					<Footer style={{ textAlign: 'center' }}>
+						&copy; {new Date().getFullYear()} {configs.site_title}
+					</Footer>
+				</div>
 			</Layout>
 		</Layout>
 	);

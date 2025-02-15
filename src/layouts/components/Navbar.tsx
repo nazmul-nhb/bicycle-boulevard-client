@@ -50,6 +50,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 	return (
 		<Header
 			style={{
+				padding: isMobile ? '0 8px' : '0 24px',
 				backgroundColor: isDarkTheme ? '#141414' : '#727272',
 			}}
 		>
@@ -77,18 +78,20 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						setOpen={setOpen}
 					/>
 					{/* Site Title */}
-					<Title
-						style={{
-							textAlign: 'center',
-							paddingTop: 8,
-							marginLeft: 16,
-							textWrap: 'nowrap',
-						}}
-						level={3}
-						title={configs.site_title}
-					>
-						{configs.site_title}
-					</Title>
+					<Link to="/">
+						<Title
+							style={{
+								textAlign: 'center',
+								paddingTop: 8,
+								marginLeft: isMobile ? 8 : 16,
+								textWrap: 'nowrap',
+							}}
+							level={isMobile ? 3 : 4}
+							title={configs.site_title}
+						>
+							{configs.site_title}
+						</Title>
+					</Link>
 				</Flex>
 				<Flex
 					justify={isMobile ? 'flex-end' : 'space-between'}
@@ -191,12 +194,13 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 							<Link to="login">
 								<Button
 									type="primary"
+									title="Login"
 									color="green"
 									shape="default"
 									icon={<Icon icon="mdi:lock" width="18" height="18" />}
 									style={{ font: '18px bold' }}
 								>
-									Login
+									{isMobile || 'Login'}
 								</Button>
 							</Link>
 						)}

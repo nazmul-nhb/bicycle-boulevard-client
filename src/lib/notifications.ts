@@ -31,6 +31,7 @@ type SoundEffect =
 
 /**
  * * Get the corresponding sound file path for a given sound effect.
+ *
  * @param effect - The name of the sound effect.
  * @returns The file path of the sound effect.
  */

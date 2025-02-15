@@ -112,7 +112,7 @@ const AntdTable = <T extends object & DBItem>({
 					allowClear
 					size="middle"
 					style={{
-						width: isMobile ? '60%' : 'auto',
+						width: isMobile ? '60%' : '240px',
 						// flexDirection: isMobile ? 'column' : 'row',
 					}}
 				/>
@@ -123,8 +123,8 @@ const AntdTable = <T extends object & DBItem>({
 					onChange={handleChangePage}
 				/>
 				<DatePicker.RangePicker
-					showTime={{ format: 'HH:mm' }}
-					format="MM-DD HH:mm"
+					// showTime={{ format: 'HH:mm' }}
+					format="DD-MM-YYYY"
 					size="middle"
 					maxDate={dayjs()}
 					placement="bottomLeft"
