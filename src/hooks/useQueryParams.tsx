@@ -16,7 +16,7 @@ const useQueryParams = () => {
 	};
 
 	/**
-	 * * Set multiple query parameters at once
+	 * * Set multiple query parameters at once.
 	 *
 	 * @param params Params object to set.
 	 */
@@ -53,14 +53,17 @@ const useQueryParams = () => {
 
 	/**
 	 * * Get all query parameters as an object.
-    
+	 *
 	 * @returns Query object.
 	 */
 	const getAllQueryParams = useCallback(() => {
 		const params: QueryObject = {};
 
 		searchParams.forEach((value, key) => {
-			params[key] = value;
+			// URL-decode the key and value (if needed)
+			const decodedKey = decodeURIComponent(key);
+			const decodedValue = decodeURIComponent(value);
+			params[decodedKey] = decodedValue;
 		});
 
 		return params;
@@ -75,10 +78,6 @@ const useQueryParams = () => {
 		const params = getAllQueryParams();
 		return generateQueryParams(params);
 	};
-
-	// useEffect(() => {
-	// 	setQueryParams(getAllQueryParams());
-	// }, [getAllQueryParams, setQueryParams]);
 
 	return {
 		getQueryParam,

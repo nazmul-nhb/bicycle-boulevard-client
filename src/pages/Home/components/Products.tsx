@@ -11,7 +11,7 @@ import {
 	Skeleton,
 	Slider,
 } from 'antd';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useGetAllProductsQuery } from '../../../app/api/productApi';
 import ProductCard from '../../../components/ProductCard';
 import { categoryOptions } from '../../../configs/constants';
@@ -28,7 +28,7 @@ const Products = () => {
 	const isMobile = useMediaQuery(768);
 	const [visible, setVisible] = useState(false);
 
-	const { getQueryParam, setQueryParams } = useQueryParams();
+	const { getQueryParam, setQueryParams, removeQueryParam } = useQueryParams();
 
 	const [searchInput, setSearchInput] = useState(getQueryParam('search') || '');
 	const [search, setSearch] = useState(getQueryParam('search') || '');
@@ -68,13 +68,22 @@ const Products = () => {
 
 	const handleCategoryFilter = (value: typeof category) => {
 		setCategory(value);
-		setQueryParams({ category: value });
+
+		if (value === 'all') {
+			removeQueryParam('category');
+		} else {
+			setQueryParams({ category: value });
+		}
 	};
 
-	const debouncedSearch = debounceAction((value: string) => {
-		setSearch(value);
-		setQueryParams({ search: value });
-	}, 500);
+	const debouncedSearch = useMemo(
+		() =>
+			debounceAction((value: string) => {
+				setSearch(value);
+				setQueryParams({ search: value });
+			}, 500),
+		[setQueryParams]
+	);
 
 	const handleSearch = (value: string) => {
 		setSearchInput(value);

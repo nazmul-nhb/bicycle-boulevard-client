@@ -118,7 +118,12 @@ export const debounceAction = <T extends (...args: any[]) => void>(
 	let timeoutId: ReturnType<typeof setTimeout>;
 
 	return (...args: Parameters<T>) => {
+		// Clear the previous timeout
 		clearTimeout(timeoutId);
-		timeoutId = setTimeout(() => callback(...args), delay);
+
+		// Set a new timeout
+		timeoutId = setTimeout(() => {
+			callback(...args);
+		}, delay);
 	};
 };
