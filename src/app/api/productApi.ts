@@ -1,6 +1,10 @@
 import { generateQueryParams } from 'nhb-toolbox';
 import type { IQueryParams } from '../../types';
-import type { IProduct, IProductDetails } from '../../types/product.types';
+import type {
+	IProduct,
+	IProductDetails,
+	IProductResponse,
+} from '../../types/product.types';
 import type { IServerResponse } from '../../types/server.types';
 import { baseApi } from './baseApi';
 
@@ -15,7 +19,7 @@ export const productApi = baseApi.injectEndpoints({
 			invalidatesTags: ['Products'],
 		}),
 
-		getAllProducts: builder.query<IServerResponse<IProduct[]>, IQueryParams>({
+		getAllProducts: builder.query<IServerResponse<IProductResponse>, IQueryParams>({
 			query: (queryObject) => {
 				const queryParams = generateQueryParams(queryObject);
 

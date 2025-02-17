@@ -27,3 +27,13 @@ export interface IProductDetails extends Omit<ICreateProduct, 'image'> {
 export interface IUpdateProduct extends Partial<Omit<ICreateProduct, 'inStock'>> {
 	inStock: boolean;
 }
+
+export interface IProductResponse {
+	total: number;
+	count: number;
+	currentPage: number;
+	totalPages: number;
+	minPrice: number;
+	maxPrice: number;
+	products: IProduct[];
+}

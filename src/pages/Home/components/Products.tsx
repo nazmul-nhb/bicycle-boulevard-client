@@ -1,19 +1,8 @@
 import { Icon } from '@iconify/react';
-import {
-	Button,
-	Col,
-	Drawer,
-	Empty,
-	Flex,
-	Input,
-	Row,
-	Select,
-	Skeleton,
-	Slider,
-} from 'antd';
+import { Button, Drawer, Flex, Input, Select, Slider } from 'antd';
 import { useMemo, useState } from 'react';
 import { useGetAllProductsQuery } from '../../../app/api/productApi';
-import ProductCard from '../../../components/ProductCard';
+import ProductsGrid from '../../../components/ProductsGrid';
 import { categoryOptions } from '../../../configs/constants';
 import { useMediaQuery } from '../../../hooks/useMediaQuery';
 import useQueryParams from '../../../hooks/useQueryParams';
@@ -38,17 +27,42 @@ const Products = () => {
 	);
 
 	const [sort, setSort] = useState<Pick<IQueryParams, 'sortBy' | 'sortOrder'>>({
-		sortBy: getQueryParam('sort') || 'createdAt',
-		sortOrder: (getQueryParam('sortOrder') as 'asc' | 'desc') || 'desc',
+		sortBy:
+			getQueryParam('sort') === 'time'
+				? 'createdAt'
+				: getQueryParam('sort') || 'createdAt',
+		sortOrder: (getQueryParam('order') as IQueryParams['sortOrder']) || 'desc',
 	});
 
-	const { data, isLoading } = useGetAllProductsQuery({
-		search,
-		category: category === 'all' ? '' : category,
-		...sort,
-		page: 1,
-		limit: 12,
-	});
+	const [priceRange, setPriceRange] = useState<[number | undefined, number | undefined]>([
+		Number(getQueryParam('minPrice')) || undefined,
+		Number(getQueryParam('maxPrice')) || undefined,
+	]);
+
+	const [priceRangeInput, setPriceRangeInput] = useState<
+		[number | undefined, number | undefined]
+	>([
+		Number(getQueryParam('minPrice')) || undefined,
+		Number(getQueryParam('maxPrice')) || undefined,
+	]);
+
+	const { productData, isLoading } = useGetAllProductsQuery(
+		{
+			search,
+			category: category === 'all' ? '' : category,
+			...sort,
+			min: priceRange[0],
+			max: priceRange[1],
+			page: 1,
+			limit: 12,
+		},
+		{
+			selectFromResult: ({ data, ...rest }) => ({
+				productData: data?.data,
+				...rest,
+			}),
+		}
+	);
 
 	const showDrawer = () => {
 		setVisible(true);
@@ -63,7 +77,10 @@ const Products = () => {
 
 		setSort({ sortBy, sortOrder: sortOrder as 'asc' | 'desc' });
 
-		setQueryParams({ sortBy, sortOrder });
+		setQueryParams({
+			sort: sortBy === 'createdAt' ? 'time' : sortBy,
+			order: sortOrder,
+		});
 	};
 
 	const handleCategoryFilter = (value: typeof category) => {
@@ -90,6 +107,20 @@ const Products = () => {
 		debouncedSearch(value);
 	};
 
+	const debouncedRangeRange = useMemo(
+		() =>
+			debounceAction((value: number[]) => {
+				setPriceRange([value[0], value[1]]);
+				setQueryParams({ minPrice: value[0], maxPrice: value[1] });
+			}, 700),
+		[setQueryParams]
+	);
+
+	const handlePriceRange = (value: number[]) => {
+		setPriceRangeInput([value[0], value[1]]);
+		debouncedRangeRange(value);
+	};
+
 	return (
 		<section style={{ margin: '24px auto', position: 'relative' }}>
 			<Flex
@@ -113,32 +144,8 @@ const Products = () => {
 				</Button>
 			</Flex>
 
-			{/* ! TODO: Create Separate Component */}
-
-			{/* Products Grid */}
-			{isLoading ? (
-				<Row gutter={[24, 24]}>
-					{Array.from({ length: 12 }).map((_, index) => (
-						<Col key={index} xs={24} sm={12} md={8} lg={6}>
-							<Skeleton active={isLoading} />
-						</Col>
-					))}
-				</Row>
-			) : data?.data?.length === 0 ? (
-				<Empty
-					image={Empty.PRESENTED_IMAGE_SIMPLE}
-					description="No Products Found!"
-					style={{ marginTop: 40 }}
-				/>
-			) : (
-				<Row gutter={[24, 24]}>
-					{data?.data?.map((product) => (
-						<Col key={product._id} xs={24} sm={12} md={8} lg={6}>
-							<ProductCard product={product} />
-						</Col>
-					))}
-				</Row>
-			)}
+			{/* Products Grid with Skeleton and Empty Sign */}
+			<ProductsGrid isLoading={isLoading} products={productData?.products} />
 
 			{/* Drawer for Mobile */}
 			<Drawer
@@ -160,7 +167,13 @@ const Products = () => {
 				/>
 				<div style={{ marginBottom: '20px' }}>
 					<h4>Price Range</h4>
-					<Slider range defaultValue={[20, 50]} />
+					<Slider
+						range
+						value={(priceRangeInput as number[]) || [1, 100000]}
+						min={productData?.minPrice}
+						max={productData?.maxPrice}
+						onChange={handlePriceRange}
+					/>
 				</div>
 				<div style={{ marginBottom: '20px' }}>
 					<h4>Category</h4>
