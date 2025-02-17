@@ -23,7 +23,15 @@ const ProductTable = () => {
 
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
 
-	const { data, isLoading } = useGetAllProductsQuery({ sortBy: 'createdAt', limit: 0 });
+	const { products, isLoading } = useGetAllProductsQuery(
+		{ limit: 0 },
+		{
+			selectFromResult: ({ data, ...rest }) => ({
+				products: data?.data?.products,
+				...rest,
+			}),
+		}
+	);
 
 	const [selectedProductId, setSelectedProductId] = useState<string>('');
 
@@ -70,7 +78,7 @@ const ProductTable = () => {
 			title: 'Brand',
 			dataIndex: 'brand',
 			key: 'brand',
-			filters: generateFilters(data?.data as IProduct[], 'brand'),
+			filters: generateFilters(products as IProduct[], 'brand'),
 			onFilter: (value, product) => product.brand === value,
 			sorter: (a, b) => a.brand.localeCompare(b.brand),
 		},
@@ -84,7 +92,7 @@ const ProductTable = () => {
 			title: 'Category',
 			dataIndex: 'category',
 			key: 'category',
-			filters: generateFilters(data?.data as IProduct[], 'category'),
+			filters: generateFilters(products as IProduct[], 'category'),
 			filterSearch: true,
 			onFilter: (category, product) =>
 				product.category.startsWith(category as string),
@@ -125,7 +133,7 @@ const ProductTable = () => {
 			title: 'Created By',
 			dataIndex: 'createdBy',
 			key: 'createdBy',
-			filters: generateFilters(data?.data as IProduct[], 'createdBy'),
+			filters: generateFilters(products as IProduct[], 'createdBy'),
 			onFilter: (value, product) => product.createdBy === value,
 			sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
 		},
@@ -215,7 +223,7 @@ const ProductTable = () => {
 	return (
 		<Fragment>
 			<AntdTable
-				data={data?.data}
+				data={products}
 				columns={ProductsColumn}
 				excludedFields={['createdAt', 'updatedAt', 'createdBy']}
 				searchPlaceholder="Search Product"

@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
-import { Button, Drawer, Flex, Input, Select, Slider } from 'antd';
+import { Button, Drawer, Flex, Input, Pagination, Select, Slider } from 'antd';
+import Title from 'antd/es/typography/Title';
 import { useMemo, useState } from 'react';
 import { useGetAllProductsQuery } from '../../../app/api/productApi';
 import ProductsGrid from '../../../components/ProductsGrid';
@@ -11,13 +12,22 @@ import type { IProduct } from '../../../types/product.types';
 import { debounceAction } from '../../../utils/helpers';
 
 const { Search } = Input;
-const { Option } = Select;
+
+const sortOptions = [
+	{ value: 'createdAt:desc', label: 'Newest' },
+	{ value: 'createdAt:desc', label: 'Oldest' },
+	{ value: 'price:asc', label: 'Price: Low to High' },
+	{ value: 'price:desc', label: 'Price: High to Low' },
+];
 
 const Products = () => {
 	const isMobile = useMediaQuery(768);
 	const [visible, setVisible] = useState(false);
 
 	const { getQueryParam, setQueryParams, removeQueryParam } = useQueryParams();
+
+	const [page, setPage] = useState(Number(getQueryParam('page')) || 1);
+	const [limit, setLimit] = useState(Number(getQueryParam('limit')) || 12);
 
 	const [searchInput, setSearchInput] = useState(getQueryParam('search') || '');
 	const [search, setSearch] = useState(getQueryParam('search') || '');
@@ -53,8 +63,8 @@ const Products = () => {
 			...sort,
 			min: priceRange[0],
 			max: priceRange[1],
-			page: 1,
-			limit: 12,
+			page,
+			limit,
 		},
 		{
 			selectFromResult: ({ data, ...rest }) => ({
@@ -121,6 +131,16 @@ const Products = () => {
 		debouncedRangeRange(value);
 	};
 
+	const handlePagination = (newPage: number, newLimit?: number) => {
+		setPage(newPage);
+		setLimit(newLimit || limit);
+
+		setQueryParams({
+			page: newPage.toString(),
+			limit: (newLimit || limit).toString(),
+		});
+	};
+
 	return (
 		<section style={{ margin: '24px auto', position: 'relative' }}>
 			<Flex
@@ -145,7 +165,23 @@ const Products = () => {
 			</Flex>
 
 			{/* Products Grid with Skeleton and Empty Sign */}
-			<ProductsGrid isLoading={isLoading} products={productData?.products} />
+			<div style={{ margin: '20px auto' }}>
+				<ProductsGrid isLoading={isLoading} products={productData?.products} />
+			</div>
+
+			<Flex align="center" justify="center" style={{ margin: '20px auto' }}>
+				<Pagination
+					current={page}
+					pageSize={limit}
+					pageSizeOptions={[6, 12, 18, 24, 36, 48, 60]}
+					total={productData?.total}
+					showSizeChanger
+					showQuickJumper
+					responsive
+					onChange={handlePagination}
+					showTotal={(total) => `Total ${total} items`}
+				/>
+			</Flex>
 
 			{/* Drawer for Mobile */}
 			<Drawer
@@ -159,6 +195,7 @@ const Products = () => {
 			>
 				<Search
 					allowClear
+					size="large"
 					value={searchInput}
 					placeholder="Search products..."
 					onSearch={handleSearch}
@@ -166,36 +203,37 @@ const Products = () => {
 					style={{ marginBottom: '20px' }}
 				/>
 				<div style={{ marginBottom: '20px' }}>
-					<h4>Price Range</h4>
+					<Title level={5}>Price Range</Title>
 					<Slider
 						range
-						value={(priceRangeInput as number[]) || [1, 100000]}
+						step={50}
+						value={(priceRangeInput as number[]) || [1, 150000]}
 						min={productData?.minPrice}
 						max={productData?.maxPrice}
 						onChange={handlePriceRange}
 					/>
 				</div>
 				<div style={{ marginBottom: '20px' }}>
-					<h4>Category</h4>
+					<Title level={5}>Category</Title>
 					<Select
+						size="large"
 						options={[{ value: 'all', label: 'All' }, ...categoryOptions]}
 						defaultValue={category}
+						value={category}
 						style={{ width: '100%' }}
 						onChange={handleCategoryFilter}
 					/>
 				</div>
 				<div>
-					<h4>Sort By</h4>
+					<Title level={5}>Sort By</Title>
 					<Select
+						size="large"
 						defaultValue={`${sort.sortBy}:${sort.sortOrder}`}
+						value={`${sort.sortBy}:${sort.sortOrder}`}
 						style={{ width: '100%' }}
+						options={sortOptions}
 						onChange={handleSortChange}
-					>
-						<Option value="createdAt:desc">Newest</Option>
-						<Option value="createdAt:asc">Oldest</Option>
-						<Option value="price:asc">Price: Low to High</Option>
-						<Option value="price:desc">Price: High to Low</Option>
-					</Select>
+					/>
 				</div>
 			</Drawer>
 		</section>
