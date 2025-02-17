@@ -191,7 +191,6 @@ const Products = () => {
 				onClose={closeDrawer}
 				open={visible}
 				height="auto"
-				// style={{ padding: '20px' }}
 			>
 				<Search
 					allowClear
@@ -205,8 +204,9 @@ const Products = () => {
 				<div style={{ marginBottom: '20px' }}>
 					<Title level={5}>Price Range</Title>
 					<Slider
-						range
 						step={50}
+						range={{ editable: true, minCount: 1, maxCount: 2 }}
+						disabled={productData?.minPrice === productData?.maxPrice}
 						value={(priceRangeInput as number[]) || [1, 150000]}
 						min={productData?.minPrice}
 						max={productData?.maxPrice}
