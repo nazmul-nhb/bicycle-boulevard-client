@@ -5,4 +5,5 @@ export const configs = {
 	token_key: 'bicycle-token',
 	user_key: 'bicycle-user',
 	theme_name: 'bicycle-theme',
+	cart_key: 'bicycle-cart',
 };

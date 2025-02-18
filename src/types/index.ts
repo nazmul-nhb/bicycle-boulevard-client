@@ -28,3 +28,14 @@ export interface IQueryParams extends QueryObject {
 	min?: number;
 	max?: number;
 }
+
+export interface ICartItem {
+	id: string;
+	quantity: number;
+	date: string;
+}
+
+export interface ICartState {
+	items: ICartItem[];
+	total: number;
+}

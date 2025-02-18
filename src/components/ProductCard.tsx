@@ -2,8 +2,11 @@ import { Icon } from '@iconify/react';
 import { Badge, Button, Card, Flex, Tooltip, Typography } from 'antd';
 import { truncateString } from 'nhb-toolbox';
 import { Link } from 'react-router';
+import { AntNotifications } from '../App';
+import { addToCart, selectTargetItem } from '../app/features/cartSlice';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import type { IProduct } from '../types/product.types';
-import { getImageLink } from '../utils/helpers';
+import { debounceAction, getImageLink } from '../utils/helpers';
 
 const { Title, Text } = Typography;
 
@@ -12,17 +15,36 @@ interface Props {
 }
 
 const ProductCard = ({ product }: Props) => {
-	const { _id, name, brand, price, image, inStock } = product || {};
+	const { _id: id, name, brand, price, image, quantity: stock } = product || {};
+
+	const { notify } = AntNotifications(true);
+
+	const dispatch = useAppDispatch();
+
+	const targetItem = useAppSelector((state) => selectTargetItem(state, id));
+
+	const remainingStock = stock - (targetItem?.quantity ?? 0);
+
+	const addProductToCart = debounceAction((quantity: number) => {
+		if ((targetItem?.quantity ?? 0) + quantity > stock) {
+			return notify.warning({
+				message: 'Cannot add to cart! Maximum stock reached!',
+			});
+		}
+
+		dispatch(addToCart({ id, quantity }));
+		notify.success({ message: `${name} has been added to your cart!` });
+	}, 500);
 
 	return (
 		<Card
 			variant="outlined"
 			cover={
 				<Badge.Ribbon
-					color={inStock ? 'default' : 'red'}
-					text={inStock ? 'Available' : 'Out of Stock'}
+					color={remainingStock ? 'default' : 'red'}
+					text={remainingStock ? 'Available' : 'Out of Stock'}
 				>
-					<Link to={`/product/${_id}`}>
+					<Link to={`/product/${id}`}>
 						<figure
 							style={{
 								overflow: 'hidden',
@@ -65,7 +87,7 @@ const ProductCard = ({ product }: Props) => {
 		>
 			<Tooltip title={name}>
 				<Title level={5} style={{ marginBottom: 8 }}>
-					<Link to={`/product/${_id}`}>{truncateString(name, 96)}</Link>
+					<Link to={`/product/${id}`}>{truncateString(name, 96)}</Link>
 				</Title>
 			</Tooltip>
 			<Text type="secondary" style={{ marginBottom: 8 }}>
@@ -80,10 +102,12 @@ const ProductCard = ({ product }: Props) => {
 					BDT {price.toFixed(2)}
 				</Text>
 				<Button
+					onClick={() => addProductToCart(1)}
 					type="primary"
+					danger={remainingStock <= 0}
 					icon={<Icon icon="ant-design:shopping-cart-outlined" />}
 				>
-					Add to Cart
+					Add to Cart ({remainingStock})
 				</Button>
 			</Flex>
 		</Card>
