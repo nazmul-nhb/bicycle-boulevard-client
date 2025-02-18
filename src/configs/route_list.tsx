@@ -6,6 +6,7 @@ import Contact from '../pages/Contact';
 import CustomerDashboard from '../pages/customer/Dashboard';
 import ViewOrder from '../pages/customer/ViewOrder';
 import Home from '../pages/Home/Home';
+import Products from '../pages/Products/Products';
 import Private from '../routes/Private';
 import type { IRoute } from '../types/routes.types';
 
@@ -17,16 +18,22 @@ export const routes: IRoute[] = [
 		element: <Home />,
 	},
 	{
-		label: 'About',
-		path: 'about',
-		icon: 'heroicons-outline:information-circle',
-		element: <About />,
+		label: 'Products',
+		path: 'products',
+		icon: 'pepicons-pencil:bicycle-circle',
+		element: <Products />,
 	},
 	{
 		label: 'Contact',
 		path: 'contact',
 		icon: 'material-symbols:contact-support-outline',
 		element: <Contact />,
+	},
+	{
+		label: 'About',
+		path: 'about',
+		icon: 'heroicons-outline:information-circle',
+		element: <About />,
 	},
 	{
 		label: 'Admin Panel',

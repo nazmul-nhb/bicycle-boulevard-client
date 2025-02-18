@@ -64,3 +64,8 @@ input:-webkit-autofill:active {
 		scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
 	}
 }
+
+/* Hover effects for product card */
+.hover-scale:hover {
+	transform: scale(1.1);
+}

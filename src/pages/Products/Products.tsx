@@ -2,14 +2,14 @@ import { Icon } from '@iconify/react';
 import { Button, Drawer, Flex, Input, Pagination, Select, Slider } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { useMemo, useState } from 'react';
-import { useGetAllProductsQuery } from '../../../app/api/productApi';
-import ProductsGrid from '../../../components/ProductsGrid';
-import { categoryOptions } from '../../../configs/constants';
-import { useMediaQuery } from '../../../hooks/useMediaQuery';
-import useQueryParams from '../../../hooks/useQueryParams';
-import type { IQueryParams } from '../../../types';
-import type { IProduct } from '../../../types/product.types';
-import { debounceAction } from '../../../utils/helpers';
+import { useGetAllProductsQuery } from '../../app/api/productApi';
+import ProductsGrid from '../../components/ProductsGrid';
+import { categoryOptions } from '../../configs/constants';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import useQueryParams from '../../hooks/useQueryParams';
+import type { IQueryParams } from '../../types';
+import type { IProduct } from '../../types/product.types';
+import { debounceAction } from '../../utils/helpers';
 
 const { Search } = Input;
 
@@ -122,7 +122,7 @@ const Products = () => {
 			debounceAction((value: number[]) => {
 				setPriceRange([value[0], value[1]]);
 				setQueryParams({ minPrice: value[0], maxPrice: value[1] });
-			}, 700),
+			}, 500),
 		[setQueryParams]
 	);
 
@@ -166,7 +166,11 @@ const Products = () => {
 
 			{/* Products Grid with Skeleton and Empty Sign */}
 			<div style={{ margin: '20px auto' }}>
-				<ProductsGrid isLoading={isLoading} products={productData?.products} />
+				<ProductsGrid
+					isLoading={isLoading}
+					products={productData?.products}
+					skeletonCount={limit}
+				/>
 			</div>
 
 			<Flex align="center" justify="center" style={{ margin: '20px auto' }}>

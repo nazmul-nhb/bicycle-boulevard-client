@@ -6,14 +6,15 @@ import ProductCard from './ProductCard';
 interface Props {
 	isLoading: boolean;
 	products?: IProduct[];
+	skeletonCount: number;
 }
 
-const ProductsGrid = ({ isLoading, products }: Props) => {
+const ProductsGrid = ({ isLoading, products, skeletonCount }: Props) => {
 	return (
 		<Fragment>
 			{isLoading ? (
 				<Row gutter={[24, 24]}>
-					{Array.from({ length: 12 }).map((_, index) => (
+					{Array.from({ length: skeletonCount }).map((_, index) => (
 						<Col key={index} xs={24} sm={12} md={8} lg={6}>
 							<Skeleton active={isLoading} />
 						</Col>

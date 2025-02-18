@@ -25,4 +25,6 @@ export interface IQueryParams extends QueryObject {
 	filter?: string;
 	page?: number;
 	limit?: number;
+	min?: number;
+	max?: number;
 }

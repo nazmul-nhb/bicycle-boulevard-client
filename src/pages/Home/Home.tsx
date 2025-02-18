@@ -1,9 +1,20 @@
-import Products from './components/Products';
+import { useGetAllProductsQuery } from '../../app/api/productApi';
+import ProductsGrid from '../../components/ProductsGrid';
 
 const Home: React.FC = () => {
+	const { products, isLoading } = useGetAllProductsQuery(
+		{ page: 1, limit: 12 },
+		{
+			selectFromResult: ({ data, ...rest }) => ({
+				products: data?.data?.products,
+				...rest,
+			}),
+		}
+	);
+
 	return (
 		<section>
-			<Products />
+			<ProductsGrid isLoading={isLoading} products={products} skeletonCount={12} />
 		</section>
 	);
 };

@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Button, Card, Flex, Tooltip, Typography } from 'antd';
+import { Badge, Button, Card, Flex, Tooltip, Typography } from 'antd';
 import { truncateString } from 'nhb-toolbox';
 import { Link } from 'react-router';
 import type { IProduct } from '../types/product.types';
@@ -7,30 +7,44 @@ import { getImageLink } from '../utils/helpers';
 
 const { Title, Text } = Typography;
 
-interface ProductCardProps {
+interface Props {
 	product: IProduct;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-	const { _id, name, brand, price, image } = product;
+const ProductCard = ({ product }: Props) => {
+	const { _id, name, brand, price, image, inStock } = product || {};
 
 	return (
 		<Card
-			hoverable
 			variant="outlined"
 			cover={
-				<Link to={`/product/${_id}`}>
-					<img
-						alt={name}
-						src={getImageLink(image)}
-						style={{
-							height: 280,
-							objectFit: 'cover',
-							width: '100%',
-							borderRadius: '8px 8px 0 0',
-						}}
-					/>
-				</Link>
+				<Badge.Ribbon
+					color={inStock ? 'default' : 'red'}
+					text={inStock ? 'Available' : 'Out of Stock'}
+				>
+					<Link to={`/product/${_id}`}>
+						<figure
+							style={{
+								overflow: 'hidden',
+								borderRadius: '8px 8px 0 0',
+								height: 280,
+							}}
+						>
+							<img
+								alt={name}
+								src={getImageLink(image)}
+								className="hover-scale"
+								style={{
+									height: 280,
+									objectFit: 'cover',
+									width: '100%',
+									borderRadius: '8px 8px 0 0',
+									transition: 'transform 0.5s ease-in-out',
+								}}
+							/>
+						</figure>
+					</Link>
+				</Badge.Ribbon>
 			}
 			style={{
 				borderRadius: 8,
@@ -38,6 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 				boxShadow: '4px 8px 8px rgba(0, 0, 0, 0.5)',
 				display: 'flex',
 				flexDirection: 'column',
+				flexGrow: 1,
 			}}
 			styles={{
 				body: {
