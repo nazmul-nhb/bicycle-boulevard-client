@@ -15,7 +15,7 @@ const { Search } = Input;
 
 const sortOptions = [
 	{ value: 'createdAt:desc', label: 'Newest' },
-	{ value: 'createdAt:desc', label: 'Oldest' },
+	{ value: 'createdAt:asc', label: 'Oldest' },
 	{ value: 'price:asc', label: 'Price: Low to High' },
 	{ value: 'price:desc', label: 'Price: High to Low' },
 ];

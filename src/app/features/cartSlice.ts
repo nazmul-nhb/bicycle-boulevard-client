@@ -27,10 +27,11 @@ const cartSlice = createSlice({
 			if (matchedIdx !== -1) {
 				state.items[matchedIdx].quantity += quantity;
 				state.items[matchedIdx].date = getCurrentDateString();
-				state.total += quantity;
 			} else {
 				state?.items.push({ id, quantity, date: getCurrentDateString() });
 			}
+
+			state.total += quantity;
 
 			saveToLocalStorage(configs.cart_key, state.items);
 		},

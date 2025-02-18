@@ -1,15 +1,16 @@
 import { Icon } from '@iconify/react';
-import { Avatar, Button, Flex, Menu, Popover, Spin, theme } from 'antd';
+import { Avatar, Badge, Button, Flex, Menu, Popover, Space, Spin, theme } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 import type { MappingAlgorithm } from 'antd/es/theme/interface';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { AntNotifications } from '../../App';
 import { useGetMeQuery } from '../../app/api/authApi';
 import { logOut } from '../../app/features/authSlice';
+import { selectCartTotal } from '../../app/features/cartSlice';
 import { setTheme } from '../../app/features/themeSlice';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import type { TRootState } from '../../app/store';
 import { routes } from '../../configs/route_list';
 import { configs } from '../../configs/site_configs';
@@ -27,11 +28,14 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 	const [open, setOpen] = useState<boolean>(false);
+	const navigate = useNavigate();
 	const isMobile = useMediaQuery();
 	const dispatch = useAppDispatch();
 	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
 	const { modal } = AntNotifications(true);
 	const { isLoading } = useGetMeQuery();
+
+	const cartTotal = useAppSelector(selectCartTotal);
 
 	const handleLogOut = () => {
 		modal.confirm({
@@ -123,6 +127,21 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 					) : null}
 
 					<Flex gap={8} align="center">
+						{isMobile || (
+							<Badge size="small" count={cartTotal}>
+								<Button
+									type="dashed"
+									shape="circle"
+									icon={
+										<Icon icon="raphael:cart" width="24" height="24" />
+									}
+									onClick={() => navigate('/cart')}
+									style={{
+										font: '18px bold',
+									}}
+								/>
+							</Badge>
+						)}
 						{algorithm === theme.defaultAlgorithm ? (
 							<Button
 								onClick={() => dispatch(setTheme('dark'))}
@@ -159,24 +178,44 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 								trigger="click"
 								placement="bottomRight"
 								content={
-									<Button
-										type="primary"
-										color="red"
-										danger
-										icon={
-											<Icon
-												icon="mdi:logout"
-												width="24"
-												height="24"
-											/>
-										}
-										onClick={handleLogOut}
-										style={{
-											font: '18px bold',
-										}}
-									>
-										Logout
-									</Button>
+									<Space direction="vertical">
+										<Badge size="small" count={cartTotal}>
+											<Button
+												type="primary"
+												icon={
+													<Icon
+														icon="raphael:cart"
+														width="24"
+														height="24"
+													/>
+												}
+												onClick={() => navigate('/cart')}
+												style={{
+													font: '18px bold',
+												}}
+											>
+												Cart
+											</Button>
+										</Badge>
+										<Button
+											type="primary"
+											color="red"
+											danger
+											icon={
+												<Icon
+													icon="mdi:logout"
+													width="24"
+													height="24"
+												/>
+											}
+											onClick={handleLogOut}
+											style={{
+												font: '18px bold',
+											}}
+										>
+											Logout
+										</Button>
+									</Space>
 								}
 							>
 								<Button

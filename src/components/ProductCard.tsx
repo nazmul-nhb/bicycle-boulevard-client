@@ -28,7 +28,7 @@ const ProductCard = ({ product }: Props) => {
 	const addProductToCart = debounceAction((quantity: number) => {
 		if ((targetItem?.quantity ?? 0) + quantity > stock) {
 			return notify.warning({
-				message: 'Cannot add to cart! Maximum stock reached!',
+				message: 'Cannot add to cart! Out of Stock!',
 			});
 		}
 
@@ -44,28 +44,34 @@ const ProductCard = ({ product }: Props) => {
 					color={remainingStock ? 'default' : 'red'}
 					text={remainingStock ? 'Available' : 'Out of Stock'}
 				>
-					<Link to={`/product/${id}`}>
-						<figure
-							style={{
-								overflow: 'hidden',
-								borderRadius: '8px 8px 0 0',
-								height: 280,
-							}}
-						>
-							<img
-								alt={name}
-								src={getImageLink(image)}
-								className="hover-scale"
+					<Badge.Ribbon
+						placement="start"
+						color={remainingStock ? 'default' : 'red'}
+						text={`Stock: ${remainingStock}`}
+					>
+						<Link to={`/product/${id}`}>
+							<figure
 								style={{
-									height: 280,
-									objectFit: 'cover',
-									width: '100%',
+									overflow: 'hidden',
 									borderRadius: '8px 8px 0 0',
-									transition: 'transform 0.5s ease-in-out',
+									height: 280,
 								}}
-							/>
-						</figure>
-					</Link>
+							>
+								<img
+									alt={name}
+									src={getImageLink(image)}
+									className="hover-scale"
+									style={{
+										height: 280,
+										objectFit: 'cover',
+										width: '100%',
+										borderRadius: '8px 8px 0 0',
+										transition: 'transform 0.5s ease-in-out',
+									}}
+								/>
+							</figure>
+						</Link>
+					</Badge.Ribbon>
 				</Badge.Ribbon>
 			}
 			style={{
@@ -93,11 +99,7 @@ const ProductCard = ({ product }: Props) => {
 			<Text type="secondary" style={{ marginBottom: 8 }}>
 				{brand}
 			</Text>
-			<Flex
-				align="center"
-				justify="space-between"
-				style={{ marginTop: 'auto' }} // Pushes this section to the bottom
-			>
+			<Flex align="center" justify="space-between" style={{ marginTop: 'auto' }}>
 				<Text strong style={{ fontSize: '1.1rem' }}>
 					BDT {price.toFixed(2)}
 				</Text>
@@ -107,7 +109,7 @@ const ProductCard = ({ product }: Props) => {
 					danger={remainingStock <= 0}
 					icon={<Icon icon="ant-design:shopping-cart-outlined" />}
 				>
-					Add to Cart ({remainingStock})
+					Add to Cart
 				</Button>
 			</Flex>
 		</Card>
