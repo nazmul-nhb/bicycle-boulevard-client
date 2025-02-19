@@ -1,6 +1,6 @@
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { AntNotifications } from '../App';
 import type { IErrorResponse, IServerResponse } from '../types/server.types';
+import { isFetchError } from '../utils/helpers';
 
 /** Show Notifications/toasts based on API responses */
 export const useNotifyResponse = () => {
@@ -11,11 +11,6 @@ export const useNotifyResponse = () => {
 		if (response?.success) {
 			toastify.success(response.message || 'Operation successful!');
 		}
-	};
-
-	/** - Type Guard: Checks if error is a FetchBaseQueryError */
-	const isFetchError = (error: unknown): error is FetchBaseQueryError => {
-		return typeof error === 'object' && error !== null && 'data' in error;
 	};
 
 	/** - Handles API errors and shows notifications */

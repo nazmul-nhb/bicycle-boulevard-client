@@ -1,3 +1,4 @@
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { jwtDecode } from 'jwt-decode';
 import { configs } from '../configs/site_configs';
 import type { IDecodedUser } from '../types/user.types';
@@ -126,4 +127,9 @@ export const debounceAction = <T extends (...args: any[]) => void>(
 			callback(...args);
 		}, delay);
 	};
+};
+
+/** - Type Guard: Checks if error is a FetchBaseQueryError */
+export const isFetchError = (error: unknown): error is FetchBaseQueryError => {
+	return typeof error === 'object' && error !== null && 'data' in error;
 };

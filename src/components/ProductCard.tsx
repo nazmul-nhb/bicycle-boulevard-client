@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
-import { Badge, Button, Card, Flex, Tooltip, Typography } from 'antd';
-import { truncateString } from 'nhb-toolbox';
+import { Badge, Button, Card, Divider, Flex, Space, Tag, Tooltip, Typography } from 'antd';
+import { getColorForInitial, truncateString } from 'nhb-toolbox';
 import { Link } from 'react-router';
 import { AntNotifications } from '../App';
 import { addToCart, selectTargetItem } from '../app/features/cartSlice';
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const ProductCard = ({ product }: Props) => {
-	const { _id: id, name, brand, price, image, quantity: stock } = product || {};
+	const { _id: id, name, brand, price, image, category, quantity: stock } = product || {};
 
 	const { notify } = AntNotifications(true);
 
@@ -49,7 +49,7 @@ const ProductCard = ({ product }: Props) => {
 						color={remainingStock ? 'default' : 'red'}
 						text={`Stock: ${remainingStock}`}
 					>
-						<Link to={`/product/${id}`}>
+						<Link to={`/products/${id}`}>
 							<figure
 								style={{
 									overflow: 'hidden',
@@ -93,25 +93,41 @@ const ProductCard = ({ product }: Props) => {
 		>
 			<Tooltip title={name}>
 				<Title level={5} style={{ marginBottom: 8 }}>
-					<Link to={`/product/${id}`}>{truncateString(name, 96)}</Link>
+					<Link to={`/products/${id}`}>{truncateString(name, 96)}</Link>
 				</Title>
 			</Tooltip>
-			<Text type="secondary" style={{ marginBottom: 8 }}>
-				{brand}
-			</Text>
-			<Flex align="center" justify="space-between" style={{ marginTop: 'auto' }}>
-				<Text strong style={{ fontSize: '1.1rem' }}>
-					BDT {price.toFixed(2)}
-				</Text>
-				<Button
-					onClick={() => addProductToCart(1)}
-					type="primary"
-					danger={remainingStock <= 0}
-					icon={<Icon icon="ant-design:shopping-cart-outlined" />}
-				>
-					Add to Cart
-				</Button>
-			</Flex>
+
+			<Space direction="vertical" style={{ marginTop: 'auto' }}>
+				<Flex align="center" justify="space-between">
+					<Tag title="Brand" color={getColorForInitial(brand)}>
+						{brand}
+					</Tag>
+					<Tag title="Category" color={getColorForInitial(category)}>
+						{category}
+					</Tag>
+				</Flex>
+
+				<Divider
+					style={{
+						flexGrow: 1,
+						marginTop: 'auto',
+					}}
+				/>
+
+				<Flex align="center" justify="space-between">
+					<Text strong style={{ fontSize: '1.1rem' }}>
+						BDT {price.toFixed(2)}
+					</Text>
+					<Button
+						onClick={() => addProductToCart(1)}
+						type="primary"
+						danger={remainingStock <= 0}
+						icon={<Icon icon="ant-design:shopping-cart-outlined" />}
+					>
+						Add to Cart
+					</Button>
+				</Flex>
+			</Space>
 		</Card>
 	);
 };

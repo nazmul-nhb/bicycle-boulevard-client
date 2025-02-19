@@ -10,9 +10,11 @@ import { type TRootState } from '../store';
 
 const getCurrentDateString = () => new Date().toISOString();
 
+const totalItems = () => getFromLocalStorage<ICartItem[]>(configs.cart_key) || [];
+
 const initialState: ICartState = {
-	items: getFromLocalStorage<ICartItem[]>(configs.cart_key) || [],
-	total: 0,
+	items: totalItems(),
+	total: totalItems().reduce((acc, item) => acc + item.quantity, 0),
 };
 
 const cartSlice = createSlice({

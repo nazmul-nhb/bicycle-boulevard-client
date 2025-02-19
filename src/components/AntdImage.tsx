@@ -15,6 +15,8 @@ interface Props extends ImageProps {
 	objectFit?: Property.ObjectFit;
 	/** Optional aspect ratio for the image. Default is `auto`. */
 	aspectRatio?: Property.AspectRatio;
+	/** Whether to disable scaling the image on hover. */
+	disableScaling?: boolean;
 }
 
 /** * Reusable Image Viewer Component with ant-design. */
@@ -23,6 +25,7 @@ const AntdImage: React.FC<Props> = ({
 	alt,
 	objectFit = 'cover',
 	aspectRatio = 'auto',
+	disableScaling = false,
 	...props
 }) => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -80,13 +83,17 @@ const AntdImage: React.FC<Props> = ({
 	return (
 		<figure
 			style={{
-				transition: 'transform 0.3s ease-in-out',
+				transition: disableScaling ? '' : 'transform 0.3s ease-in-out',
 			}}
 			onMouseEnter={(e) => {
-				(e.currentTarget as HTMLElement).style.transform = 'scale(1.1)';
+				(e.currentTarget as HTMLElement).style.transform = disableScaling
+					? ''
+					: 'scale(1.1)';
 			}}
 			onMouseLeave={(e) => {
-				(e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+				(e.currentTarget as HTMLElement).style.transform = disableScaling
+					? ''
+					: 'scale(1)';
 			}}
 		>
 			<AntImage

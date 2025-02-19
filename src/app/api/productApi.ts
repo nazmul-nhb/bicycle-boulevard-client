@@ -31,9 +31,12 @@ export const productApi = baseApi.injectEndpoints({
 			providesTags: ['Products'],
 		}),
 
-		getSingleProduct: builder.query<IServerResponse<IProductDetails>, string>({
+		getSingleProduct: builder.query<
+			IServerResponse<IProductDetails>,
+			string | undefined
+		>({
 			query: (id) => ({
-				url: `products/`.concat(id),
+				url: `products/`.concat(id!),
 				method: 'GET',
 			}),
 			providesTags: (_r, _e, id) => [{ id, type: 'Product' }],

@@ -1,11 +1,12 @@
-import Root from '../layouts/Root';
 import { Route, Routes } from 'react-router';
-import { formatRoutes } from '../utils/routeUtils';
 import { routes } from '../configs/route_list';
-import Register from '../pages/Register/Register';
+import Root from '../layouts/Root';
 import Login from '../pages/Login/Login';
-import Unauthorized from '../pages/Unauthorized';
 import NotFound from '../pages/NotFound';
+import ProductDetails from '../pages/ProductDetails/ProductDetails';
+import Register from '../pages/Register/Register';
+import Unauthorized from '../pages/Unauthorized';
+import { formatRoutes } from '../utils/routeUtils';
 
 export const BicycleRoutes = () => {
 	return (
@@ -13,6 +14,7 @@ export const BicycleRoutes = () => {
 			<Route path="*" element={<NotFound />} />
 			<Route path="/" element={<Root />}>
 				{formatRoutes(routes, 'route')}
+				<Route path="/products/:id" element={<ProductDetails />} />
 			</Route>
 			<Route path="/register" element={<Register />} />
 			<Route path="/login" element={<Login />} />

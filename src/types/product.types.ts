@@ -19,7 +19,7 @@ export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'>,
 
 // export interface IProduct extends DBItem {}
 
-export interface IProductDetails extends Omit<ICreateProduct, 'image'> {
+export interface IProductDetails extends Omit<ICreateProduct, 'image'>, DBItem {
 	image: string;
 	createdBy: string;
 }
