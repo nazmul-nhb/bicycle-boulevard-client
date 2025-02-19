@@ -21,7 +21,7 @@ const ProductsGrid = ({ isLoading, products, skeletonCount }: Props) => {
 						</Col>
 					))}
 				</Row>
-			) : products?.length === 0 ? (
+			) : !products || products?.length === 0 ? (
 				<Empty
 					image={Empty.PRESENTED_IMAGE_SIMPLE}
 					description="No Products Found!"

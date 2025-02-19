@@ -130,7 +130,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 						{isMobile || (
 							<Badge size="small" count={cartTotal}>
 								<Button
-									type="dashed"
+									type="link"
 									shape="circle"
 									icon={
 										<Icon icon="raphael:cart" width="24" height="24" />
