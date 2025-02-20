@@ -14,44 +14,56 @@ const totalItems = () => getFromLocalStorage<ICartItem[]>(configs.cart_key) || [
 
 const initialState: ICartState = {
 	items: totalItems(),
-	total: totalItems().reduce((acc, item) => acc + item.quantity, 0),
+	total: totalItems().reduce((acc, item) => acc + item.cartQuantity, 0),
 };
 
 const cartSlice = createSlice({
 	name: 'cart',
 	initialState,
 	reducers: {
-		addToCart: (state, action: PayloadAction<Pick<ICartItem, 'id' | 'quantity'>>) => {
-			const { id, quantity } = action.payload;
+		addToCart: (
+			state,
+			action: PayloadAction<Pick<ICartItem, 'id' | 'cartQuantity'>>
+		) => {
+			const { id, cartQuantity } = action.payload;
 
 			const matchedIdx = state.items.findIndex((item) => item.id === id);
 
 			if (matchedIdx !== -1) {
-				state.items[matchedIdx].quantity += quantity;
+				state.items[matchedIdx].cartQuantity += cartQuantity;
 				state.items[matchedIdx].date = getCurrentDateString();
 			} else {
-				state?.items.push({ id, quantity, date: getCurrentDateString() });
+				state?.items.push({
+					id,
+					cartQuantity,
+					date: getCurrentDateString(),
+				});
 			}
 
-			state.total += quantity;
+			state.total += cartQuantity;
 
 			saveToLocalStorage(configs.cart_key, state.items);
 		},
 
-		removeQuantityFromCart: (state, action: PayloadAction<ICartItem['id']>) => {
-			const matchedIdx = state.items.findIndex((item) => item.id === action.payload);
+		removeQuantityFromCart: (
+			state,
+			action: PayloadAction<Pick<ICartItem, 'id' | 'cartQuantity'>>
+		) => {
+			const { id, cartQuantity } = action.payload;
 
-			if (matchedIdx !== -1) {
+			const matchedIdx = state.items.findIndex((item) => item.id === id);
+
+			if (matchedIdx !== -cartQuantity) {
 				const matched = state.items[matchedIdx];
 
-				if (matched.quantity <= 1) {
-					state.total -= matched.quantity;
+				if (matched.cartQuantity <= cartQuantity) {
+					state.total -= matched.cartQuantity;
 
-					state.items = state.items.filter((item) => item.id !== action.payload);
+					state.items = state.items.filter((item) => item.id !== id);
 				} else {
-					state.total -= 1;
+					state.total -= cartQuantity;
 
-					state.items[matchedIdx].quantity -= 1;
+					state.items[matchedIdx].cartQuantity -= cartQuantity;
 					state.items[matchedIdx].date = getCurrentDateString();
 				}
 
@@ -66,7 +78,7 @@ const cartSlice = createSlice({
 				);
 
 				if (matchedIdx !== -1) {
-					state.total -= state.items[matchedIdx].quantity;
+					state.total -= state.items[matchedIdx].cartQuantity;
 
 					state.items = state.items.filter((item) => item.id !== action.payload);
 

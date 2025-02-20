@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router';
 import { routes } from '../configs/route_list';
 import Root from '../layouts/Root';
+import Cart from '../pages/Cart/Cart';
 import Login from '../pages/Login/Login';
 import NotFound from '../pages/NotFound';
 import ProductDetails from '../pages/ProductDetails/ProductDetails';
@@ -15,6 +16,7 @@ export const BicycleRoutes = () => {
 			<Route path="/" element={<Root />}>
 				{formatRoutes(routes, 'route')}
 				<Route path="/products/:id" element={<ProductDetails />} />
+				<Route path="/cart" element={<Cart />} />
 			</Route>
 			<Route path="/register" element={<Register />} />
 			<Route path="/login" element={<Login />} />

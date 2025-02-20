@@ -66,24 +66,29 @@ const ProductDetails = () => {
 		description,
 	} = product || {};
 
-	const remainingStock = (stock || 0) - (targetItem?.quantity ?? 0);
+	const remainingStock = (stock || 0) - (targetItem?.cartQuantity ?? 0);
 
 	const handleQuantityChange = (value: number) => {
+		if (value < 1) {
+			return notify.warning({
+				message: 'Cannot add less than 1 item in the cart!',
+			});
+		}
+
 		if (value > remainingStock) {
 			setQuantity(remainingStock);
-			notify.warning({ message: 'Cannot add more than available stock!' });
-			return;
+			return notify.warning({ message: 'Cannot add more than available stock!' });
 		}
 
 		setQuantity(value);
 	};
 
 	const addProductToCart = () => {
-		if ((targetItem?.quantity ?? 0) + quantity > (stock || 0)) {
+		if ((targetItem?.cartQuantity ?? 0) + quantity > (stock || 0)) {
 			return notify.warning({ message: 'Cannot add to cart! Out of Stock!' });
 		}
 
-		dispatch(addToCart({ id, quantity }));
+		dispatch(addToCart({ id, cartQuantity: quantity }));
 		notify.success({ message: `${name} added to cart!` });
 	};
 

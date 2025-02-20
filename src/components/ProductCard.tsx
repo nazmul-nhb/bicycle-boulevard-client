@@ -23,16 +23,16 @@ const ProductCard = ({ product }: Props) => {
 
 	const targetItem = useAppSelector((state) => selectTargetItem(state, id));
 
-	const remainingStock = stock - (targetItem?.quantity ?? 0);
+	const remainingStock = stock - (targetItem?.cartQuantity ?? 0);
 
 	const addProductToCart = debounceAction((quantity: number) => {
-		if ((targetItem?.quantity ?? 0) + quantity > stock) {
+		if ((targetItem?.cartQuantity ?? 0) + quantity > stock) {
 			return notify.warning({
 				message: 'Cannot add to cart! Out of Stock!',
 			});
 		}
 
-		dispatch(addToCart({ id, quantity }));
+		dispatch(addToCart({ id, cartQuantity: quantity }));
 		notify.success({ message: `${name} has been added to your cart!` });
 	}, 500);
 

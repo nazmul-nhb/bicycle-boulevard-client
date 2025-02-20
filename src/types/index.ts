@@ -27,11 +27,13 @@ export interface IQueryParams extends QueryObject {
 	limit?: number;
 	min?: number;
 	max?: number;
+	ids?: string[];
+	select?: `${'+' | '-'}${string}`[];
 }
 
 export interface ICartItem {
 	id: string;
-	quantity: number;
+	cartQuantity: number;
 	date: string;
 }
 

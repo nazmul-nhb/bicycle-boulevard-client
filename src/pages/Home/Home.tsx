@@ -3,7 +3,7 @@ import ProductsGrid from '../../components/ProductsGrid';
 
 const Home: React.FC = () => {
 	const { products, isLoading } = useGetAllProductsQuery(
-		{ page: 1, limit: 12 },
+		{ page: 1, limit: 12, select: ['-description', '-isDeleted'] },
 		{
 			selectFromResult: ({ data, ...rest }) => ({
 				products: data?.data?.products,

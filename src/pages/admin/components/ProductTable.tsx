@@ -24,7 +24,7 @@ const ProductTable = () => {
 	const [isDrawerVisible, setDrawerVisible] = useState(false);
 
 	const { products, isLoading } = useGetAllProductsQuery(
-		{ limit: 0 },
+		{ limit: 0, select: ['-description', '-isDeleted'] },
 		{
 			selectFromResult: ({ data, ...rest }) => ({
 				products: data?.data?.products,

@@ -65,6 +65,7 @@ const Products = () => {
 			max: priceRange[1],
 			page,
 			limit,
+			select: ['-description', '-isDeleted'],
 		},
 		{
 			selectFromResult: ({ data, ...rest }) => ({

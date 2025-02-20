@@ -37,3 +37,8 @@ export interface IProductResponse {
 	maxPrice: number;
 	products: IProduct[];
 }
+
+export interface ICartProduct extends Omit<IProduct, 'createdAt' | 'updatedAt'> {
+	cartQuantity: number;
+	cartDate: string;
+}
