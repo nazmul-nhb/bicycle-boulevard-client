@@ -1,10 +1,15 @@
 import { Icon } from '@iconify/react';
-import { Button, Card, InputNumber } from 'antd';
+import { Button, Card, Checkbox, InputNumber, Space, Tooltip } from 'antd';
 import React, { useState } from 'react';
+import { Link } from 'react-router';
 import { AntNotifications } from '../../../App';
-import { addToCart, removeSpecificItem } from '../../../app/features/cartSlice';
+import {
+	addToCart,
+	removeQuantityFromCart,
+	removeSpecificItem,
+} from '../../../app/features/cartSlice';
 import { useAppDispatch } from '../../../app/hooks';
-import AntdImage from '../../../components/AntdImage';
+import type { TOnQuantityChange, TSelectProducts } from '../../../types';
 import type { ICartProduct } from '../../../types/product.types';
 import { getImageLink } from '../../../utils/helpers';
 
@@ -12,82 +17,121 @@ const { Meta } = Card;
 
 interface Props {
 	product: ICartProduct;
+	onSelect: TSelectProducts;
+	onQuantityChange: TOnQuantityChange;
 }
 
-const CartCard: React.FC<Props> = ({ product }) => {
-	const { _id, name, image, price, cartQuantity, quantity: stock } = product;
+const CartCard: React.FC<Props> = ({ product, onSelect, onQuantityChange }) => {
+	const { _id: id, name, image, price, cartQuantity, quantity: stock } = product;
 	const dispatch = useAppDispatch();
 	const { notify } = AntNotifications(true);
-	const [quantity, setQuantity] = useState(cartQuantity);
+	const [quantity, setQuantity] = useState(1);
+
 	const remainingStock = stock - cartQuantity;
 
 	const handleQuantityChange = (value: number) => {
 		if (value < 1) {
-			return notify.warning({ message: 'Cannot add less than 1 item in the cart!' });
+			return notify.warning({
+				message: 'Cannot add less than 1 item in the cart!',
+			});
 		}
+
+		if (value > remainingStock) {
+			return notify.warning({
+				message: 'Cannot add item in the cart! Out of Stock!',
+			});
+		}
+
 		setQuantity(value);
-		dispatch(addToCart({ id: _id, cartQuantity: value }));
+
+		onQuantityChange(product, value);
+		onSelect({ ...product, cartQuantity: value }, true);
 	};
 
 	const handleRemove = () => {
-		dispatch(removeSpecificItem(_id));
+		dispatch(removeSpecificItem(id));
 		notify.success({ message: `${name} removed from the cart!` });
 	};
 
 	return (
 		<Card
-			style={{ width: 300 }}
-			extra={
+			style={{
+				position: 'relative',
+				borderRadius: 8,
+				boxShadow: '4px 8px 8px rgba(0, 0, 0, 0.5)',
+				padding: 8,
+			}}
+			actions={[
+				<Button
+					key="minus"
+					icon={<Icon icon="ant-design:minus-circle-outlined" />}
+					onClick={() => {
+						dispatch(removeQuantityFromCart({ id, cartQuantity: quantity }));
+					}}
+					// disabled={quantity > remainingStock}
+				/>,
+				<InputNumber
+					key="input"
+					min={0}
+					max={stock}
+					value={quantity}
+					onChange={(val) => handleQuantityChange(Number(val))}
+					style={{ width: 64, textAlign: 'center' }}
+				/>,
+				<Button
+					key="plus"
+					icon={<Icon icon="ant-design:plus-circle-outlined" />}
+					onClick={() => dispatch(addToCart({ id, cartQuantity: quantity }))}
+					disabled={quantity > remainingStock}
+				/>,
 				<Button
 					danger
 					type="primary"
 					onClick={handleRemove}
 					icon={<Icon icon="ant-design:delete-outlined" />}
-				/>
-			}
-			actions={[
-				<Button
-					key="minus"
-					icon={<Icon icon="ant-design:minus-circle-outlined" />}
-					onClick={() => handleQuantityChange(quantity - 1)}
-					disabled={quantity <= 1}
-				/>,
-				<InputNumber
-					key="input"
-					min={1}
-					max={product.quantity}
-					value={quantity}
-					onChange={(val) => handleQuantityChange(Number(val))}
-					style={{ width: 60, textAlign: 'center' }}
-				/>,
-				<Button
-					key="plus"
-					icon={<Icon icon="ant-design:plus-circle-outlined" />}
-					onClick={() => handleQuantityChange(quantity + 1)}
-					disabled={quantity >= product.quantity}
 				/>,
 			]}
 		>
-			<Meta
-				avatar={
-					<AntdImage
-						alt={name}
-						disableScaling
-						aspectRatio={1}
-						objectFit="cover"
-						src={getImageLink(image)}
-						style={{ width: 64, height: 64 }}
-					/>
-				}
-				title={name}
-				description={
-					<>
-						<div>Price: BDT {price * cartQuantity}</div>
-						<div>Qty: {cartQuantity}</div>
-						<div>In Stock: {remainingStock}</div>
-					</>
-				}
+			<Checkbox
+				id={`select-cart-${id}`}
+				name={`select-cart-${id}`}
+				style={{
+					position: 'absolute',
+					top: 4,
+					left: 8,
+				}}
+				onChange={(e) => onSelect(product, e.target.checked)}
 			/>
+			<Link to={`/products/${id}`}>
+				<Meta
+					avatar={
+						<img
+							style={{
+								aspectRatio: 1,
+								objectFit: 'cover',
+							}}
+							alt={name}
+							height={80}
+							width={80}
+							src={getImageLink(image)}
+						/>
+					}
+					title={
+						<Tooltip placement="topLeft" title={name}>
+							{name}
+						</Tooltip>
+					}
+					description={
+						<>
+							<div>Price: BDT {price * cartQuantity || 0}</div>
+							<Space>
+								<span>Qty: {cartQuantity || 0}</span>
+								<span>In Stock: {remainingStock || 0}</span>
+							</Space>
+						</>
+					}
+				/>
+			</Link>
 		</Card>
 	);
 };

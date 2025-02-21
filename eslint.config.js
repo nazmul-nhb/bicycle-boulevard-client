@@ -47,11 +47,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
+    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*', 'src/types/**/*.ts*'],
     rules: { "@typescript-eslint/no-unused-vars": "off" }
   },
   {
-    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*'],
+    files: ['src/utils/**/*.ts*', 'src/lib/**/*.ts*', 'src/types/**/*.ts*'],
     rules: { "no-unused-vars": "off" }
   },
   {
