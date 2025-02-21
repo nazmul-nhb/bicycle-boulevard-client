@@ -9,9 +9,11 @@ import {
 	Flex,
 	InputNumber,
 	Row,
+	Space,
 	Tag,
 	Typography,
 } from 'antd';
+import { getColorForInitial } from 'nhb-toolbox';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { AntNotifications } from '../../App';
@@ -58,8 +60,8 @@ const ProductDetails = () => {
 
 	const {
 		name,
-		brand,
 		price,
+		brand,
 		category,
 		image,
 		quantity: stock,
@@ -123,7 +125,7 @@ const ProductDetails = () => {
 				boxShadow: '4px 8px 8px rgba(0, 0, 0, 0.5)',
 			}}
 		>
-			<Row gutter={[24, 24]} align="middle">
+			<Row gutter={[24, 24]} align="top">
 				<Col xs={24} md={10}>
 					<Badge.Ribbon
 						color={remainingStock ? 'default' : 'red'}
@@ -141,95 +143,113 @@ const ProductDetails = () => {
 
 				<Col xs={24} md={14}>
 					<Title level={3}>{name}</Title>
-					<Text type="secondary">Brand: {brand}</Text>
+					{/* <Flex align="center" justify="space-between"> */}
+					<Text type="secondary">
+						<Tag color={getColorForInitial(brand!)}>Brand: {brand}</Tag>
+					</Text>
 					<Text type="secondary" style={{ display: 'block', marginTop: 4 }}>
-						Category: {category}
+						<Tag color={getColorForInitial(category!)}>
+							Category: {category}
+						</Tag>
 					</Text>
+					{/* </Flex> */}
 					<Divider />
-
-					<Text strong style={{ fontSize: '1.5rem', color: '#d32f2f' }}>
-						BDT {price?.toFixed(2)}
-					</Text>
-
-					<Divider />
-					<Flex align="center" gap={8}>
-						<Button
-							icon={<Icon icon="ant-design:minus-circle-outlined" />}
-							onClick={() => handleQuantityChange(quantity - 1)}
-							disabled={quantity <= 1}
-						/>
-						<InputNumber
-							min={1}
-							max={remainingStock}
-							value={quantity}
-							onChange={(e) => handleQuantityChange(Number(e))}
-							style={{ width: 60, textAlign: 'center' }}
-						/>
-						<Button
-							icon={<Icon icon="ant-design:plus-circle-outlined" />}
-							onClick={() => handleQuantityChange(quantity + 1)}
-							// disabled={quantity >= remainingStock}
-						/>
-					</Flex>
-
-					<Tag
+					<Flex
 						style={{
-							fontSize: '1rem',
-							marginTop: 12,
+							flexDirection: isMobile ? 'column' : 'row',
 						}}
-						color={remainingStock ? 'green' : 'red'}
+						align={isMobile ? 'start' : 'center'}
+						gap={16}
+						// justify="space-between"
 					>
-						Available:{' '}
-						<Badge
-							showZero
-							count={remainingStock}
-							overflowCount={remainingStock}
+						<Text strong style={{ fontSize: '1.5rem', color: '#d32f2f' }}>
+							BDT {price?.toFixed(2)}
+						</Text>
+						<Tag
 							style={{
-								backgroundColor: 'rgba(0, 0, 0, 0)',
-								fontSize: '0.9rem',
-								fontWeight: 'bold',
-								marginTop: -2,
-								// opacity: 0.75,
-								color: remainingStock ? 'green' : 'red',
-								borderColor: 'rgba(0, 0, 0, 0)',
+								fontSize: '1rem',
+								// marginTop: 12,
 							}}
-						/>
-					</Tag>
+							color={remainingStock ? 'green' : 'red'}
+						>
+							Available:{' '}
+							<Badge
+								showZero
+								count={remainingStock}
+								overflowCount={remainingStock}
+								style={{
+									backgroundColor: 'rgba(0, 0, 0, 0)',
+									fontSize: '0.9rem',
+									fontWeight: 'bold',
+									marginTop: -2,
+									// opacity: 0.75,
+									color: remainingStock ? 'green' : 'red',
+									borderColor: 'rgba(0, 0, 0, 0)',
+								}}
+							/>
+						</Tag>
+					</Flex>
 
 					<Divider />
-
-					<Flex gap={12}>
-						<Button
-							type="primary"
-							onClick={addProductToCart}
-							danger={remainingStock <= 0}
-							icon={<Icon icon="ant-design:shopping-cart-outlined" />}
-							// disabled={remainingStock <= 0}
-						>
-							Add to Cart
-						</Button>
-						<Button
-							type="primary"
-							onClick={buyNow}
-							// disabled={remainingStock <= 0}
-						>
-							Buy Now
-						</Button>
-					</Flex>
-				</Col>
-			</Row>
-
-			<Divider />
-
-			<Row>
-				<Col span={24}>
-					<Title level={2}>Product Details</Title>
-					<div
+					<Flex
 						style={{
-							marginLeft: 16,
+							flexDirection: isMobile ? 'column' : 'row',
 						}}
-						dangerouslySetInnerHTML={{ __html: description! }}
-					/>
+						align={isMobile ? 'start' : 'center'}
+						gap={16}
+						// justify="space-between"
+					>
+						<Space>
+							<Button
+								icon={<Icon icon="ant-design:minus-circle-outlined" />}
+								onClick={() => handleQuantityChange(quantity - 1)}
+								// disabled={quantity <= 1}
+							/>
+							<InputNumber
+								min={1}
+								max={remainingStock}
+								value={quantity}
+								onChange={(e) => handleQuantityChange(Number(e))}
+								style={{ width: 60, textAlign: 'center' }}
+							/>
+							<Button
+								icon={<Icon icon="ant-design:plus-circle-outlined" />}
+								onClick={() => handleQuantityChange(quantity + 1)}
+								// disabled={quantity >= remainingStock}
+							/>
+						</Space>
+						<Space>
+							<Button
+								type="primary"
+								onClick={addProductToCart}
+								danger={remainingStock <= 0}
+								icon={<Icon icon="ant-design:shopping-cart-outlined" />}
+								// disabled={remainingStock <= 0}
+							>
+								Add to Cart
+							</Button>
+							<Button
+								type="primary"
+								onClick={buyNow}
+								// disabled={remainingStock <= 0}
+							>
+								Buy Now
+							</Button>
+						</Space>
+					</Flex>
+
+					<Divider />
+					{description && (
+						<Space direction="vertical">
+							<Title level={2}>Product Details</Title>
+							<div
+								style={{
+									marginLeft: 16,
+								}}
+								dangerouslySetInnerHTML={{ __html: description }}
+							/>
+						</Space>
+					)}
 				</Col>
 			</Row>
 		</Card>

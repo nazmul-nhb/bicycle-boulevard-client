@@ -1,6 +1,9 @@
 import { Badge, Button, Card, Col, Divider, Flex, InputNumber, Row, Skeleton } from 'antd';
+import { useMediaQuery } from '../../../hooks/useMediaQuery';
 
 const ProductDetailsSkeleton = () => {
+	const isMobile = useMediaQuery(768);
+
 	return (
 		<Card
 			style={{
@@ -10,7 +13,7 @@ const ProductDetailsSkeleton = () => {
 				boxShadow: '4px 8px 8px rgba(0, 0, 0, 0.5)',
 			}}
 		>
-			<Row gutter={[24, 24]} align="middle">
+			<Row gutter={[24, 24]} align="top">
 				<Col xs={24} md={10}>
 					<Badge.Ribbon text="Loading...">
 						<Skeleton
@@ -35,7 +38,13 @@ const ProductDetailsSkeleton = () => {
 					<Skeleton paragraph={{ rows: 2 }} active />
 					<Divider />
 
-					<Flex align="center" gap={8}>
+					<Flex
+						style={{
+							flexDirection: isMobile ? 'column' : 'row',
+						}}
+						align={isMobile ? 'start' : 'center'}
+						gap={8}
+					>
 						<Button disabled>
 							<Skeleton.Button style={{ width: 32 }} active />
 						</Button>
@@ -43,25 +52,18 @@ const ProductDetailsSkeleton = () => {
 						<Button disabled>
 							<Skeleton.Button style={{ width: 32 }} active />
 						</Button>
+						<Button type="primary" disabled>
+							<Skeleton.Button style={{ width: 120 }} active />
+						</Button>
+						<Button type="primary" disabled>
+							<Skeleton.Button style={{ width: 120 }} active />
+						</Button>
 					</Flex>
 
+					{/* <Divider /> */}
+
+					{/* <Flex gap={12}></Flex> */}
 					<Divider />
-
-					<Flex gap={12}>
-						<Button type="primary" disabled>
-							<Skeleton.Button style={{ width: 120 }} active />
-						</Button>
-						<Button type="primary" disabled>
-							<Skeleton.Button style={{ width: 120 }} active />
-						</Button>
-					</Flex>
-				</Col>
-			</Row>
-
-			<Divider />
-
-			<Row>
-				<Col span={24}>
 					<Skeleton title={{ width: '40%' }} paragraph={{ rows: 3 }} active />
 				</Col>
 			</Row>
