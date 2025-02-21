@@ -118,7 +118,7 @@ const ProductDetails = () => {
 
 		dispatch(addToOrder(productToAdd));
 
-		navigate(`/cart`);
+		navigate(`/checkout`);
 	};
 
 	if (isError) {

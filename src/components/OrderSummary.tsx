@@ -13,7 +13,11 @@ import {
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { getImageLink } from '../utils/helpers';
 
-const OrderSummary = () => {
+interface Props {
+	isDirectOrder?: boolean;
+}
+
+const OrderSummary = ({ isDirectOrder }: Props) => {
 	const selectedItems = useAppSelector(selectOrderItems);
 	const { totalItems, totalPrice } = useAppSelector(selectTotal);
 	const { notify } = AntNotifications(true);
@@ -40,14 +44,18 @@ const OrderSummary = () => {
 		}
 
 		// Remove selected items from cart when going to check out
-		selectedItems.forEach((item) => dispatch(removeSpecificItem(item._id)));
+		if (!isDirectOrder) {
+			selectedItems.forEach((item) => dispatch(removeSpecificItem(item._id)));
+			notify.success({ message: `Taking you to check out page!` });
+			return;
+		}
 
-		notify.success({ message: `Taking you to check out page!` });
+		notify.success({ message: `Order has been placed!` });
 	};
 
 	return (
 		<Card
-			title={`Order Summary (${totalItems} Items)`}
+			title={`Order List (${totalItems} Items)`}
 			style={{
 				position: 'sticky',
 				top: 8,
