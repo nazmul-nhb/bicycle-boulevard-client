@@ -46,14 +46,14 @@ input:-webkit-autofill:active {
 *::-webkit-scrollbar-track,
 .bicycle-scrollbar::-webkit-scrollbar-track {
 	background: var(--sb-track-color);
-	border-radius: 4px;
+	border-radius: 2px;
 }
 
 *::-webkit-scrollbar-thumb,
 .bicycle-scrollbar::-webkit-scrollbar-thumb {
 	background: var(--sb-thumb-color);
-	border-radius: 4px;
-	border: 1.5px solid #e8f3f0;
+	border-radius: 2px;
+	border: 1px solid #e8f3f0;
 }
 
 @supports not selector(::-webkit-scrollbar) {

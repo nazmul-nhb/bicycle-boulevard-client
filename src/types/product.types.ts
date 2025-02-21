@@ -38,7 +38,8 @@ export interface IProductResponse {
 	products: IProduct[];
 }
 
-export interface ICartProduct extends Omit<IProduct, 'createdAt' | 'updatedAt'> {
+export interface ICartProduct
+	extends Omit<IProduct, 'createdAt' | 'updatedAt' | 'createdBy'> {
 	cartQuantity: number;
 	cartDate: string;
 }

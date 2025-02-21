@@ -6,4 +6,5 @@ export const configs = {
 	user_key: 'bicycle-user',
 	theme_name: 'bicycle-theme',
 	cart_key: 'bicycle-cart',
+	order_key: 'bicycle-order',
 };

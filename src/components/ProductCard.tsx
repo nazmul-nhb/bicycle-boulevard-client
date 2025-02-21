@@ -4,6 +4,7 @@ import { getColorForInitial, truncateString } from 'nhb-toolbox';
 import { Link } from 'react-router';
 import { AntNotifications } from '../App';
 import { addToCart, selectTargetItem } from '../app/features/cartSlice';
+import { selectOrderItems, updateOrderItemQuantity } from '../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import type { IProduct } from '../types/product.types';
 import { debounceAction, getImageLink } from '../utils/helpers';
@@ -22,18 +23,24 @@ const ProductCard = ({ product }: Props) => {
 	const dispatch = useAppDispatch();
 
 	const targetItem = useAppSelector((state) => selectTargetItem(state, id));
+	const orderItems = useAppSelector(selectOrderItems);
+
+	// Calculate existing order quantity for the specific item
+	const existingQuantity = orderItems.find((item) => item._id === id)?.cartQuantity ?? 0;
 
 	const remainingStock = stock - (targetItem?.cartQuantity ?? 0);
 
-	const addProductToCart = debounceAction((quantity: number) => {
-		if ((targetItem?.cartQuantity ?? 0) + quantity > stock) {
+	const addProductToCart = debounceAction(() => {
+		if ((targetItem?.cartQuantity ?? 0) + 1 > stock) {
 			return notify.warning({
 				message: 'Cannot add to cart! Out of Stock!',
 			});
 		}
 
-		dispatch(addToCart({ id, cartQuantity: quantity }));
+		dispatch(addToCart({ id, cartQuantity: 1 }));
 		notify.success({ message: `${name} has been added to your cart!` });
+		// Update order items if exists
+		dispatch(updateOrderItemQuantity({ id, quantity: existingQuantity + 1 }));
 	}, 500);
 
 	return (
@@ -119,7 +126,7 @@ const ProductCard = ({ product }: Props) => {
 						BDT {price.toFixed(2)}
 					</Text>
 					<Button
-						onClick={() => addProductToCart(1)}
+						onClick={addProductToCart}
 						type="primary"
 						danger={remainingStock <= 0}
 						icon={<Icon icon="ant-design:shopping-cart-outlined" />}

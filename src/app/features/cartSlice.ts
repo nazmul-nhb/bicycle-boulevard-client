@@ -87,7 +87,7 @@ const cartSlice = createSlice({
 			}
 		},
 
-		removeCart: (state) => {
+		clearCart: (state) => {
 			state.items = [];
 			state.total = 0;
 
@@ -96,7 +96,7 @@ const cartSlice = createSlice({
 	},
 });
 
-export const { addToCart, removeQuantityFromCart, removeSpecificItem, removeCart } =
+export const { addToCart, removeQuantityFromCart, removeSpecificItem, clearCart } =
 	cartSlice.actions;
 
 export const selectCart = (state: TRootState) => state.cart;

@@ -1,6 +1,15 @@
 import { Icon } from '@iconify/react';
-import { Button, Card, Checkbox, InputNumber, Space, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import {
+	Button,
+	Card,
+	Checkbox,
+	InputNumber,
+	Space,
+	Tooltip,
+	Typography,
+	type CheckboxRef,
+} from 'antd';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { AntNotifications } from '../../../App';
 import {
@@ -8,8 +17,12 @@ import {
 	removeQuantityFromCart,
 	removeSpecificItem,
 } from '../../../app/features/cartSlice';
-import { useAppDispatch } from '../../../app/hooks';
-import type { TOnQuantityChange, TSelectProducts } from '../../../types';
+import {
+	addToOrder,
+	removeFromOrder,
+	updateOrderItemQuantity,
+} from '../../../app/features/orderSlice';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import type { ICartProduct } from '../../../types/product.types';
 import { getImageLink } from '../../../utils/helpers';
 
@@ -17,15 +30,14 @@ const { Meta } = Card;
 
 interface Props {
 	product: ICartProduct;
-	onSelect: TSelectProducts;
-	onQuantityChange: TOnQuantityChange;
 }
 
-const CartCard: React.FC<Props> = ({ product, onSelect, onQuantityChange }) => {
+const CartCard: React.FC<Props> = ({ product }) => {
 	const { _id: id, name, image, price, cartQuantity, quantity: stock } = product;
 	const dispatch = useAppDispatch();
 	const { notify } = AntNotifications(true);
-	const [quantity, setQuantity] = useState(1);
+	const [quantity, setQuantity] = useState(cartQuantity);
+	const checkboxRef = useRef<CheckboxRef | null>(null);
 
 	const remainingStock = stock - cartQuantity;
 
@@ -43,14 +55,49 @@ const CartCard: React.FC<Props> = ({ product, onSelect, onQuantityChange }) => {
 		}
 
 		setQuantity(value);
-
-		onQuantityChange(product, value);
-		onSelect({ ...product, cartQuantity: value }, true);
 	};
 
-	const handleRemove = () => {
+	const handleRemoveQuantity = () => {
+		dispatch(removeQuantityFromCart({ id, cartQuantity: quantity }));
+		dispatch(updateOrderItemQuantity({ id, quantity: cartQuantity - quantity }));
+	};
+
+	const handleAddQuantity = () => {
+		dispatch(addToCart({ id, cartQuantity: quantity }));
+		dispatch(updateOrderItemQuantity({ id, quantity: cartQuantity + quantity }));
+	};
+
+	const handleRemoveCartItem = () => {
 		dispatch(removeSpecificItem(id));
 		notify.success({ message: `${name} removed from the cart!` });
+		dispatch(removeFromOrder(id));
+	};
+
+	const handleSelectOrder = (isSelected: boolean) => {
+		if (isSelected) {
+			dispatch(addToOrder(product));
+		} else {
+			dispatch(removeFromOrder(id));
+		}
+	};
+
+	const handleCardClick = (e: React.MouseEvent) => {
+		// Check if the clicked element or any of its ancestors have the data-action attribute
+		let target = e.target as HTMLElement;
+		while (target && target !== e.currentTarget) {
+			if (
+				target.hasAttribute('data-action') ||
+				target.closest('.ant-checkbox-wrapper')
+			) {
+				return; // Skip if the click is on an action element
+			}
+			target = target.parentElement!;
+		}
+
+		// Programmatically toggle the checkbox
+		if (checkboxRef.current && checkboxRef.current.input) {
+			checkboxRef.current.input.click();
+		}
 	};
 
 	return (
@@ -61,14 +108,15 @@ const CartCard: React.FC<Props> = ({ product, onSelect, onQuantityChange }) => {
 				boxShadow: '4px 8px 8px rgba(0, 0, 0, 0.5)',
 				padding: 8,
 			}}
+			// styles={{ actions: { borderInline: 'none' } }}
+			onClick={handleCardClick}
 			actions={[
 				<Button
 					key="minus"
 					icon={<Icon icon="ant-design:minus-circle-outlined" />}
-					onClick={() => {
-						dispatch(removeQuantityFromCart({ id, cartQuantity: quantity }));
-					}}
-					// disabled={quantity > remainingStock}
+					onClick={handleRemoveQuantity}
+					disabled={cartQuantity <= 0}
+					data-action="true"
 				/>,
 				<InputNumber
 					key="input"
@@ -77,32 +125,42 @@ const CartCard: React.FC<Props> = ({ product, onSelect, onQuantityChange }) => {
 					value={quantity}
 					onChange={(val) => handleQuantityChange(Number(val))}
 					style={{ width: 64, textAlign: 'center' }}
+					data-action="true"
 				/>,
 				<Button
 					key="plus"
 					icon={<Icon icon="ant-design:plus-circle-outlined" />}
-					onClick={() => dispatch(addToCart({ id, cartQuantity: quantity }))}
+					onClick={handleAddQuantity}
 					disabled={quantity > remainingStock}
+					data-action="true"
 				/>,
-				<Button
-					danger
-					type="primary"
-					onClick={handleRemove}
-					icon={<Icon icon="ant-design:delete-outlined" />}
-				/>,
+				<Tooltip placement="topRight" title={`Remove this product from the cart`}>
+					<Button
+						danger
+						type="text"
+						onClick={handleRemoveCartItem}
+						icon={<Icon width={30} icon="tabler:trash-x" />}
+						data-action="true"
+					/>
+				</Tooltip>,
 			]}
 		>
 			<Checkbox
+				ref={checkboxRef}
 				id={`select-cart-${id}`}
 				name={`select-cart-${id}`}
 				style={{
 					position: 'absolute',
 					top: 4,
-					left: 8,
+					left: 6,
+					zIndex: 1,
 				}}
-				onChange={(e) => onSelect(product, e.target.checked)}
+				onChange={(e) => handleSelectOrder(e.target.checked)}
+				checked={useAppSelector((state) =>
+					state.order.orderItems.some((item) => item._id === id)
+				)}
 			/>
-			<Link to={`/products/${id}`}>
+			<Link data-action="true" to={`/products/${id}`}>
 				<Meta
 					avatar={
 						<img
@@ -123,14 +181,15 @@ const CartCard: React.FC<Props> = ({ product, onSelect, onQuantityChange }) => {
 					}
 					description={
 						<>
-							<div>Price: BDT {price * cartQuantity || 0}</div>
+							<div>Total: BDT {(price * cartQuantity || 0).toFixed(2)}</div>
 							<Space>
 								<span>Qty: {cartQuantity || 0}</span>
-								<span>In Stock: {remainingStock || 0}</span>
+								<span>Stock: {remainingStock || 0}</span>
 							</Space>
 						</>
 					}
 				/>
+				<Typography.Text>BDT {price.toFixed(2)}</Typography.Text>
 			</Link>
 		</Card>
 	);

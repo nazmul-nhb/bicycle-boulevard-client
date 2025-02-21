@@ -19,9 +19,11 @@ import { useNavigate, useParams } from 'react-router';
 import { AntNotifications } from '../../App';
 import { useGetSingleProductQuery } from '../../app/api/productApi';
 import { addToCart, selectTargetItem } from '../../app/features/cartSlice';
+import { addToOrder } from '../../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import AntdImage from '../../components/AntdImage';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import type { IProductDetails } from '../../types/product.types';
 import type { IErrorResponse } from '../../types/server.types';
 import { getImageLink, isFetchError } from '../../utils/helpers';
 import ProductDetailsSkeleton from './components/ProductDetailsSkeleton';
@@ -59,14 +61,16 @@ const ProductDetails = () => {
 	// }
 
 	const {
+		_id,
 		name,
 		price,
 		brand,
 		category,
 		image,
+		inStock,
 		quantity: stock,
 		description,
-	} = product || {};
+	} = product || ({} as IProductDetails);
 
 	const remainingStock = (stock || 0) - (targetItem?.cartQuantity ?? 0);
 
@@ -99,7 +103,22 @@ const ProductDetails = () => {
 			return notify.warning({ message: 'Cannot buy now! Out of Stock!' });
 		}
 
-		navigate(`/checkout`);
+		const productToAdd = {
+			_id,
+			name,
+			brand,
+			category,
+			image,
+			inStock,
+			price,
+			quantity,
+			cartQuantity: quantity,
+			cartDate: new Date().toISOString(),
+		};
+
+		dispatch(addToOrder(productToAdd));
+
+		navigate(`/cart`);
 	};
 
 	if (isError) {
