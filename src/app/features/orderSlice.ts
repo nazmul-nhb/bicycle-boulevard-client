@@ -1,5 +1,4 @@
-// orderSlice.ts
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { configs } from '../../configs/site_configs';
 import type { ICartProduct } from '../../types/product.types';
 import {
@@ -70,18 +69,15 @@ export const { addToOrder, removeFromOrder, updateOrderItemQuantity, clearOrder 
 
 export const selectOrderItems = (state: TRootState) => state.order.orderItems;
 
-export const selectTotal = (state: TRootState) => {
-	const totalPrice = state.order.orderItems.reduce(
+export const selectOrderTotal = createSelector([selectOrderItems], (orderItems) => {
+	const totalPrice = orderItems.reduce(
 		(acc, item) => acc + item.price * item.cartQuantity,
 		0
 	);
 
-	const totalItems = state.order.orderItems.reduce(
-		(acc, item) => acc + item.cartQuantity,
-		0
-	);
+	const totalItems = orderItems.reduce((acc, item) => acc + item.cartQuantity, 0);
 
 	return { totalPrice, totalItems };
-};
+});
 
 export const orderReducer = orderSlice.reducer;

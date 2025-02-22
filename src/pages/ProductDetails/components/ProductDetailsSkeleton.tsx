@@ -35,7 +35,7 @@ const ProductDetailsSkeleton = () => {
 					<Divider />
 					<Skeleton.Input style={{ width: 120, height: 24 }} active />
 					<Divider />
-					<Skeleton paragraph={{ rows: 2 }} active />
+					<Skeleton.Input style={{ width: 120, height: 24 }} active />
 					<Divider />
 
 					<Flex
@@ -60,9 +60,6 @@ const ProductDetailsSkeleton = () => {
 						</Button>
 					</Flex>
 
-					{/* <Divider /> */}
-
-					{/* <Flex gap={12}></Flex> */}
 					<Divider />
 					<Skeleton title={{ width: '40%' }} paragraph={{ rows: 3 }} active />
 				</Col>

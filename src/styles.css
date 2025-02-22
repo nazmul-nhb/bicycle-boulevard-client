@@ -69,3 +69,7 @@ input:-webkit-autofill:active {
 .hover-scale:hover {
 	transform: scale(1.1);
 }
+
+.ant-card .ant-card-actions > li > span {
+	cursor: default !important;
+}

@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { Avatar, Button, Card, Divider, Flex, List, Tooltip } from 'antd';
+import { Avatar, Badge, Button, Card, Divider, Flex, List, Tag, Tooltip } from 'antd';
 import { truncateString } from 'nhb-toolbox';
 import { Link } from 'react-router';
 import { AntNotifications } from '../App';
@@ -8,21 +8,20 @@ import {
 	clearOrder,
 	removeFromOrder,
 	selectOrderItems,
-	selectTotal,
+	selectOrderTotal,
 } from '../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getImageLink } from '../utils/helpers';
+import { getBadgeStyle, getImageLink } from '../utils/helpers';
 
 interface Props {
 	isDirectOrder?: boolean;
 }
 
 const OrderSummary = ({ isDirectOrder }: Props) => {
-	const selectedItems = useAppSelector(selectOrderItems);
-	const { totalItems, totalPrice } = useAppSelector(selectTotal);
-	const { notify } = AntNotifications(true);
-
 	const dispatch = useAppDispatch();
+	const { notify } = AntNotifications(true);
+	const selectedItems = useAppSelector(selectOrderItems);
+	const { totalItems, totalPrice } = useAppSelector(selectOrderTotal);
 
 	const handleRemoveFromOrder = (id: string) => {
 		dispatch(removeFromOrder(id));
@@ -113,8 +112,40 @@ const OrderSummary = ({ isDirectOrder }: Props) => {
 									</Tooltip>
 								</Flex>
 							}
-							description={`${item.cartQuantity} x ${item.price.toFixed(2)}
-								 = BDT ${(item.price * item.cartQuantity).toFixed(2)}`}
+							description={
+								<Tag
+									style={{
+										paddingInline: 0,
+										padding: 0,
+										paddingRight: 4,
+									}}
+								>
+									<Badge
+										showZero
+										style={getBadgeStyle(item.cartQuantity > 0)}
+										overflowCount={item.cartQuantity}
+										count={item.cartQuantity || 0}
+									/>
+									x
+									<Badge
+										showZero
+										style={getBadgeStyle(item.price > 0)}
+										overflowCount={item.price}
+										count={(item.price || 0).toFixed(2)}
+									/>{' '}
+									= BDT
+									<Badge
+										showZero
+										style={getBadgeStyle(
+											item.price * item.cartQuantity > 0
+										)}
+										overflowCount={item.price * item.cartQuantity}
+										count={(
+											item.price * item.cartQuantity || 0
+										).toFixed(2)}
+									/>
+								</Tag>
+							}
 						/>
 					</List.Item>
 				)}
@@ -122,7 +153,17 @@ const OrderSummary = ({ isDirectOrder }: Props) => {
 			<Divider style={{ marginTop: 0 }} />
 			<Card.Meta
 				style={{ padding: '0 0 24px 12px' }}
-				title={`Total Price: BDT ${totalPrice.toFixed(2)}`}
+				title={
+					<>
+						Total Price: BDT
+						<Badge
+							showZero
+							style={{ ...getBadgeStyle(totalPrice > 0, -5.5), fontSize: 17 }}
+							overflowCount={totalPrice}
+							count={(totalPrice || 0).toFixed(2)}
+						/>
+					</>
+				}
 			/>
 
 			<Card.Meta

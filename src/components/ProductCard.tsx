@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Badge, Button, Card, Divider, Flex, Space, Tag, Tooltip, Typography } from 'antd';
 import { getColorForInitial, truncateString } from 'nhb-toolbox';
+import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { AntNotifications } from '../App';
 import { addToCart, selectTargetItem } from '../app/features/cartSlice';
@@ -18,17 +19,22 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
 	const { _id: id, name, brand, price, image, category, quantity: stock } = product || {};
 
-	const { notify } = AntNotifications(true);
-
 	const dispatch = useAppDispatch();
+	const { notify } = AntNotifications(true);
 
 	const targetItem = useAppSelector((state) => selectTargetItem(state, id));
 	const orderItems = useAppSelector(selectOrderItems);
 
 	// Calculate existing order quantity for the specific item
-	const existingQuantity = orderItems.find((item) => item._id === id)?.cartQuantity ?? 0;
+	const existingQuantity = useMemo(
+		() => orderItems.find((item) => item._id === id)?.cartQuantity ?? 0,
+		[id, orderItems]
+	);
 
-	const remainingStock = stock - (targetItem?.cartQuantity ?? 0);
+	const remainingStock = useMemo(
+		() => stock - (targetItem?.cartQuantity ?? 0),
+		[stock, targetItem]
+	);
 
 	const addProductToCart = debounceAction(() => {
 		if ((targetItem?.cartQuantity ?? 0) + 1 > stock) {
@@ -39,6 +45,7 @@ const ProductCard = ({ product }: Props) => {
 
 		dispatch(addToCart({ id, cartQuantity: 1 }));
 		notify.success({ message: `${name} has been added to your cart!` });
+
 		// Update order items if exists
 		dispatch(updateOrderItemQuantity({ id, quantity: existingQuantity + 1 }));
 	}, 500);

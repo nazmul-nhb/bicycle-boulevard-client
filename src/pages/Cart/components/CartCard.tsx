@@ -1,15 +1,17 @@
 import { Icon } from '@iconify/react';
 import {
+	Badge,
 	Button,
 	Card,
 	Checkbox,
 	InputNumber,
 	Space,
+	Tag,
 	Tooltip,
 	Typography,
 	type CheckboxRef,
 } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { AntNotifications } from '../../../App';
 import {
@@ -24,7 +26,7 @@ import {
 } from '../../../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import type { ICartProduct } from '../../../types/product.types';
-import { getImageLink } from '../../../utils/helpers';
+import { getBadgeStyle, getImageLink } from '../../../utils/helpers';
 
 const { Meta } = Card;
 
@@ -36,7 +38,7 @@ const CartCard: React.FC<Props> = ({ product }) => {
 	const { _id: id, name, image, price, cartQuantity, quantity: stock } = product;
 	const dispatch = useAppDispatch();
 	const { notify } = AntNotifications(true);
-	const [quantity, setQuantity] = useState(cartQuantity);
+	const [quantity, setQuantity] = useState(1);
 	const checkboxRef = useRef<CheckboxRef | null>(null);
 
 	const remainingStock = stock - cartQuantity;
@@ -50,7 +52,7 @@ const CartCard: React.FC<Props> = ({ product }) => {
 
 		if (value > remainingStock) {
 			return notify.warning({
-				message: 'Cannot add item in the cart! Out of Stock!',
+				message: `Cannot add ${value} item(s) in the cart! ${remainingStock} available in stock!`,
 			});
 		}
 
@@ -59,6 +61,11 @@ const CartCard: React.FC<Props> = ({ product }) => {
 
 	const handleRemoveQuantity = () => {
 		dispatch(removeQuantityFromCart({ id, cartQuantity: quantity }));
+
+		if (cartQuantity - quantity <= 0) {
+			return dispatch(removeFromOrder(id));
+		}
+
 		dispatch(updateOrderItemQuantity({ id, quantity: cartQuantity - quantity }));
 	};
 
@@ -87,7 +94,8 @@ const CartCard: React.FC<Props> = ({ product }) => {
 		while (target && target !== e.currentTarget) {
 			if (
 				target.hasAttribute('data-action') ||
-				target.closest('.ant-checkbox-wrapper')
+				target.closest('.ant-checkbox-wrapper') ||
+				target.classList.contains('ant-input-number-handler-wrap')
 			) {
 				return; // Skip if the click is on an action element
 			}
@@ -100,49 +108,68 @@ const CartCard: React.FC<Props> = ({ product }) => {
 		}
 	};
 
+	const totalPrice = useMemo(() => price * cartQuantity || 0, [price, cartQuantity]);
+
 	return (
 		<Card
+			hoverable={false}
 			style={{
 				position: 'relative',
 				borderRadius: 8,
 				boxShadow: '4px 8px 8px rgba(0, 0, 0, 0.5)',
 				padding: 8,
 			}}
-			// styles={{ actions: { borderInline: 'none' } }}
+			// styles={{ actions: { cursor: 'default' } }}
 			onClick={handleCardClick}
 			actions={[
-				<Button
-					key="minus"
-					icon={<Icon icon="ant-design:minus-circle-outlined" />}
-					onClick={handleRemoveQuantity}
-					disabled={cartQuantity <= 0}
-					data-action="true"
-				/>,
-				<InputNumber
-					key="input"
-					min={0}
-					max={stock}
-					value={quantity}
-					onChange={(val) => handleQuantityChange(Number(val))}
-					style={{ width: 64, textAlign: 'center' }}
-					data-action="true"
-				/>,
-				<Button
-					key="plus"
-					icon={<Icon icon="ant-design:plus-circle-outlined" />}
-					onClick={handleAddQuantity}
-					disabled={quantity > remainingStock}
-					data-action="true"
-				/>,
-				<Tooltip placement="topRight" title={`Remove this product from the cart`}>
+				<Space>
 					<Button
-						danger
-						type="text"
-						onClick={handleRemoveCartItem}
-						icon={<Icon width={30} icon="tabler:trash-x" />}
+						key="minus"
+						icon={<Icon icon="ant-design:minus-circle-outlined" />}
+						onClick={handleRemoveQuantity}
+						disabled={cartQuantity <= 0}
 						data-action="true"
 					/>
-				</Tooltip>,
+					<InputNumber
+						key="input"
+						min={0}
+						max={stock}
+						value={quantity}
+						onChange={(val) => handleQuantityChange(Number(val))}
+						style={{ width: 64, textAlign: 'center' }}
+						data-action="true"
+					/>
+					<Button
+						key="plus"
+						icon={<Icon icon="ant-design:plus-circle-outlined" />}
+						onClick={handleAddQuantity}
+						disabled={quantity > remainingStock}
+						data-action="true"
+					/>
+				</Space>,
+				<Space>
+					<Tag style={{ fontSize: 14, padding: '3px 5px 4px 8px' }}>
+						Qty:{' '}
+						<Badge
+							showZero
+							style={getBadgeStyle(cartQuantity > 0, -3)}
+							overflowCount={cartQuantity}
+							count={cartQuantity || 0}
+						/>
+					</Tag>
+					<Tooltip
+						placement="topRight"
+						title={`Remove this product from the cart`}
+					>
+						<Button
+							danger
+							type="text"
+							onClick={handleRemoveCartItem}
+							icon={<Icon width={30} icon="tabler:trash-x" />}
+							data-action="true"
+						/>
+					</Tooltip>
+				</Space>,
 			]}
 		>
 			<Checkbox
@@ -180,13 +207,26 @@ const CartCard: React.FC<Props> = ({ product }) => {
 						</Tooltip>
 					}
 					description={
-						<>
-							<div>Total: BDT {(price * cartQuantity || 0).toFixed(2)}</div>
-							<Space>
-								<span>Qty: {cartQuantity || 0}</span>
-								<span>Stock: {remainingStock || 0}</span>
-							</Space>
-						</>
+						<Space direction="vertical">
+							<h4>
+								Total: BDT
+								<Badge
+									showZero
+									style={getBadgeStyle(totalPrice > 0, -4)}
+									overflowCount={totalPrice}
+									count={totalPrice.toFixed(2)}
+								/>
+							</h4>
+							<h4>
+								Available Stock:{' '}
+								<Badge
+									showZero
+									style={getBadgeStyle(remainingStock > 0, -2.5)}
+									overflowCount={remainingStock}
+									count={remainingStock || 0}
+								/>
+							</h4>
+						</Space>
 					}
 				/>
 				<Typography.Text>BDT {price.toFixed(2)}</Typography.Text>

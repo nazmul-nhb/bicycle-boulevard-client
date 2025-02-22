@@ -179,7 +179,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 								placement="bottomRight"
 								content={
 									<Space direction="vertical">
-										<Badge size="small" count={cartTotal}>
+										<Badge size="small" count={cartTotal || 0}>
 											<Button
 												type="primary"
 												icon={

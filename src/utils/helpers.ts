@@ -1,5 +1,6 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { jwtDecode } from 'jwt-decode';
+import type { CSSProperties } from 'react';
 import { configs } from '../configs/site_configs';
 import type { IDecodedUser } from '../types/user.types';
 
@@ -133,3 +134,20 @@ export const debounceAction = <T extends (...args: any[]) => void>(
 export const isFetchError = (error: unknown): error is FetchBaseQueryError => {
 	return typeof error === 'object' && error !== null && 'data' in error;
 };
+
+/**
+ * * Customize Antd Badge style
+ * @param isGreen Whether the badge should be green or red.
+ * @param top Top margin for the badge.
+ * @returns Badge style object.
+ */
+export const getBadgeStyle = (isGreen = true, top = -2): CSSProperties => ({
+	backgroundColor: 'rgba(0, 0, 0, 0)',
+	fontSize: '0.9rem',
+	fontWeight: 'bold',
+	marginTop: top,
+	color: isGreen ? 'green' : 'red',
+	borderColor: 'rgba(0, 0, 0, 0)',
+	paddingLeft: 2,
+	paddingRight: 2,
+});

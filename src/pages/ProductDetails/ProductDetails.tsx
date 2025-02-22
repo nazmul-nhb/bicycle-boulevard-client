@@ -14,18 +14,27 @@ import {
 	Typography,
 } from 'antd';
 import { getColorForInitial } from 'nhb-toolbox';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { AntNotifications } from '../../App';
 import { useGetSingleProductQuery } from '../../app/api/productApi';
 import { addToCart, selectTargetItem } from '../../app/features/cartSlice';
-import { addToOrder } from '../../app/features/orderSlice';
+import {
+	addToOrder,
+	selectOrderItems,
+	updateOrderItemQuantity,
+} from '../../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import AntdImage from '../../components/AntdImage';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import type { IProductDetails } from '../../types/product.types';
 import type { IErrorResponse } from '../../types/server.types';
-import { getImageLink, isFetchError } from '../../utils/helpers';
+import {
+	debounceAction,
+	getBadgeStyle,
+	getImageLink,
+	isFetchError,
+} from '../../utils/helpers';
 import ProductDetailsSkeleton from './components/ProductDetailsSkeleton';
 
 const { Title, Text } = Typography;
@@ -33,12 +42,19 @@ const { Title, Text } = Typography;
 const ProductDetails = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const { notify } = AntNotifications(true);
 	const dispatch = useAppDispatch();
-
 	const isMobile = useMediaQuery(768);
-	const targetItem = useAppSelector((state) => selectTargetItem(state, id!));
+	const { notify } = AntNotifications(true);
 	const [quantity, setQuantity] = useState(1);
+
+	const orderItems = useAppSelector(selectOrderItems);
+	const targetItem = useAppSelector((state) => selectTargetItem(state, id!));
+
+	// Calculate existing order quantity for the specific item
+	const existingQuantity = useMemo(
+		() => orderItems.find((item) => item._id === id)?.cartQuantity ?? 0,
+		[id, orderItems]
+	);
 
 	const { product, isLoading, isError, error } = useGetSingleProductQuery(id, {
 		skip: !id,
@@ -47,8 +63,6 @@ const ProductDetails = () => {
 			...rest,
 		}),
 	});
-
-	if (!id || isLoading || (!product && !isError)) return <ProductDetailsSkeleton />;
 
 	// if (!product && !isLoading) {
 	// 	return (
@@ -72,7 +86,12 @@ const ProductDetails = () => {
 		description,
 	} = product || ({} as IProductDetails);
 
-	const remainingStock = (stock || 0) - (targetItem?.cartQuantity ?? 0);
+	const remainingStock = useMemo(
+		() => stock - (targetItem?.cartQuantity ?? 0),
+		[stock, targetItem]
+	);
+
+	if (!id || isLoading || (!product && !isError)) return <ProductDetailsSkeleton />;
 
 	const handleQuantityChange = (value: number) => {
 		if (value < 1) {
@@ -89,14 +108,17 @@ const ProductDetails = () => {
 		setQuantity(value);
 	};
 
-	const addProductToCart = () => {
+	const addProductToCart = debounceAction(() => {
 		if ((targetItem?.cartQuantity ?? 0) + quantity > (stock || 0)) {
 			return notify.warning({ message: 'Cannot add to cart! Out of Stock!' });
 		}
 
 		dispatch(addToCart({ id, cartQuantity: quantity }));
 		notify.success({ message: `${name} added to cart!` });
-	};
+
+		// Update order items if exists
+		dispatch(updateOrderItemQuantity({ id, quantity: existingQuantity + quantity }));
+	}, 500);
 
 	const buyNow = () => {
 		if (remainingStock <= 0) {
@@ -196,15 +218,7 @@ const ProductDetails = () => {
 								showZero
 								count={remainingStock}
 								overflowCount={remainingStock}
-								style={{
-									backgroundColor: 'rgba(0, 0, 0, 0)',
-									fontSize: '0.9rem',
-									fontWeight: 'bold',
-									marginTop: -2,
-									// opacity: 0.75,
-									color: remainingStock ? 'green' : 'red',
-									borderColor: 'rgba(0, 0, 0, 0)',
-								}}
+								style={getBadgeStyle(remainingStock > 0)}
 							/>
 						</Tag>
 					</Flex>
