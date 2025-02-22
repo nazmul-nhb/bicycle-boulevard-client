@@ -4,7 +4,7 @@ import { getColorForInitial, truncateString } from 'nhb-toolbox';
 import { useMemo } from 'react';
 import { Link } from 'react-router';
 import { AntNotifications } from '../App';
-import { addToCart, selectTargetItem } from '../app/features/cartSlice';
+import { addToCart, targetCartItem } from '../app/features/cartSlice';
 import { selectOrderItems, updateOrderItemQuantity } from '../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import type { IProduct } from '../types/product.types';
@@ -22,7 +22,7 @@ const ProductCard = ({ product }: Props) => {
 	const dispatch = useAppDispatch();
 	const { notify } = AntNotifications(true);
 
-	const targetItem = useAppSelector((state) => selectTargetItem(state, id));
+	const targetItem = useAppSelector((state) => targetCartItem(state, id));
 	const orderItems = useAppSelector(selectOrderItems);
 
 	// Calculate existing order quantity for the specific item

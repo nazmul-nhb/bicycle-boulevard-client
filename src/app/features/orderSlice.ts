@@ -69,7 +69,7 @@ export const { addToOrder, removeFromOrder, updateOrderItemQuantity, clearOrder 
 
 export const selectOrderItems = (state: TRootState) => state.order.orderItems;
 
-export const selectOrderTotal = createSelector([selectOrderItems], (orderItems) => {
+export const selectOrderTotals = createSelector([selectOrderItems], (orderItems) => {
 	const totalPrice = orderItems.reduce(
 		(acc, item) => acc + item.price * item.cartQuantity,
 		0

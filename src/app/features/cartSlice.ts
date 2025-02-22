@@ -71,7 +71,7 @@ const cartSlice = createSlice({
 			}
 		},
 
-		removeSpecificItem: (state, action: PayloadAction<ICartItem['id']>) => {
+		removeSpecificCartItem: (state, action: PayloadAction<ICartItem['id']>) => {
 			if (state.items) {
 				const matchedIdx = state.items.findIndex(
 					(item) => item.id === action.payload
@@ -96,13 +96,13 @@ const cartSlice = createSlice({
 	},
 });
 
-export const { addToCart, removeQuantityFromCart, removeSpecificItem, clearCart } =
+export const { addToCart, removeQuantityFromCart, removeSpecificCartItem, clearCart } =
 	cartSlice.actions;
 
 export const selectCart = (state: TRootState) => state.cart;
-export const selectItems = (state: TRootState) => state.cart.items;
+export const selectCartItems = (state: TRootState) => state.cart.items;
 export const selectCartTotal = (state: TRootState) => state.cart.total;
-export const selectTargetItem = (state: TRootState, id: string) =>
+export const targetCartItem = (state: TRootState, id: string) =>
 	state.cart.items.find((item) => item.id === id);
 
 export const cartReducer = cartSlice.reducer;

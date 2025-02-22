@@ -3,14 +3,16 @@ import { Avatar, Badge, Button, Card, Divider, Flex, List, Tag, Tooltip } from '
 import { truncateString } from 'nhb-toolbox';
 import { Link } from 'react-router';
 import { AntNotifications } from '../App';
-import { removeSpecificItem } from '../app/features/cartSlice';
+import { useCreateOrderMutation } from '../app/api/orderApi';
+import { removeSpecificCartItem } from '../app/features/cartSlice';
 import {
 	clearOrder,
 	removeFromOrder,
 	selectOrderItems,
-	selectOrderTotal,
+	selectOrderTotals,
 } from '../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useNotifyResponse } from '../hooks/useNotifyResponse';
 import { getBadgeStyle, getImageLink } from '../utils/helpers';
 
 interface Props {
@@ -21,7 +23,10 @@ const OrderSummary = ({ isDirectOrder }: Props) => {
 	const dispatch = useAppDispatch();
 	const { notify } = AntNotifications(true);
 	const selectedItems = useAppSelector(selectOrderItems);
-	const { totalItems, totalPrice } = useAppSelector(selectOrderTotal);
+	const { totalItems, totalPrice } = useAppSelector(selectOrderTotals);
+
+	const [createOrder, { isLoading }] = useCreateOrderMutation();
+	const { handleSuccess, handleError } = useNotifyResponse();
 
 	const handleRemoveFromOrder = (id: string) => {
 		dispatch(removeFromOrder(id));
@@ -37,19 +42,35 @@ const OrderSummary = ({ isDirectOrder }: Props) => {
 		notify.success({ message: `Order list has been cleared!` });
 	};
 
-	const handleCheckOut = () => {
+	const handleCheckOut = async () => {
 		if (totalItems < 1) {
 			return notify.warning({ message: `Please add items to the order list!` });
 		}
 
-		// Remove selected items from cart when going to check out
-		if (!isDirectOrder) {
-			selectedItems.forEach((item) => dispatch(removeSpecificItem(item._id)));
-			notify.success({ message: `Taking you to check out page!` });
-			return;
-		}
+		const orderData = selectedItems.map((item) => ({
+			id: item._id,
+			quantity: item.cartQuantity,
+		}));
 
-		notify.success({ message: `Order has been placed!` });
+		try {
+			const res = await createOrder(orderData).unwrap();
+
+			if (res.success) {
+				handleSuccess(res);
+				selectedItems.forEach((item) => dispatch(removeFromOrder(item._id)));
+
+				// Remove selected items from cart when going to check out
+				// ! change the logic a bit...
+				if (!isDirectOrder) {
+					selectedItems.forEach((item) =>
+						dispatch(removeSpecificCartItem(item._id))
+					);
+					return;
+				}
+			}
+		} catch (error) {
+			handleError(error);
+		}
 	};
 
 	return (
@@ -169,7 +190,7 @@ const OrderSummary = ({ isDirectOrder }: Props) => {
 			<Card.Meta
 				style={{ padding: '0 0 24px 12px' }}
 				title={
-					<Button type="primary" onClick={handleCheckOut}>
+					<Button loading={isLoading} type="primary" onClick={handleCheckOut}>
 						Check Out
 					</Button>
 				}

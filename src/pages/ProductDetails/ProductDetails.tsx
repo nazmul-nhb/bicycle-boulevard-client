@@ -18,7 +18,7 @@ import { useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { AntNotifications } from '../../App';
 import { useGetSingleProductQuery } from '../../app/api/productApi';
-import { addToCart, selectTargetItem } from '../../app/features/cartSlice';
+import { addToCart, targetCartItem } from '../../app/features/cartSlice';
 import {
 	addToOrder,
 	selectOrderItems,
@@ -48,7 +48,7 @@ const ProductDetails = () => {
 	const [quantity, setQuantity] = useState(1);
 
 	const orderItems = useAppSelector(selectOrderItems);
-	const targetItem = useAppSelector((state) => selectTargetItem(state, id!));
+	const targetItem = useAppSelector((state) => targetCartItem(state, id!));
 
 	// Calculate existing order quantity for the specific item
 	const existingQuantity = useMemo(

@@ -17,7 +17,7 @@ import { AntNotifications } from '../../../App';
 import {
 	addToCart,
 	removeQuantityFromCart,
-	removeSpecificItem,
+	removeSpecificCartItem,
 } from '../../../app/features/cartSlice';
 import {
 	addToOrder,
@@ -75,7 +75,7 @@ const CartCard: React.FC<Props> = ({ product }) => {
 	};
 
 	const handleRemoveCartItem = () => {
-		dispatch(removeSpecificItem(id));
+		dispatch(removeSpecificCartItem(id));
 		notify.success({ message: `${name} removed from the cart!` });
 		dispatch(removeFromOrder(id));
 	};

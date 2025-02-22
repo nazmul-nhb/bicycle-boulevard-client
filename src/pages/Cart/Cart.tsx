@@ -2,7 +2,11 @@ import { Icon } from '@iconify/react';
 import { Col, Empty, FloatButton, Row } from 'antd';
 import { AntNotifications } from '../../App';
 import { useGetAllProductsQuery } from '../../app/api/productApi';
-import { clearCart, removeSpecificItem, selectItems } from '../../app/features/cartSlice';
+import {
+	clearCart,
+	removeSpecificCartItem,
+	selectCartItems,
+} from '../../app/features/cartSlice';
 import { removeFromOrder, selectOrderItems } from '../../app/features/orderSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import OrderSummary from '../../components/OrderSummary';
@@ -11,7 +15,7 @@ import CartCard from './components/CartCard';
 import CartCardSkeleton from './components/CartSkeleton';
 
 const Cart = () => {
-	const cartItems = useAppSelector(selectItems);
+	const cartItems = useAppSelector(selectCartItems);
 	const selectedItems = useAppSelector(selectOrderItems);
 	const dispatch = useAppDispatch();
 	const { notify } = AntNotifications(true);
@@ -60,7 +64,7 @@ const Cart = () => {
 			return notify.warning({ message: `Please select at least 1 item to remove!` });
 		}
 
-		selectedItems.forEach((item) => dispatch(removeSpecificItem(item._id)));
+		selectedItems.forEach((item) => dispatch(removeSpecificCartItem(item._id)));
 		selectedItems.forEach((item) => dispatch(removeFromOrder(item._id)));
 		notify.success({ message: `Cleared selected products from the cart!` });
 	};
@@ -69,10 +73,11 @@ const Cart = () => {
 		<section>
 			{isLoading ? (
 				<Row gutter={[24, 24]}>
-					<Col xs={24} sm={24} md={18}>
+					{/* Cart Cards Skeleton */}
+					<Col xs={24} md={12} lg={16} xl={18}>
 						<Row gutter={[24, 24]}>
 							{Array.from({ length: 12 }).map((_, idx) => (
-								<Col key={idx} xs={24} sm={12} md={8}>
+								<Col key={idx} xs={24} md={24} lg={12} xl={8}>
 									<CartCardSkeleton />
 								</Col>
 							))}
@@ -80,7 +85,7 @@ const Cart = () => {
 					</Col>
 
 					{/* Sticky Order Summary */}
-					<Col xs={24} sm={24} md={6}>
+					<Col xs={24} md={12} lg={8} xl={6}>
 						<OrderSummary />
 					</Col>
 				</Row>
@@ -92,11 +97,11 @@ const Cart = () => {
 				/>
 			) : (
 				<Row gutter={[24, 24]}>
-					{/* 3-column Cart Cards */}
-					<Col xs={24} sm={24} md={18}>
+					{/* Cart Cards */}
+					<Col xs={24} md={12} lg={16} xl={18}>
 						<Row gutter={[24, 24]}>
 							{products.map((product) => (
-								<Col key={product._id} xs={24} sm={12} md={8}>
+								<Col key={product._id} xs={24} md={24} lg={12} xl={8}>
 									<CartCard product={product} />
 								</Col>
 							))}
@@ -104,12 +109,13 @@ const Cart = () => {
 					</Col>
 
 					{/* Sticky Order Summary */}
-					<Col xs={24} sm={24} md={6}>
+					<Col xs={24} md={12} lg={8} xl={6}>
 						<OrderSummary />
 					</Col>
 				</Row>
 			)}
 
+			{/* Floating Action Buttons */}
 			<FloatButton.Group
 				tooltip="Remove from Cart"
 				trigger="click"
