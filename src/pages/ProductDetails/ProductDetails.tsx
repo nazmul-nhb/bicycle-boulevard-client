@@ -15,7 +15,7 @@ import {
 } from 'antd';
 import { getColorForInitial } from 'nhb-toolbox';
 import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { AntNotifications } from '../../App';
 import { useGetSingleProductQuery } from '../../app/api/productApi';
 import { addToCart, selectTargetItem } from '../../app/features/cartSlice';
@@ -186,12 +186,16 @@ const ProductDetails = () => {
 					<Title level={3}>{name}</Title>
 					{/* <Flex align="center" justify="space-between"> */}
 					<Text type="secondary">
-						<Tag color={getColorForInitial(brand!)}>Brand: {brand}</Tag>
+						<Link to={`/products?brand=${brand}`}>
+							<Tag color={getColorForInitial(brand!)}>Brand: {brand}</Tag>
+						</Link>
 					</Text>
 					<Text type="secondary" style={{ display: 'block', marginTop: 4 }}>
-						<Tag color={getColorForInitial(category!)}>
-							Category: {category}
-						</Tag>
+						<Link to={`/products?category=${category}`}>
+							<Tag color={getColorForInitial(category!)}>
+								Category: {category}
+							</Tag>
+						</Link>
 					</Text>
 					{/* </Flex> */}
 					<Divider />

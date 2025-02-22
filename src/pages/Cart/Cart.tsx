@@ -24,7 +24,7 @@ const Cart = () => {
 			? {
 					ids,
 					limit: 0,
-					select: ['-description', '-isDeleted', '-createdAt', '-updatedAt'],
+					exclude: ['-createdAt', '-updatedAt'],
 			  }
 			: {},
 		{

@@ -28,7 +28,7 @@ export interface IQueryParams extends QueryObject {
 	min?: number;
 	max?: number;
 	ids?: string[];
-	select?: `${'+' | '-'}${string}`[];
+	exclude?: `-${string}`[];
 }
 
 export interface ICartItem {

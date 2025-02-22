@@ -63,9 +63,9 @@ const Products = () => {
 			...sort,
 			min: priceRange[0],
 			max: priceRange[1],
+			brand: getQueryParam('brand') || '',
 			page,
 			limit,
-			select: ['-description', '-isDeleted'],
 		},
 		{
 			selectFromResult: ({ data, ...rest }) => ({
