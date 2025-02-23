@@ -1,5 +1,5 @@
-import { configs } from '../../configs/site_configs';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { configs } from '../../configs/site_configs';
 import type { TRootState } from '../store';
 
 export const baseApi = createApi({
@@ -14,6 +14,7 @@ export const baseApi = createApi({
 			if (token) {
 				headers.set('Authorization', `Bearer ${token}`);
 			}
+
 			return headers;
 		},
 	}),

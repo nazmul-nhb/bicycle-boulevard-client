@@ -15,3 +15,13 @@ export const categoryOptions = Object.entries(PRODUCT_CATEGORIES).map(([_key, va
 	value: value,
 	label: value,
 }));
+
+export const PAYMENT_STATUS = ['pending', 'paid', 'failed', 'cancelled'] as const;
+
+export const ORDER_STATUS = [
+	'confirmed',
+	'pending',
+	'processing',
+	'cancelled',
+	'delivered',
+] as const;
