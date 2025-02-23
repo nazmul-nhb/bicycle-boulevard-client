@@ -6,12 +6,13 @@ import { useLoginUserMutation } from '../../../app/api/authApi';
 import AntdFormInput from '../../../components/AntdFormInput';
 import { useAuth } from '../../../hooks/useAuth';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
+import type { LocationState } from '../../../types';
 import type { ICredentials } from '../../../types/user.types';
 
 const LoginForm: React.FC = () => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
-	const location = useLocation();
+	const location: LocationState = useLocation();
 
 	const [loginForm] = Form.useForm<ICredentials>();
 

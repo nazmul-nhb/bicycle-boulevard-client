@@ -4,7 +4,7 @@ import { Header } from 'antd/es/layout/layout';
 import type { MappingAlgorithm } from 'antd/es/theme/interface';
 import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { AntNotifications } from '../../App';
 import { logOut } from '../../app/features/authSlice';
 import { selectCartTotal } from '../../app/features/cartSlice';
@@ -29,6 +29,7 @@ const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const { user, isLoading } = useAuth();
 	const navigate = useNavigate();
+	const location = useLocation();
 	const isMobile = useMediaQuery();
 	const dispatch = useAppDispatch();
 	const { modal } = AntNotifications(true);
@@ -39,12 +40,17 @@ const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 
 	const cartTotal = useAppSelector(selectCartTotal);
 
+	// Store the current path in state for redirect after login
+	const redirectState = { from: { pathname: location.pathname } };
+
 	const handleLogOut = () => {
 		modal.confirm({
 			title: 'Log out Now?',
 			content: 'Do you really want to log out?',
-			onOk: () => dispatch(logOut()),
-			// onCancel: () => playSound('/sounds/info.mp3'),
+			onOk: () => {
+				dispatch(logOut());
+				navigate('/login', { state: redirectState });
+			},
 			okText: 'Log out',
 			okType: 'primary',
 			closable: true,
