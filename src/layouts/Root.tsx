@@ -25,7 +25,7 @@ const Root: React.FC = () => {
 					<Sidebar user={user} isDarkTheme={isDarkTheme} />
 				) : null)}
 			<Layout>
-				<Navbar user={user} algorithm={algorithm} isDarkTheme={isDarkTheme} />
+				<Navbar algorithm={algorithm} isDarkTheme={isDarkTheme} />
 				<div style={{ overflow: 'auto', height: '100vh' }}>
 					<Content style={{ minHeight: '100vh', padding: '8px 12px' }}>
 						<Outlet />

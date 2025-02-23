@@ -1,8 +1,6 @@
 import { App, ConfigProvider } from 'antd';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { BrowserRouter } from 'react-router';
-import { useLazyGetMeQuery } from './app/api/authApi';
-import { useAuth } from './hooks/useAuth';
 import { useTheme } from './hooks/useTheme';
 import { processNotifications } from './lib/notifications';
 import { BicycleRoutes } from './routes';
@@ -22,17 +20,18 @@ export function AntNotifications(sound?: boolean): TNotifications {
 }
 
 const BicycleApp = () => {
-	const { token, user } = useAuth();
 	const { algorithm, isDarkTheme } = useTheme();
-	const [getCurrentUser] = useLazyGetMeQuery();
 
 	const modalContainerRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		if (!token || user) return;
+	// const { token, user } = useAuth();
+	// const [getCurrentUser] = useLazyGetMeQuery();
 
-		getCurrentUser();
-	}, [getCurrentUser, token, user]);
+	// useEffect(() => {
+	// 	if (!token || user) return;
+
+	// 	getCurrentUser();
+	// }, [getCurrentUser, token, user]);
 
 	return (
 		<ConfigProvider

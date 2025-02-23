@@ -6,12 +6,10 @@ import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { AntNotifications } from '../../App';
-import { useGetMeQuery } from '../../app/api/authApi';
 import { logOut } from '../../app/features/authSlice';
 import { selectCartTotal } from '../../app/features/cartSlice';
 import { setTheme } from '../../app/features/themeSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import type { TRootState } from '../../app/store';
 import { routes } from '../../configs/route_list';
 import { configs } from '../../configs/site_configs';
 import { useAuth } from '../../hooks/useAuth';
@@ -22,14 +20,14 @@ import { formatRoutes } from '../../utils/routeUtils';
 import ResponsiveSidebar from './ResponsiveSidebar';
 
 interface Props {
-	user: TRootState['auth']['user'];
+	// user: TRootState['auth']['user'];
 	isDarkTheme: boolean;
 	algorithm: MappingAlgorithm;
 }
 
-const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
+const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 	const [open, setOpen] = useState<boolean>(false);
-	const { token } = useAuth();
+	const { user, isLoading } = useAuth();
 	const navigate = useNavigate();
 	const isMobile = useMediaQuery();
 	const dispatch = useAppDispatch();
@@ -37,7 +35,7 @@ const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 
 	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
 
-	const { isLoading } = useGetMeQuery(undefined, { skip: !!user || !token });
+	// const { isLoading } = useGetMeQuery(undefined, { skip: !!user || !token });
 
 	const cartTotal = useAppSelector(selectCartTotal);
 

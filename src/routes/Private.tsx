@@ -1,7 +1,6 @@
 import { Flex, Spin } from 'antd';
 import React from 'react';
 import { Navigate, useLocation } from 'react-router';
-import { useGetMeQuery } from '../app/api/authApi';
 import { useAuth } from '../hooks/useAuth';
 import type { ISingleUser } from '../types/user.types';
 
@@ -13,9 +12,9 @@ interface Props {
 const Private: React.FC<Props> = ({ roles, children }) => {
 	const location = useLocation();
 
-	const { token, user } = useAuth();
+	const { token, user, isLoading } = useAuth();
 
-	const { isLoading } = useGetMeQuery(undefined, { skip: !!user || !token });
+	// const { isLoading } = useGetMeQuery(undefined, { skip: !!user || !token });
 
 	if (isLoading) {
 		return (
