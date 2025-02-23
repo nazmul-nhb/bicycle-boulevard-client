@@ -16,15 +16,15 @@ const Root: React.FC = () => {
 	const { user } = useAuth();
 	const { algorithm, isDarkTheme } = useTheme();
 	const { selectedPath } = useGetSelectedPath();
-	const isMobile = useMediaQuery();
+	const isMobile = useMediaQuery(960);
 
 	return (
-		<Layout style={{ height: '100vh', overflow: 'hidden' }}>
+		<Layout style={{ height: '100vh', maxWidth: '100%', overflow: 'hidden' }}>
 			{isMobile ||
 				(user && isDashboard(selectedPath) ? (
 					<Sidebar user={user} isDarkTheme={isDarkTheme} />
 				) : null)}
-			<Layout>
+			<Layout style={{ maxWidth: '100%' }}>
 				<Navbar algorithm={algorithm} isDarkTheme={isDarkTheme} />
 				<div style={{ overflow: 'auto', height: '100vh' }}>
 					<Content style={{ minHeight: '100vh', padding: '8px 12px' }}>

@@ -16,7 +16,7 @@ const ProductsGrid = ({ isLoading, products, skeletonCount }: Props) => {
 			{isLoading ? (
 				<Row gutter={[24, 24]}>
 					{Array.from({ length: skeletonCount }).map((_, index) => (
-						<Col key={index} xs={24} sm={12} md={8} lg={6}>
+						<Col key={index} xs={24} sm={12} md={12} lg={8} xl={6}>
 							<ProductCardSkeleton />
 						</Col>
 					))}
@@ -30,7 +30,7 @@ const ProductsGrid = ({ isLoading, products, skeletonCount }: Props) => {
 			) : (
 				<Row gutter={[24, 24]}>
 					{products?.map((product) => (
-						<Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+						<Col key={product._id} xs={24} sm={12} md={12} lg={8} xl={6}>
 							<ProductCard product={product} />
 						</Col>
 					))}

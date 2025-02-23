@@ -30,7 +30,7 @@ const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 	const { user, isLoading } = useAuth();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const isMobile = useMediaQuery();
+	const isMobile = useMediaQuery(960);
 	const dispatch = useAppDispatch();
 	const { modal } = AntNotifications(true);
 
@@ -98,7 +98,7 @@ const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 								marginLeft: isMobile ? 8 : 16,
 								textWrap: 'nowrap',
 							}}
-							level={isMobile ? 3 : 4}
+							level={4}
 							title={configs.site_title}
 						>
 							{configs.site_title}
@@ -135,21 +135,18 @@ const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 					) : null}
 
 					<Flex gap={8} align="center">
-						{isMobile || (
-							<Badge size="small" count={cartTotal}>
-								<Button
-									type="link"
-									shape="circle"
-									icon={
-										<Icon icon="raphael:cart" width="24" height="24" />
-									}
-									onClick={() => navigate('/cart')}
-									style={{
-										font: '18px bold',
-									}}
-								/>
-							</Badge>
-						)}
+						<Badge size="small" count={cartTotal}>
+							<Button
+								type="link"
+								shape="circle"
+								icon={<Icon icon="raphael:cart" width="24" height="24" />}
+								onClick={() => navigate('/cart')}
+								style={{
+									font: '18px bold',
+								}}
+							/>
+						</Badge>
+
 						{algorithm === theme.defaultAlgorithm ? (
 							<Button
 								onClick={() => dispatch(setTheme('dark'))}
@@ -205,6 +202,22 @@ const Navbar: React.FC<Props> = ({ algorithm, isDarkTheme }) => {
 												Cart
 											</Button>
 										</Badge>
+										<Button
+											type="primary"
+											icon={
+												<Icon
+													icon="raphael:user"
+													width="24"
+													height="24"
+												/>
+											}
+											onClick={() => navigate('/profile')}
+											style={{
+												font: '18px bold',
+											}}
+										>
+											Profile
+										</Button>
 										<Button
 											type="primary"
 											color="red"
