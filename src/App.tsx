@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react';
 import { App, ConfigProvider } from 'antd';
+import { useEffect, useRef } from 'react';
 import { BrowserRouter } from 'react-router';
-import { BicycleRoutes } from './routes';
-import type { TNotifications } from './types';
-import { processNotifications } from './lib/notifications';
 import { useLazyGetMeQuery } from './app/api/authApi';
 import { useAuth } from './hooks/useAuth';
 import { useTheme } from './hooks/useTheme';
+import { processNotifications } from './lib/notifications';
+import { BicycleRoutes } from './routes';
+import type { TNotifications } from './types';
 
 /**
  * Use modified `antd` notification methods as `toast`, `notify` and `showModal`.
@@ -22,17 +22,17 @@ export function AntNotifications(sound?: boolean): TNotifications {
 }
 
 const BicycleApp = () => {
-	const { token } = useAuth();
+	const { token, user } = useAuth();
 	const { algorithm, isDarkTheme } = useTheme();
 	const [getCurrentUser] = useLazyGetMeQuery();
 
 	const modalContainerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		if (!token) return;
+		if (!token || user) return;
 
 		getCurrentUser();
-	}, [getCurrentUser, token]);
+	}, [getCurrentUser, token, user]);
 
 	return (
 		<ConfigProvider

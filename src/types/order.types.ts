@@ -1,7 +1,7 @@
 import type { DBItem } from '.';
 
 export interface IOrderData {
-	id: string;
+	product: string;
 	quantity: number;
 }
 

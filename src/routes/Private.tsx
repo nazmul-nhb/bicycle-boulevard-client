@@ -15,7 +15,7 @@ const Private: React.FC<Props> = ({ roles, children }) => {
 
 	const { token, user } = useAuth();
 
-	const { isLoading } = useGetMeQuery();
+	const { isLoading } = useGetMeQuery(undefined, { skip: !!user || !token });
 
 	if (isLoading) {
 		return (

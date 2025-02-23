@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useNotifyResponse } from '../hooks/useNotifyResponse';
 import { getBadgeStyle, getImageLink } from '../utils/helpers';
+import type { IOrderData } from '../types/order.types';
 
 interface Props {
 	isDirectOrder?: boolean;
@@ -47,8 +48,8 @@ const OrderSummary = ({ isDirectOrder }: Props) => {
 			return notify.warning({ message: `Please add items to the order list!` });
 		}
 
-		const orderData = selectedItems.map((item) => ({
-			id: item._id,
+		const orderData: IOrderData[] = selectedItems.map((item) => ({
+			product: item._id,
 			quantity: item.cartQuantity,
 		}));
 

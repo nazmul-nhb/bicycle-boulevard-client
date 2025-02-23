@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import type { TRootState } from '../../app/store';
 import { routes } from '../../configs/route_list';
 import { configs } from '../../configs/site_configs';
+import { useAuth } from '../../hooks/useAuth';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useGetSelectedPath } from '../../hooks/useSelectedPath';
 import { getImageLink, isDashboard } from '../../utils/helpers';
@@ -28,12 +29,15 @@ interface Props {
 
 const Navbar: React.FC<Props> = ({ user, algorithm, isDarkTheme }) => {
 	const [open, setOpen] = useState<boolean>(false);
+	const { token } = useAuth();
 	const navigate = useNavigate();
 	const isMobile = useMediaQuery();
 	const dispatch = useAppDispatch();
-	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
 	const { modal } = AntNotifications(true);
-	const { isLoading } = useGetMeQuery();
+
+	const { selectedPath, selectCurrentPath } = useGetSelectedPath();
+
+	const { isLoading } = useGetMeQuery(undefined, { skip: !!user || !token });
 
 	const cartTotal = useAppSelector(selectCartTotal);
 
