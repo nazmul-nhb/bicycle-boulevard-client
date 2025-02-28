@@ -1,4 +1,4 @@
-import type { IOrderData, IOrderRes } from '../../types/order.types';
+import type { IOrderData, IOrderDetails, IOrderRes } from '../../types/order.types';
 import type { IServerResponse } from '../../types/server.types';
 import { baseApi } from './baseApi';
 
@@ -17,7 +17,7 @@ export const orderApi = baseApi.injectEndpoints({
 			invalidatesTags: ['Orders', 'Products', 'Product'],
 		}),
 
-		getAllOrders: builder.query<IServerResponse<unknown>, void>({
+		getAllOrders: builder.query<IServerResponse<IOrderDetails[]>, void>({
 			query: () => {
 				return {
 					url: `orders`,
