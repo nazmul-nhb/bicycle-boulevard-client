@@ -1,5 +1,5 @@
 import { generateQueryParams } from 'nhb-toolbox';
-import type { QueryObject } from 'nhb-toolbox/dist/object/types';
+import type { QueryObject } from 'nhb-toolbox/object/types';
 import { useCallback } from 'react';
 import { useSearchParams } from 'react-router';
 

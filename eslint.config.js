@@ -23,6 +23,8 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      "no-console": ["error", { "allow": ["info", "warn", "error"] }],
+      // "@typescript-eslint/no-console": ["warn", { "allow": ["info", "warn", "error"] }],
       "no-unused-vars": ["error", {
         "args": "all",
         "argsIgnorePattern": "^_",
