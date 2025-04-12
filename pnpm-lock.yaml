@@ -35,9 +35,6 @@ importers:
       react-draggable:
         specifier: ^4.4.6
         version: 4.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-form-sanitization:
-        specifier: ^6.0.7
-        version: 6.0.7(react@18.3.1)
       react-quill:
         specifier: ^2.0.0
         version: 2.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1408,15 +1405,6 @@ packages:
     peerDependencies:
       react: '>= 16.3.0'
       react-dom: '>= 16.3.0'
-
-  react-form-sanitization@6.0.7:
-    resolution: {integrity: sha512-hgo6NJlmNAyAHbIf0DrKztCDY9ibOTV4nt4agpq8jbum77cQ6/1WSrRkP2JKW9FvGJO4WltlbQEyWdK0bybfCg==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: '>=16.8.0'
-    peerDependenciesMeta:
-      react:
-        optional: true
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -3045,10 +3033,6 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  react-form-sanitization@6.0.7(react@18.3.1):
-    optionalDependencies:
-      react: 18.3.1
 
   react-is@16.13.1: {}
 

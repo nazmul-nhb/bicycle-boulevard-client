@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react';
 import { Button, Col, Form, Row } from 'antd';
 import { useForm, type FormProps } from 'antd/es/form/Form';
+import { createFormData } from 'nhb-toolbox';
 import { useRef } from 'react';
-import { sanitizeFormData } from 'react-form-sanitization';
 import type ReactQuill from 'react-quill';
 import { useCreateProductMutation } from '../../../app/api/productApi';
 import AntdFormInput from '../../../components/AntdFormInput';
@@ -25,15 +25,9 @@ const AddProduct = () => {
 	const handleCreateProduct: FormProps<ICreateProduct>['onFinish'] = async (values) => {
 		try {
 			const data = { ...values, inStock: values.inStock > 0 };
-			const productData = sanitizeFormData(data, {
-				requiredKeys: ['inStock', 'price', 'quantity'],
-			});
-
-			// console.log({ data, formData: Object.fromEntries(productData.entries()) });
+			const productData = createFormData(data);
 
 			const res = await createProduct(productData).unwrap();
-
-			// console.log(res);
 
 			if (res.success) {
 				handleSuccess(res);

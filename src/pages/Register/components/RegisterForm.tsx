@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Button, Col, Form, Row, Typography, type FormProps } from 'antd';
 import React, { useEffect } from 'react';
-import { sanitizeFormData } from 'react-form-sanitization';
 import { useLocation, useNavigate } from 'react-router';
 import { useRegisterUserMutation } from '../../../app/api/authApi';
 import AntdFormInput from '../../../components/AntdFormInput';
@@ -9,6 +8,7 @@ import DraggableUpload from '../../../components/DraggableUpload';
 import { useAuth } from '../../../hooks/useAuth';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { IRegisterUser } from '../../../types/user.types';
+import { createFormData } from 'nhb-toolbox';
 
 const RegisterForm: React.FC = () => {
 	const { user } = useAuth();
@@ -32,7 +32,7 @@ const RegisterForm: React.FC = () => {
 	const handleRegister: FormProps<IRegisterUser>['onFinish'] = async (data) => {
 		try {
 			// Sanitize and format form data
-			const formattedData = sanitizeFormData(data, {
+			const formattedData = createFormData(data, {
 				ignoreKeys: ['confirm_password'],
 			});
 

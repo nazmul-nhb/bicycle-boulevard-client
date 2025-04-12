@@ -1,20 +1,20 @@
 import { Icon } from '@iconify/react';
 import { Button, Col, Flex, Form, Row, Spin } from 'antd';
 import { useForm, type FormProps } from 'antd/es/form/Form';
-import { useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
-import { sanitizeFormData } from 'react-form-sanitization';
+import { createFormData, extractUpdatedFields } from 'nhb-toolbox';
+import { useEffect, useMemo, useRef, type Dispatch, type SetStateAction } from 'react';
 import type ReactQuill from 'react-quill';
 import {
 	useGetSingleProductQuery,
 	useUpdateProductMutation,
 } from '../../../app/api/productApi';
 import AntdFormInput from '../../../components/AntdFormInput';
+import DraggableUpload from '../../../components/DraggableUpload';
 import QuillWrapper from '../../../components/QuillWrapper';
 import { categoryOptions } from '../../../configs/constants';
 import { useNotifyResponse } from '../../../hooks/useNotifyResponse';
 import type { ICreateProduct, IUpdateProduct } from '../../../types/product.types';
-import { getUpdatedFields, previewAntdImage } from '../../../utils/helpers';
-import DraggableUpload from '../../../components/DraggableUpload';
+import { previewAntdImage } from '../../../utils/helpers';
 
 interface Props {
 	id: string;
@@ -37,6 +37,20 @@ const UpdateProduct = ({ id, setDrawerVisible, setSelectedProductId }: Props) =>
 
 	const { handleSuccess, handleError } = useNotifyResponse();
 
+	const previousData: IUpdateProduct = useMemo(
+		() => ({
+			name: productRes?.data?.name,
+			brand: productRes?.data?.brand,
+			category: productRes?.data?.category,
+			inStock: productRes?.data?.inStock,
+			quantity: productRes?.data?.quantity,
+			description: productRes?.data?.description,
+			price: productRes?.data?.price,
+			image: previewAntdImage(productRes?.data?.image as string),
+		}),
+		[productRes?.data]
+	);
+
 	const handleUpdateProduct: FormProps<ICreateProduct>['onFinish'] = async (values) => {
 		try {
 			const data: IUpdateProduct = {
@@ -44,24 +58,15 @@ const UpdateProduct = ({ id, setDrawerVisible, setSelectedProductId }: Props) =>
 				inStock: values?.inStock && values?.inStock > 0 ? true : false,
 			};
 
-			const originalData = productRes?.data || {};
+			const updatedData = extractUpdatedFields(previousData, data);
 
-			const updatedData = getUpdatedFields(originalData, data);
-
-			const productData = sanitizeFormData(updatedData, {
-				requiredKeys: ['inStock', 'price', 'quantity'],
-			});
-
-			// console.log({ data, formData: Object.fromEntries(productData.entries()) });
+			const productData = createFormData(updatedData);
 
 			const res = await updateProduct({ id, data: productData }).unwrap();
-
-			// console.log(res);
 
 			if (res.success) {
 				handleSuccess(res);
 				await refetch();
-				// productUpdateForm.resetFields();
 				setDrawerVisible(false);
 				setSelectedProductId('');
 			}
@@ -73,12 +78,11 @@ const UpdateProduct = ({ id, setDrawerVisible, setSelectedProductId }: Props) =>
 	useEffect(() => {
 		if (productRes?.data) {
 			productUpdateForm.setFieldsValue({
-				...productRes.data,
-				inStock: productRes.data.inStock ? 1 : 0,
-				image: previewAntdImage(productRes.data.image as string),
+				...previousData,
+				inStock: productRes?.data.inStock ? 1 : 0,
 			});
 		}
-	}, [productRes?.data, productUpdateForm]);
+	}, [previousData, productRes?.data, productUpdateForm]);
 
 	if (isProductLoading) {
 		return (

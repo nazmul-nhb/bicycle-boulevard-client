@@ -48,3 +48,10 @@ export interface ICartState {
 	items: ICartItem[];
 	total: number;
 }
+
+export interface UploadPreview {
+	uid: string;
+	name: string;
+	status: string;
+	url: string;
+}

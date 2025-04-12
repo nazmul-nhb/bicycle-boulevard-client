@@ -1,5 +1,5 @@
 import type { PRODUCT_CATEGORIES } from '../configs/constants';
-import type { DBItem } from './index';
+import type { DBItem, UploadPreview } from './index';
 
 export interface ICreateProduct {
 	name: string;
@@ -9,23 +9,27 @@ export interface ICreateProduct {
 	category: (typeof PRODUCT_CATEGORIES)[keyof typeof PRODUCT_CATEGORIES];
 	quantity: number;
 	inStock: number;
-	image: File;
+	image: File | UploadPreview[];
 }
 
-export interface IProduct extends Omit<ICreateProduct, 'description' | 'image'>, DBItem {
+export interface IProduct
+	extends Omit<ICreateProduct, 'description' | 'inStock' | 'image'>,
+		DBItem {
 	image: string;
+	inStock: boolean;
 	createdBy: string;
 }
 
 // export interface IProduct extends DBItem {}
 
-export interface IProductDetails extends Omit<ICreateProduct, 'image'>, DBItem {
+export interface IProductDetails extends Omit<ICreateProduct, 'image' | 'inStock'>, DBItem {
 	image: string;
+	inStock: boolean;
 	createdBy: string;
 }
 
 export interface IUpdateProduct extends Partial<Omit<ICreateProduct, 'inStock'>> {
-	inStock: boolean;
+	inStock?: boolean;
 }
 
 export interface IProductResponse {

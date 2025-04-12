@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import type { CSSProperties } from 'react';
 import { configs } from '../configs/site_configs';
 import type { IDecodedUser } from '../types/user.types';
+import type { UploadPreview } from '../types';
 
 /**
  * Play a short sound effect.
@@ -65,7 +66,7 @@ export const generateFilters = <T>(data: T[], key: keyof T) => {
  * @param src Image source, can be only the cloudinary public name for image like `"v1737848641/filename.jpg"`
  * @returns Prepared image for preview as an array of object.
  */
-export const previewAntdImage = (src: string) => {
+export const previewAntdImage = (src: string): UploadPreview[] => {
 	return [
 		{
 			uid: '-1',
@@ -74,28 +75,6 @@ export const previewAntdImage = (src: string) => {
 			url: getImageLink(src),
 		},
 	];
-};
-
-/**
- * * Compares the original values with the current form values and returns only the updated fields.
- *
- * @param {object} originalData - The original data from the product.
- * @param {object} currentData - The current form data to be submitted.
- * @returns {object} - A new object containing only the updated fields.
- */
-export const getUpdatedFields = <T extends Record<string, any>>(
-	originalData: Record<string, any>,
-	currentData: T
-): Partial<T> => {
-	const updatedFields: Partial<T> = {};
-
-	for (const key in currentData) {
-		if (currentData[key] !== originalData[key]) {
-			updatedFields[key] = currentData[key];
-		}
-	}
-
-	return updatedFields;
 };
 
 /**
